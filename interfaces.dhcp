@@ -1,0 +1,27 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+
+auto wlan0
+#allow-hotplug wlan0
+iface wlan0 inet static
+address 10.10.10.10
+netmask 255.255.255.0
+#  wireless-power off
+   post-up iw dev $IFACE set power_save off
+#see http://raspberrypi.stackexchange.com/questions/43473/does-the-bcm43438-wifi-chip-in-raspberry-pi-3-support-power-management-setting
+
+up iptables-restore < /etc/iptables.ipv4.nat
+
+# Can't connect via wifi access point; the Pi's wlan0 configuration:
+#wlan0     Link encap:Ethernet  HWaddr 00:0f:60:07:25:0e  
+#          inet addr:169.254.36.113  Bcast:169.254.255.255
+#          Mask:255.255.0.0
+
+#169.254.xxx.xxx is a link-local address.  
+
+#SOLUTION:
+#Add "auto wlan0" line to /etc/network/interfaces config file.
