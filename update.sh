@@ -13,9 +13,10 @@ echo "Just finished installing git, iw, hostapd, dnsmasq, apache2"
 
 # If planning to install Pathagar-  (estimate 3 minites)
 apt-get -y install python-pip python-virtualenv
-#     if planning to use mysql rather than sqlite3, must
-#     circumnavigate missing mysql_config errors and missing
-#     libxml/xmlversion.h errors by installing:
+#     if planning to use mysql rather than sqlite3:
+apt-get -y install mysql-server
+#     must circumnavigate missing mysql_config errors and
+#     missing libxml/xmlversion.h errors by installing:
 apt-get -y install libmysqlclient-dev libxml2-dev libxslt1-dev
 apt-get -y install python-dev
 date

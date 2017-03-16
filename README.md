@@ -46,7 +46,11 @@ dongle](https://www.amazon.com/CanaKit-Raspberry-Wireless-Adapter-Dongle/dp/B00G
 
 A high capacity Micro SD [Card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)<sup>[1](#1sdcard)</sup> with the **RASPBIAN JESSIE LITE** 
 [image](https://www.raspberrypi.org/downloads/raspbian/)
-are recommended. 
+are recommended. While at the ``raspbian`` download site, it would be
+a good idea to make a copy of the ``sha1sum`` shown below the
+``Download ZIP`` button.  If you don't know the concept of a
+``checksum`` or ``hash`` then you could forget all about this without
+much risk of endangering your project. 
 
 The following assumes you have a micro SD card as well as a card
 reader which will work with your GNU/Linux computer. An Apple will
@@ -66,20 +70,26 @@ Decide on
     * a name for your project directory.
     
 The following instructions will assume you've
-chosen your home directory and `olpcSF` respectively.
+chosen your home directory and `phInfo` respectively.
 
         cd
-        mkdir olpcSF
+        mkdir phInfo
         wget https://downloads.raspberrypi.org/raspbian_lite_latest
-        ls 
+        mv raspbian_lite_latest raspbian_lite_latest.zip
 
-The listing should include a file called
-`2017-03-02-raspbian-jessie-lite.zip` <sup>[2](#2releasenotes)</sup>
-although the date part might be more recent. If so, change
-the following commands to reflect the new date:
+Current release notes (as of spring 2017) is provided in the foot
+notes<sup>[2](#2releasenotes)</sup>.
+If you know about ``sha1sum`` this would be the time to check that the
+one you copied from the ``raspbian`` download page matches the output
+of the following command:
 
-        unzip 2017-03-02-raspbian-jessie-lite.zip
-        sudo dd if=2017-03-02-raspbian-jessie-lite.img of=/dev/sdb bs=4M
+        sha1sum raspbian_lite_latest.zip
+
+Assuming the ``checksum`` checks out (or you aren't bothering with it)
+continue with the following commands:
+
+        unzip raspbian_lite_latest.zip
+        sudo dd if=raspbian_lite_latest.zip of=/dev/sdb bs=4M
         sudo sync
 
 Note that the file's suffix is `.zip` in the first and `.img`
@@ -128,15 +138,15 @@ Be sure your `Raspberry Pi` remains connected to the internet and
 has gone through a reboot since `raspi-config` has been executed.
 
 After logging on as user `pi` using your newly set password,
-clone the relevant repository:
+clone the relevant repository<sup>[3](#3reponame)</sup>:
 
         cd
-        git clone https://github.com/alexKleider/olpcSF.git
+        git clone https://github.com/alexKleider/phInfo.git
 
-This brings in the `olpcSF` file hierarchy containing this
+This brings in the `phInfo` file hierarchy containing this
 `README` as well as required scripts and files.
 
-        cd olpcSF
+        cd phInfo
         sudo su
         source update.sh
 
@@ -145,12 +155,12 @@ This will take a long time (so be patient!) after which the
 
 ### Server Software Installation
 
-Log on again, `cd` into the project directory (`olpcSF`) and then
+Log on again, `cd` into the project directory (`phInfo`) and then
 have a look through the initial comments in `create_server.sh`.
 Once you've finished editing files to suit your own use case,
 go ahead and `source create_server.sh`.
 
-        cd olpcSF
+        cd phInfo
         # Examine `create_server.sh` and
         # modify the code to suit.
         sudo su
@@ -186,10 +196,10 @@ following commands:
         virtualenv -p python2.7 penv
         source penv/bin/activate  # `deactivate` when done.
         pip install -r requirements.pip
-        cp ~/olpcSF/local_settings.py ~/pathagar/
+        cp ~/phInfo/local_settings.py ~/pathagar/
 
 The last of the above commands serves to customize
-settings.<sup>[3](#3settings)</sup>
+settings.<sup>[4](#4settings)</sup>
 
 ### Add Another Static Content Site
 
@@ -249,7 +259,13 @@ settings.<sup>[3](#3settings)</sup>
     password unchanged
       * ...
 
-<a name="3settings">3</a>.
+<a name="3reponame">3</a>.
+
+    The repository name may change in which case all references to
+    `phInfo` will need to be changed to `olpcSF` (or what ever it
+    becomes.)
+
+<a name="4settings">4</a>.
 
     > Bringing in the `local_settings.py` file saves us from having to
     > perform the following edits of the `settings.py` file:

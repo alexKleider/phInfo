@@ -9,3 +9,12 @@ LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
 
 DEBUG = True
 TIME_ZONE = 'America/Los_Angeles'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'pathagar',
+        'USER': 'pathagar',
+        'PASSWORD': 'PASSWORD',
+    }
+}
