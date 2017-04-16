@@ -1,38 +1,28 @@
-# File: create_server.sh
+# File: create_nonPi_server.sh
 
-# File last modified Sun Mar  5 16:54:09 PST 2017
+# File last modified Sun Apr 16 10:34:06 PDT 2017
 
 # Before sourcing this file:
 
 #  1: be sure it and it's dependencies are in the cwd.
 #      Dependencies are:
-#          dnsmasq.conf
-#          hostapd
-#          hostapd.conf
 #          html-index-file
 #          interfaces.dhcp
 #          interfaces.static
 #          static.conf
 
-#  2: have a look at hostapd.conf and modify accordingly, ESPECIALLY
-#  if you plan to have two or more servers operating within range
-#  of each other.  This applies to the SSID and channel (6, 1, 11)
-#  you plan to use.  You'll want to avoid conflicts.
-#  The file hostapd.conf.wpa is still a work in progress: I've been
-#  unsuccessful getting protected wifi working.
-
-#  3: interfaces.static is provided in case you want the eth0
+#  2: interfaces.static is provided in case you want the eth0
 #  interface to have a static address. See line #51 [`i]
 #  If you do, you'll probably also want to edit interfaces.static
 #  to suit your own network.
 
-#  4: Near the end of this file, you'll see comments pertaining to
+#  3: Near the end of this file, you'll see comments pertaining to
 #  an entry in the `/etc/fstab` file; specifically `LABEL=...`. You
 #  may want to change the `LABEL` designation to suit your own
 #  purposes.
 
 # Check that this file hasn't already been sourced:
-fname='/etc/default/hostapd.original';
+fname='/etc/network/interfaces.original';
 afirmative='yes'
 if [[ -e $fname ]]; then
     echo "File with the name $fname exists."
@@ -52,10 +42,6 @@ else
 # The rest of the script is with in this 'else' segment.
 
 # Rename originals and then copy over the following:
-mv /etc/default/hostapd /etc/default/hostapd.original
-cp hostapd /etc/default/hostapd
-# mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.original
-cp hostapd.conf /etc/hostapd/hostapd.conf
 mv /etc/network/interfaces /etc/network/interfaces.original
 cp interfaces.static /etc/network/interfaces.static
 cp interfaces.dhcp /etc/network/interfaces.dhcp
