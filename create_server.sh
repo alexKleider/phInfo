@@ -32,7 +32,7 @@
 #  purposes.
 
 # Check that this file hasn't already been sourced:
-fname='/etc/default/hostapd.original';
+fname='/etc/network/interfaces.original';
 afirmative='yes'
 if [[ -e $fname ]]; then
     echo "File with the name $fname exists."

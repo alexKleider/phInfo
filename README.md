@@ -71,14 +71,12 @@ can be hazardous!!
 
 Change into a directory where the image can be downloaded and then
 unzipped.  It can eventually be deleted from your personal machine
-so which directory you use doesn't matter at all.
+so which directory you use doesn't much matter.
 
         cd <directory_of_choice>
         wget https://downloads.raspberrypi.org/raspbian_lite_latest
         mv raspbian_lite_latest raspbian_lite_latest.zip
 
-Current release notes (as of spring 2017) are provided in the foot
-notes<sup>[2](#2releasenotes)</sup>.
 If you know about ``sha1sum`` this would be the time to check that the
 one you copied from the ``raspbian`` download page matches the output
 of the following command:
@@ -143,9 +141,9 @@ Be sure your platform is connected to the internet and if using a
 `Raspberry Pi` be sure it has gone through a reboot after
 `raspi-config` was been executed.
 
-After logging on as user `pi`<sup>[3](#3username)</sup>
+After logging on as user `pi`<sup>[2](#2username)</sup>
 using your newly set password, clone the relevant
-repository<sup>[4](#4reponame)</sup>:
+repository<sup>[3](#4reponame)</sup>:
 
         cd
         git clone https://github.com/alexKleider/phInfo.git
@@ -157,14 +155,14 @@ This brings in the `phInfo` file hierarchy containing this
 
 If using a `Raspberry Pi`:
 
-        sudo source update.sh
+        sudo ./update.sh
 
 This will take a long time (so be patient!) The script ends
 with a reboot.
 
 For other platforms (with no need for network setup):
 
-        sudo source dependencies.sh
+        sudo ./dependencies.sh
 
 ### Server Software Installation
 
@@ -173,13 +171,13 @@ have a look through the initial comments in `create_server.sh`.
 If not using a `Raspberry Pi`, substitute `create_nonPi_server.sh`
 for `create_server.sh`.
 Once you've finished editing files to suit your own use case,
-go ahead and `source create_server.sh` (or `create_nonPi_server.sh`
-as the case may be.)
+go ahead and run the `create_server.sh` script (or
+`create_nonPi_server.sh` as the case may be.)
 
         cd phInfo
         # Examine `create_server.sh` and
         # modify the code to suit.
-        sudo source create_server.sh  # or: create_nonPi_server.sh
+        sudo ./create_server.sh  # or: create_nonPi_server.sh
 
 ### Static Content
 
@@ -216,22 +214,21 @@ the following commands:
         virtualenv -p python2.7 penv
         source penv/bin/activate  # `deactivate` when done.
         pip install -r requirements.pip
-        cp ~/phInfo/local_settings.py ~/pathagar/
 
-The last of the above commands serves to customize
-settings.<sup>[5](#5settings)</sup> 
-
-Choose a database password, make a record of it somewhere so
-as to be sure not to forget it, and run the following command 
-substituting the password you've chosen:
+Choose a database password consisting of alphanumerics, dashes and
+underscores but no other special characters. Make a record of it
+somewhere so as to be sure not to forget it, and then run the
+following commands first substituting your chosen password inside
+the single quotes at the end of the first of these commands:
 
         export MYSQL_PASSWORD='your-chosen-db-password'
+        ./set_db_password.sh
 
 A number of commands must be run with root privileges so they
 are all bundled into a single script which can be run as
 follows:
 
-        sudo source ph-setup.sh
+        sudo ./ph-setup.sh
 
 ### Add Another Static Content Site
 
@@ -245,74 +242,16 @@ follows:
     in the most recent (v3) models of the `Raspberry
     Pi` but we've not tested this.
 
-<a name="2releasenotes">2</a>.
-
-    Raspbian Release Notes:
-
-    2017-03-02:
-
-      * Updated kernel and firmware (final Pi Zero W support)
-      * Wolfram Mathematica updated to version 11
-      * NOOBS installs now checks for presence of 'ssh' file on the NOOBS
-        partition
-
-    2017-02-16:
-
-      * Chromium browser updated to version 56
-      * Adobe Flash Player updated to version 24.0.0.221
-      * RealVNC Server and Viewer updated to version 6.0.2 (RealVNC
-        Connect)
-      * Sonic Pi updated to version 2.11
-      * Node-RED updated to version 0.15.3
-      * Scratch updated to version 120117  * Detection of SSH enabled with
-    default password moved into PAM
-      * Updated desktop GL driver to support use of fake KMS option
-      * Raspberry Pi Configuration and raspi-config allow setting of fixed
-
-    HDMI resolution
-
-      * raspi-config allows enabling of serial hardware independent of
-
-    serial terminal
-
-      * Updates to kernel and firmware
-      * Various minor bug fixes and usability and appearance tweaks
-
-    2017-01-11:
-
-      * Re-release of the 2016-11-25 image with a FAT32-formatted boot
-        partition
-
-    2016-11-25:
-
-      * SSH disabled by default; can be enabled by creating a file with
-    name "ssh" in boot partition
-      * Prompt for password change at boot when SSH enabled with default
-    password unchanged
-      * ...
-
-<a name="3username">3</a>.
+<a name="2username">3</a>.
 
     The scripts assume user name `pi` and that you are cloning the
     `phInfo` repository and `pathagar` into `/home/pi`.  If you decide
     on a different user or use of a different installation directory,
     the scripts will have to be modified accordingly
 
-<a name="4reponame">4</a>.
+<a name="3reponame">4</a>.
 
     The repository name may change in which case all references to
     `phInfo` will need to be changed to `olpcSF` (or what ever it
     becomes.)
-
-<a name="5settings">5</a>.
-
-    Bringing in the `local_settings.py` file saves us from having to
-    perform the following edits of the `settings.py` file:
-
-            Preface the static directory
-            with '/library':
-            STATIC_URL = '/library/static/'
-            and add two lines:
-            FORCE_SCRIPT_NAME = '/library'
-            LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
 

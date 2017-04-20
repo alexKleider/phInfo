@@ -1,5 +1,8 @@
-# Source this file after installing raspbian and running raspi-config. 
+#!/bin/bash
 
+# File: update.sh
+
+# Run this script after installing raspbian and running raspi-config. 
 # Last updated Sun Mar  5 16:44:26 PST 2017
 
 echo "updating, upgrading and installing more software....."

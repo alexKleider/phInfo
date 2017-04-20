@@ -4,7 +4,7 @@
 # the 'stock' settings.py:
 
 # Agreed on the following:
-DEBUG = True
+DEBUG = False
 TIME_ZONE = 'America/Los_Angeles'
 
 # In my version, not mentioned in yours:
@@ -22,7 +22,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pathagar',
         'USER': 'pathagar',
-        'PASSWORD': 'a-random-db-password',
+        'PASSWORD': 'MYSQL_PASSWORD',
         # I assume that only pathagar will be 'listening'
         # to 'localhost:3306' using this way of communicating
         # with its data base, is that correct?

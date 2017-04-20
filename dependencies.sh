@@ -1,3 +1,8 @@
+#!/bin/bash
+
+# File: dependencies.sh
+
+# Use this script rather than update.sh when not using a Raspberry Pi.
 
 apt-get -y install python2.7
 apt-get -y install git apache2
