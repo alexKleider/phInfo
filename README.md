@@ -7,7 +7,7 @@ title: Raspberry Pi Content Server
 ## Introduction
 
 This directory hierarchy attempts to provide all that is needed
-(information and support files) to make a `Rasbperry Pi` into a
+(information and support files) to make a `Raspberry Pi` into a
 content server running a static content site as well as a
 `Pathagar Book Server` suitable for classroom or library use.
 Since `Raspbian`, the default `Raspberry Pi` `OS`, is `Debian`
@@ -17,9 +17,7 @@ text) should be applicable to any other `Debian` based system.
 The goal is to end up with a device that provides:
 
 * the Pathagar Book Server, and 
-* a static site.
-
-It would not be difficult to add other static sites as well.
+* one or more static sites.
 
 ## The Process
 
@@ -50,12 +48,11 @@ A high capacity Micro SD [Card](https://www.amazon.com/SanDisk-microSDXC-Standar
 is recommended<sup>[1](#1sdcard)</sup> and **RASPBIAN JESSIE LITE** 
 is the recommended 
 [image](https://www.raspberrypi.org/downloads/raspbian/)
-to use.  While at the
-``raspbian`` download site, it would be a good idea to make
-a copy of the ``sha1sum`` shown below the ``Download ZIP`` button.
-If you don't know the concept of a ``checksum`` or ``hash`` then
-you could forget all about this without much risk of endangering
-your project. 
+to use.  While at the ``raspbian`` download site, it would be a
+good idea to make a copy of the ``sha1sum`` shown below the
+``Download ZIP`` button.  If you don't know the concept of a
+``checksum`` or ``hash`` then you could forget all about this
+without much risk of endangering your project. 
 
 The following assumes you have a micro SD card as well as a card
 reader which will work with your GNU/Linux computer. An Apple will
@@ -63,7 +60,7 @@ probably work the same but if your OS is by MicroSoft, you'll have
 to look for instructions on the internet.
 
 Unequivocally establish the `device name` your computer assigns
-to the SD card and then unmount any of the possibly automounted
+to the SD card and then unmount any of the possibly auto-mounted
 volumes associated with this device. (A google search will
 provide further information on how to do this.) We'll assume the
 device is `/dev/sdb`; substitute as appropriate.  Getting this wrong
@@ -71,9 +68,11 @@ can be hazardous!!
 
 Change into a directory where the image can be downloaded and then
 unzipped.  It can eventually be deleted from your personal machine
-so which directory you use doesn't much matter.
+so which directory you use doesn't much matter. Creating a new
+empty directory for this purpose might make things less confusing.
 
-        cd <directory_of_choice>
+        mkdir <newly_created_dirctory>
+        cd <newly_created_dirctory>
         wget https://downloads.raspberrypi.org/raspbian_lite_latest
         mv raspbian_lite_latest raspbian_lite_latest.zip
 
@@ -89,57 +88,70 @@ it) and after you are positive that your SD card is mounted at
 continue with the following commands:
 
         unzip raspbian_lite_latest.zip
-        sudo dd if=raspbian_lite_latest.img of=/dev/sdb bs=4M
+        sudo dd if='-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
         sudo sync
 
-Note that the file's suffix is `.zip` in the first and `.img`
-in the second of the above two commands.
-
 Now your SD card is ready for your Raspberry Pi. You can safely 
-delete the raspbian image from your personal machine if you wish:
+delete the raspbian image from your personal machine if you wish.
 
-        rm raspbian_lite_latest.img
+        rm -rf <newly_created_dirctory>
 
 ### Initial RPi Configuration (`raspi-config`)
 
+Unfortunately `raspbian` is not shipped with the `ssh server` active
+by default and for this reason the `Pi` must be run the first time
+with a screen and keyboard attached.
 Be sure the micro SD card is securely inserted and the Raspberry Pi
-is connected via ethernet cable to the Internet before powering up.
+is connected via Ethernet cable to the Internet before powering up.
 Log on as user `pi` with password `raspberry` and then run:
         
         raspi-config
 
 As its name implies, this allows you to configure the Pi to suit your
-needs.  Here is an outline of what is recommended:
+needs.  Here is an outline of what is recommended or appropriate for
+my use case:
 
-    1. File system expansion (already done.)
-    2. Default user is `pi`, I've been changing the pw to `pi::root`
-    3. Boot into the command line (My preferred default.)
-    4. Internationalization:
-        * Default language: en_us.UTF-8  (change from en_gb.UTF-8)
-        * Time zone: America, Los_Angeles. (New Pacific)
-        * Keyboard: generic 105-key seems to work
+    1. Change user password: I've been changing the pw to `pi::root` 
+    2. Hostname: I suggest `rpi` (something short)
+    3. Boot options:
+        I suggest B1 (or B2)- -> Console
+    4. Localization Options:
+        11 Change Local: en_us.UTF-8  (change from en_gb.UTF-8)
+            (The space bar toggles the selection asterix.)
+        12 Time zone: US, New Pacific
+        13 Keyboard: generic 105-key seems to work
             English US
             default
             no compose key
-            Control-Alt-Backspace to exit Xwindow
-    5. Left in the default state.
-    6. Left in the default state.
-    7. Left in the default state.
-    8. Advanced options:
-        * Host name: set to rpi (you choose.)
-        * SSH enabled (I believe this is the default.)
+    5. Interfacing:
+        P2 SSH: Enable ssh server
+    6. Overclock: Left in the default state.
+    7. Advanced options:
+        * SSH: Enable ssh server (unfortunately NOT the default)
+        * Expand file system
         * other options can be ignored.
+    8. Update this tool to latest version
+        Optional: depends on internet connectivity
+    9. About raspi-config
 
-Once done go ahead and reboot as suggested.
+Once done go ahead and shutdown:
 
         sudo shutdown -r now
+
+Since its `SSH Server` has been activated, the `Raspberry Pi` can
+now be run `headless'.  Be sure it is connected to the internet
+and powered up.  Determine its IP address (`arp-scan` is a 
+convenient tool for this) and then use your personal computer to
+log on remotely:
+
+        ssh pi@<IPAddress>
 
 
 ### OS Update and Installation of Utilities
 
 Be sure your platform is connected to the internet and if using a
 `Raspberry Pi` be sure it has gone through a reboot after
-`raspi-config` was been executed.
+`raspi-config` was executed.
 
 After logging on as user `pi`<sup>[2](#2username)</sup>
 using your newly set password, clone the relevant
@@ -195,7 +207,7 @@ as a template for the copy command:
 Note that the final slash(`/`) at the end of the first parameter to
 `rsync` is important (so that only the content, not the directory
 itself, gets copied. Presence or absence of the final slash in 
-the second paramter is immaterial.)
+the second parameter is immaterial.)
 
 
 ### Pathagar Book Server
