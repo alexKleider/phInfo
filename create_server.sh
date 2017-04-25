@@ -47,7 +47,7 @@ if [[ -e $fname ]]; then
         echo "You have wisely decided to abort."
     fi
 else
-#    echo "File called $fname not present so safe to proceed."
+    echo "File called $fname not present so safe to proceed."
 
 # The rest of the script is with in this 'else' segment.
 
@@ -90,9 +90,8 @@ chown pi:pi /mnt/Static
 #               library.lan directed to pathagar book server
 #           and rachel.lan directed to static content server.
 
-# The following two directories are created to host content:
-# one for the static content server and the other for the
-# pathagar book server.
+# The following directory is created to host content
+# for the static content server.
 mkdir /var/www/static
 chown pi:pi /var/www/static
 

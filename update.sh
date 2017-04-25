@@ -34,8 +34,8 @@ date
 echo "Just finished installing vim, vim-scripts,"
 echo "...dnsutils (to bring in dig) & screen."
 # The following are only for those who use vim and like my vim defaults.
-cp .vimrc /root/
-cp .vimrc /home/pi/
+cp vimrc /root/.vimrc
+cp vimrc /home/pi/.vimrc
 echo "Copied my custom .vimrc file to /root/ and to /home/pi/."
 
 echo "  |=========================================|"

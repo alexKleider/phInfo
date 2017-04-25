@@ -146,6 +146,11 @@ log on remotely:
 
         ssh pi@<IPAddress>
 
+When using SSH, following a shutdown or a reboot, the client
+teminal sometimes freezes up.  This can be remedied with the
+following 3 key strokes: Enter (the `Enter key`), tilde (`~`),
+period (`.`).
+
 
 ### OS Update and Installation of Utilities
 
@@ -154,10 +159,11 @@ Be sure your platform is connected to the internet and if using a
 `raspi-config` was executed.
 
 After logging on as user `pi`<sup>[2](#2username)</sup>
-using your newly set password, clone the relevant
-repository<sup>[3](#4reponame)</sup>:
+using your newly set password, install `git` and clone the
+relevant repository<sup>[3](#4reponame)</sup>:
 
         cd
+        sudo apt-get -y install git 
         git clone https://github.com/alexKleider/phInfo.git
 
 This brings in the `phInfo` file hierarchy containing this
@@ -169,8 +175,10 @@ If using a `Raspberry Pi`:
 
         sudo ./update.sh
 
-This will take a long time (so be patient!) The script ends
-with a reboot.
+This will take a long time (so be patient!) In the midst of this
+update, a screen will appear asking you to set a `MySQL` "root"
+password. Leave it blank (I think! Not sure about this yet.) ****
+The script ends with a reboot.
 
 For other platforms (with no need for network setup):
 
@@ -189,6 +197,7 @@ go ahead and run the `create_server.sh` script (or
         cd phInfo
         # Examine `create_server.sh` and
         # modify the code to suit.
+        vim create_server.sh
         sudo ./create_server.sh  # or: create_nonPi_server.sh
 
 ### Static Content
@@ -212,35 +221,38 @@ the second parameter is immaterial.)
 
 ### Pathagar Book Server
 
-If your system does not have Python 2.7 installed by default (recent
-versions of Ubuntu- such as 16.4) you must install it as follows:
+#### For Non-RPi users:
+The `Pathagar Book Server` runs on `Python 2.7`.  Some
+platforms are now shipping with `Python 3` as the default
+Python so if this is the case, you will need to install
+`Python 2.7`. The following command will provide the answer:
+
+        python --version
+
+If the response is not "Python 2.7.?", then you'll need to do some
+research as to how to install Python 2.7.  The following might do
+it:
 
         sudo apt-get install python2.7
 
-Once again, log on to your `Raspberry Pi` as user `pi` and issue
-the following commands:
+Again, note that the above does not pertain if you are using
+`raspbian` on the `Raspberry Pi`.
 
-        cd
-        git clone https://github/pathagarbooks/pathagar.git
-        cd pathagar
-        virtualenv -p python2.7 penv
-        source penv/bin/activate  # `deactivate` when done.
-        pip install -r requirements.pip
+#### Setting Up Pathagar:
 
 Choose a database password consisting of alphanumerics, dashes and
 underscores but no other special characters. Make a record of it
-somewhere so as to be sure not to forget it, and then run the
-following commands first substituting your chosen password inside
-the single quotes at the end of the first of these commands:
+somewhere so as to be sure not to forget it. Then log on to your
+`Raspberry Pi` as user `pi` and run the following command after
+first substituting your chosen password inside the single quotes:
 
         export MYSQL_PASSWORD='your-chosen-db-password'
-        ./set_db_password.sh
 
-A number of commands must be run with root privileges so they
-are all bundled into a single script which can be run as
-follows:
+Next source the following script which brings in Pathagar and
+carries out the necessary configurations.  The second last
+command in this script takes a very long time to complete.
 
-        sudo ./ph-setup.sh
+        ./pathagar-setup.sh
 
 ### Add Another Static Content Site
 
