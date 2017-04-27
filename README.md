@@ -103,33 +103,55 @@ by default and for this reason the `Pi` must be run the first time
 with a screen and keyboard attached.
 Be sure the micro SD card is securely inserted and the Raspberry Pi
 is connected via Ethernet cable to the Internet before powering up.
+
+At the beginning of power up- you'll briefly see a message that the
+root file system is being resized.
+
 Log on as user `pi` with password `raspberry` and then run:
         
         raspi-config
 
-As its name implies, this allows you to configure the Pi to suit your
-needs.  Here is an outline of what is recommended or appropriate for
-my use case:
+As its name implies, this allows you to configure the Pi to suit
+your needs. Make selections by using the up and down arrow keys
+and once your choice is highlighted, use the left and right arrow
+keys to pick <Select> (or <Finish>).  Here is an outline of what
+is recommended or appropriate (at least for my use case):
 
     1. Change user password: I've been changing the pw to `pi::root` 
     2. Hostname: I suggest `rpi` (something short)
     3. Boot options:
-        I suggest B1 (or B2)- -> Console
+        We are not installing a GUI so clearly we want to boot 
+        into the CLI (command line interface) so select B1 following
+        which you will be given another list of options and again
+        B1: log in required is recommended.  You could choose B2
+        if you wish.
     4. Localization Options:
-        11 Change Local: en_us.UTF-8  (change from en_gb.UTF-8)
-            (The space bar toggles the selection asterix.)
-        12 Time zone: US, New Pacific
-        13 Keyboard: generic 105-key seems to work
-            English US
-            default
-            no compose key
-    5. Interfacing:
+        11 Change Locale: The default is `en_gb.UTF-8`: suitable
+            for Great Britain.  I choose to scroll down (with the
+            down arrow) until encountering the asterix (*) next 
+            to `en_gb.UTF-8`, toggle with the space bar, and then
+            continue scrolling down until coming to rest and 
+            toggling `en_us.UTF-8`.  Here the behaviour of the
+            interface is a bit different: the `Enter` key moves
+            you forward to the next panel where you again use the
+            down arrow twice to land on `en_us.UTF-8`.  Use the
+            right arrow and then `Enter` over the `<Ok>`.
+        Choose option 4 again.
+        12 Change Time Zone: US, New Pacific
+        13 Change Keyboard Layout: 
+            generic 105-key (the default) seems to work
+            I choose `Other` rather than the default
+            (`English (UK)') and then select 'English (US)'
+            There's no reason to change any of the remaining
+            defaults.
+    5. Interfacing Options:
+        Only the second option is relevant to us:
         P2 SSH: Enable ssh server
+        Be sure to select <Yes>, this is very important.
     6. Overclock: Left in the default state.
     7. Advanced options:
-        * SSH: Enable ssh server (unfortunately NOT the default)
-        * Expand file system
-        * other options can be ignored.
+        A1 Expand file system: This is also very important.
+        None of the other advance options concern us.
     8. Update this tool to latest version
         Optional: depends on internet connectivity
     9. About raspi-config
@@ -138,8 +160,8 @@ Once done go ahead and shutdown:
 
         sudo shutdown -r now
 
-Since its `SSH Server` has been activated, the `Raspberry Pi` can
-now be run `headless'.  Be sure it is connected to the internet
+Since its `SSH Server` has now been activated, the `Raspberry Pi`
+can now be run `headless'.  Be sure it is connected to the internet
 and powered up.  Determine its IP address (`arp-scan` is a 
 convenient tool for this) and then use your personal computer to
 log on remotely:

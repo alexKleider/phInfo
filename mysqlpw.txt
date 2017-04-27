@@ -1,0 +1,102 @@
+
+Right, it actually is the same mysql server. The python virtualenv
+only affects python libraries like the mysql _client_. The server
+itself is completely separate from python and the virtualenv.
+
+If you set a password during the `apt-get install`, you'll have to
+specify it here with `mysql --password=your_password`. If you forgot
+it, I think you can run something like dpkg-reconfigure mysql-server
+to reset it, although google would know for sure.
+
+In my original instructions, I probably did not set a root password,
+so the root user could log in without any extra password. I'll have
+to check the docs on whether setting a root password for mysql is
+good or not. With postgres, setting a password only complicates
+things and does not provide any additional security.
+
+
+https://www.howtoforge.com/setting-changing-resetting-mysql-root-passwords
+
+Recover MySQL root password
+
+You can recover a MySQL database server password with the following
+five easy steps:
+
+Step # 1: Stop the MySQL server process.
+
+Step # 2: Start the MySQL (mysqld) server/daemon process with the
+--skip-grant-tables option so that it will not prompt for a password.
+
+Step # 3: Connect to the MySQL server as the root user.
+
+Step # 4: Set a new root password.
+
+Step # 5: Exit and restart the MySQL server.
+
+
+ Here are the commands you need to type for each step (log in as the
+ root user):
+
+ Step # 1 : Stop the MySQL service:
+
+ # /etc/init.d/mysql stop
+
+ Output:
+
+ Stopping MySQL database server: mysqld.
+
+
+
+Step # 2: Start the MySQL server w/o password:
+
+# mysqld_safe --skip-grant-tables &
+
+Output:
+
+[1] 5988
+Starting mysqld daemon with databases from /var/lib/mysql
+mysqld_safe[6025]: started
+
+Step # 3: Connect to the MySQL server using the MySQL client:
+
+
+# mysql -u root
+
+Output:
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 1 to server version: 4.1.15-Debian_1-log
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql>
+
+
+
+Step # 4: Set a new MySQL root user password:
+
+mysql> use mysql;
+mysql> update user set password=PASSWORD("NEW-ROOT-PASSWORD") where
+User='root';
+mysql> flush privileges;
+mysql> quit
+
+
+
+Step # 5: Stop the MySQL server:
+
+# /etc/init.d/mysql stop
+
+Output:
+
+Stopping MySQL database server: mysqld
+STOPPING server from pid file /var/run/mysqld/mysqld.pid
+mysqld_safe[6186]: ended
+
+[1]+  Done                    mysqld_safe --skip-grant-tables
+
+Start the MySQL server and test it:
+
+# /etc/init.d/mysql start
+# mysql -u root -p
+
