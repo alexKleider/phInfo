@@ -4,16 +4,16 @@
 # the 'stock' settings.py:
 
 # Agreed on the following:
-DEBUG = False
+DEBUG = True
 TIME_ZONE = 'America/Los_Angeles'
 
 # In my version, not mentioned in yours:
-STATIC_URL = '/library/static/'
-FORCE_SCRIPT_NAME = '/library'
-LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
+# STATIC_URL = '/library/static/'
+# FORCE_SCRIPT_NAME = '/library'
+# LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
 
 # In your version, not mentioned in what I had:
-STATIC_ROOT='/home/ubuntu/staticfiles'  # 'ubuntu'????
+STATIC_ROOT='/home/pi/pathagar/staticfiles'  # 'pi'????
 MEDIA_ROOT='/var/www/pathagar_media'
 
 # Your version extends what I already had => 1 question:

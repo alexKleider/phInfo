@@ -6,7 +6,7 @@
 
 apt-get -y install python2.7
 apt-get -y install git apache2
-apt-get -y install python-pip python-virtualenv
+apt-get -y install python-pip python-virtualenv libapache2-mod-wsgi
 apt-get -y install mysql-server
 apt-get -y install libmysqlclient-dev libxml2-dev libxslt1-dev
 apt-get -y install python-dev

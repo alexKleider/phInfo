@@ -15,7 +15,7 @@ date
 echo "Just finished installing git, iw, hostapd, dnsmasq, apache2"
 
 # If planning to install Pathagar-  (estimate 3 minites)
-apt-get -y install python-pip python-virtualenv
+apt-get -y install python-pip python-virtualenv libapache2-mod-wsgi
 #     if planning to use mysql rather than sqlite3:
 apt-get -y install mysql-server
 #     must circumnavigate missing mysql_config errors and

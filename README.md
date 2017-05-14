@@ -199,7 +199,9 @@ If using a `Raspberry Pi`:
 
 This will take a long time (so be patient!) In the midst of this
 update, a screen will appear asking you to set a `MySQL` "root"
-password. Leave it blank (I think! Not sure about this yet.) ****
+password. Leave it blank- do this by hitting the down arrow so
+that `<Ok>` is highlighted and then hit `Enter`.
+(I think! Not sure about this yet.) ****
 The script ends with a reboot.
 
 For other platforms (with no need for network setup):
