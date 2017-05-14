@@ -270,15 +270,20 @@ somewhere so as to be sure not to forget it. Then log on to your
 `Raspberry Pi` as user `pi` and run the following command after
 first substituting your chosen password inside the single quotes:
 
-        export MYSQL_PASSWORD='your-chosen-db-password'
+        export MYSQL_PASSWORD='db-password'
 
 Next source the following script which brings in Pathagar and
-carries out the necessary configurations.  The second last
-command in this script takes a very long time to complete.
+carries out the necessary configurations.  Be patient since this
+script takes a very long time (largely because of "pip install
+-r requirements.pip".)
 
         ./pathagar-setup.sh
 
 ### Add Another Static Content Site
+
+Still need to document this.
+
+
 
 
 <div></div>
