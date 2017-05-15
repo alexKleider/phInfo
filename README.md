@@ -193,18 +193,17 @@ This brings in the `phInfo` file hierarchy containing this
 
         cd phInfo
 
-If using a `Raspberry Pi`:
+##### If using a `Raspberry Pi`:
 
         sudo ./update.sh
 
 This will take a long time (so be patient!) In the midst of this
 update, a screen will appear asking you to set a `MySQL` "root"
 password. Leave it blank- do this by hitting the down arrow so
-that `<Ok>` is highlighted and then hit `Enter`.
-(I think! Not sure about this yet.) ****
-The script ends with a reboot.
+that `<Ok>` is highlighted and then hit `Enter`.  You will have
+to do this three times!  The script ends with a reboot.
 
-For other platforms (with no need for network setup):
+##### For other platforms (with no need for network setup):
 
         sudo ./dependencies.sh
 
@@ -277,7 +276,12 @@ carries out the necessary configurations.  Be patient since this
 script takes a very long time (largely because of "pip install
 -r requirements.pip".)
 
-        ./pathagar-setup.sh
+        ./phInfo/pathagar-setup.sh
+
+Near the end of the script you will be asked if you would like
+to define a superuser.  Answer 'yes' and provide the requested
+information.  It is suggested that you use the same user ('pi'.)
+
 
 ### Add Another Static Content Site
 

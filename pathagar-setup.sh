@@ -30,7 +30,7 @@ pip install -r requirements.pip
 
 ## Prepare apache2 for pathagar:
 sudo a2enmod wsgi
-sudo a2dissite *default*
+sudo a2dissite 000-default
 sudo a2ensite ph-site
 sudo mkdir /var/www/pathagar_media
 sudo chown www-data:www-data /var/www/pathagar_media

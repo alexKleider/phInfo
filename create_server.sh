@@ -1,6 +1,6 @@
 # File: create_server.sh
 
-# File last modified Sun Mar  5 16:54:09 PST 2017
+# File last modified Sun May 14 08:45:10 PDT 2017
 
 # Before sourcing this file:
 
@@ -22,9 +22,8 @@
 #  unsuccessful getting protected wifi working.
 
 #  3: interfaces.static is provided in case you want the eth0
-#  interface to have a static address. See line #51 [`i]
-#  If you do, you'll probably also want to edit interfaces.static
-#  to suit your own network.
+#  interface to have a static address.  If you do, you'll probably
+#  also want to edit interfaces.static to suit your own network.
 
 #  4: Near the end of this file, you'll see comments pertaining to
 #  an entry in the `/etc/fstab` file; specifically `LABEL=...`. You

@@ -40,6 +40,6 @@ echo "Copied my custom .vimrc file to /root/ and to /home/pi/."
 
 echo "  |=========================================|"
 echo "  | Update completed- will now do a reboot. |"
-echo"   |=========================================|"
+echo "  |=========================================|"
 shutdown -r now
 
