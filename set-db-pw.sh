@@ -12,6 +12,8 @@
 
 sudo mysql <<EOF
 CREATE DATABASE IF NOT EXISTS pathagar CHARACTER SET utf8 COLLATE utf8_bin;
+drop user pathagar;
+flush privileges;
 CREATE USER "pathagar" IDENTIFIED BY "MYSQL_PASSWORD";
 GRANT ALL PRIVILEGES ON pathagar.* TO "pathagar";
 FLUSH PRIVILEGES;
