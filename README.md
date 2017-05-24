@@ -100,16 +100,17 @@ delete the raspbian image from your personal machine if you wish.
 
 Unfortunately `raspbian` is not shipped with the `ssh server` active
 by default and for this reason the `Pi` must be run the first time
-with a screen and keyboard attached.
-Be sure the micro SD card is securely inserted and the Raspberry Pi
-is connected via Ethernet cable to the Internet before powering up.
+with a screen and keyboard attached.  Be sure the micro SD card is
+securely inserted.
 
-At the beginning of power up- you'll briefly see a message that the
-root file system is being resized.
+At the beginning of power up you'll briefly see a message that the
+root file system is being resized.  (Whether it is or not is not 
+clear to me because resizing comes up later again at the end of
+`raspi-config`.)
 
 Log on as user `pi` with password `raspberry` and then run:
         
-        raspi-config
+        sudo raspi-config
 
 As its name implies, this allows you to configure the Pi to suit
 your needs. Make selections by using the up and down arrow keys
@@ -120,27 +121,27 @@ is recommended or appropriate (at least for my use case):
     1. Change user password: I've been changing the pw to `pi::root` 
     2. Hostname: I suggest `rpi` (something short)
     3. Boot options:
-        We are not installing a GUI so clearly we want to boot 
-        into the CLI (command line interface) so select B1 following
-        which you will be given another list of options and again
-        B1: log in required is recommended.  You could choose B2
-        if you wish.
+        We are not installing a GUI so select B1 (boot into the
+        command line interface) following which you will be given
+        another list of options and again select B1 (log in
+        required.)
     4. Localization Options:
         11 Change Locale: The default is `en_gb.UTF-8`: suitable
-            for Great Britain.  I choose to scroll down (with the
-            down arrow) until encountering the asterix (*) next 
-            to `en_gb.UTF-8`, toggle with the space bar, and then
-            continue scrolling down until coming to rest and 
-            toggling `en_us.UTF-8`.  Here the behaviour of the
-            interface is a bit different: the `Enter` key moves
-            you forward to the next panel where you again use the
-            down arrow twice to land on `en_us.UTF-8`.  Use the
-            right arrow and then `Enter` over the `<Ok>`.
+            for Great Britain.  For the American locale, scroll down
+            (with the down arrow) until encountering the asterix (*)
+            next to `en_gb.UTF-8`, toggle with the space bar, and
+            then continue scrolling down until coming to
+            `en_us.UTF-8`.  Toggle with the space bar again so the
+            asterix appears. Here the behaviour of the interface is
+            a bit different: the `Enter` key moves you forward to
+            the next panel where you again use the down arrow twice
+            to land on `en_us.UTF-8`.  Use the right arrow and then
+            `Enter` over the `<Ok>`.
         Choose option 4 again.
         12 Change Time Zone: US, New Pacific
         13 Change Keyboard Layout: 
             generic 105-key (the default) seems to work
-            I choose `Other` rather than the default
+            I chose `Other` rather than the default
             (`English (UK)') and then select 'English (US)'
             There's no reason to change any of the remaining
             defaults.
@@ -158,9 +159,9 @@ is recommended or appropriate (at least for my use case):
 
 Once done go ahead and shutdown:
 
-        sudo shutdown -r now
+        sudo shutdown -h now
 
-Since its `SSH Server` has now been activated, the `Raspberry Pi`
+Since its `SSH Server` has been activated, the `Raspberry Pi`
 can now be run `headless'.  Be sure it is connected to the internet
 and powered up.  Determine its IP address (`arp-scan` is a 
 convenient tool for this) and then use your personal computer to
@@ -278,10 +279,12 @@ script takes a very long time (largely because of "pip install
 
         ./phInfo/pathagar-setup.sh
 
-Near the end of the script you will be asked if you would like
-to define a superuser.  Answer 'yes' and provide the requested
-information.  It is suggested that you use the same user ('pi'.)
+        python manage.py createsuperuser
 
+#### Adding Content
+
+Consult the README file for instructions how to load content once the
+pathagar server is running.
 
 ### Add Another Static Content Site
 
