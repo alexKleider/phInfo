@@ -177,13 +177,15 @@ period (`.`).
 
 ### OS Update and Installation of Utilities
 
-Be sure your platform is connected to the internet and if using a
-`Raspberry Pi` be sure it has gone through a reboot after
-`raspi-config` was executed.
-
+Be sure your platform is connected to the internet.
 After logging on as user `pi`<sup>[2](#2username)</sup>
-using your newly set password, install `git` and clone the
-relevant repository<sup>[3](#4reponame)</sup>:
+using your newly set password, it would be wise as a first step
+to update using the following command::
+
+        sudo apt-get update && apt-get upgrade
+
+install `git` and clone the
+relevant repository<sup>[3](#3reponame)</sup>:
 
         cd
         sudo apt-get -y install git 
@@ -194,35 +196,47 @@ This brings in the `phInfo` file hierarchy containing this
 
         cd phInfo
 
-##### If using a `Raspberry Pi`:
+There are a number of utilities and customizations that are not
+essential but I find them useful to have; the following script
+brings them in::
 
-        sudo ./update.sh
+        ./favourites.sh
 
-This will take a long time (so be patient!) In the midst of this
-update, a screen will appear asking you to set a `MySQL` "root"
-password. Leave it blank- do this by hitting the down arrow so
-that `<Ok>` is highlighted and then hit `Enter`.  You will have
-to do this three times!  The script ends with a reboot.
 
-##### For other platforms (with no need for network setup):
+##### If using a `Raspberry Pi`
+
+If using a Raspberry Pi there is some set up needed for the
+access point and networking in general. These are all done by
+commands in the pi-networking.sh script but before running it
+have a look through its initial comments; you will probably
+want to edit some of the files mentioned::
+
+        vim pi-networking.sh
+        ./pi-networking.sh
+
+Even if you are not using a `Raspberry Pi`, it would probably
+be wise to look through the above script so see what is being
+done so you can get an idea what might be needed on your platform.
+
+##### Bring in dependencies
 
         sudo ./dependencies.sh
+
+This will take a long time (so be patient!) If at the end of
+this script you are asked to set a `MySQL` "root" password,
+leave it blank- do this by hitting the down arrow so
+that `<Ok>` is highlighted and then hit `Enter`.  You may have
+to do this more than once!  The script ends with a reboot.
 
 ### Server Software Installation
 
 Log on again, `cd` into the project directory (`phInfo`) and then
 have a look through the initial comments in `create_server.sh`.
-If not using a `Raspberry Pi`, substitute `create_nonPi_server.sh`
-for `create_server.sh`.
-Once you've finished editing files to suit your own use case,
-go ahead and run the `create_server.sh` script (or
-`create_nonPi_server.sh` as the case may be.)
+Once you've finished editing to suit your own use case,
+go ahead and run the script::
 
         cd phInfo
-        # Examine `create_server.sh` and
-        # modify the code to suit.
-        vim create_server.sh
-        sudo ./create_server.sh  # or: create_nonPi_server.sh
+        sudo ./create_server.sh
 
 ### Static Content
 
@@ -242,27 +256,12 @@ Note that the final slash(`/`) at the end of the first parameter to
 itself, gets copied. Presence or absence of the final slash in 
 the second parameter is immaterial.)
 
+If your server is the `Raspberry Pi` set up as described here,
+then entering "rachel.lan" in the URL window of a browser running
+on a wifi client machine will result in your content being displayed.
+
 
 ### Pathagar Book Server
-
-#### For Non-RPi users:
-The `Pathagar Book Server` runs on `Python 2.7`.  Some
-platforms are now shipping with `Python 3` as the default
-Python so if this is the case, you will need to install
-`Python 2.7`. The following command will provide the answer:
-
-        python --version
-
-If the response is not "Python 2.7.?", then you'll need to do some
-research as to how to install Python 2.7.  The following might do
-it:
-
-        sudo apt-get install python2.7
-
-Again, note that the above does not pertain if you are using
-`raspbian` on the `Raspberry Pi`.
-
-#### Setting Up Pathagar:
 
 Choose a database password consisting of alphanumerics, dashes and
 underscores but no other special characters. Make a record of it
@@ -291,8 +290,6 @@ pathagar server is running.
 Still need to document this.
 
 
-
-
 <div></div>
 ### FOOTNOTES
 
@@ -302,16 +299,15 @@ Still need to document this.
     in the most recent (v3) models of the `Raspberry
     Pi` but we've not tested this.
 
-<a name="2username">3</a>.
+<a name="2username">2</a>.
 
     The scripts assume user name `pi` and that you are cloning the
     `phInfo` repository and `pathagar` into `/home/pi`.  If you decide
     on a different user or use of a different installation directory,
     the scripts will have to be modified accordingly
 
-<a name="3reponame">4</a>.
+<a name="3reponame">3</a>.
 
     The repository name may change in which case all references to
-    `phInfo` will need to be changed to `olpcSF` (or what ever it
-    becomes.)
+    `phInfo` will need to be changed.
 

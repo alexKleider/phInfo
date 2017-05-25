@@ -5,6 +5,10 @@
 # Run this script after installing raspbian and running raspi-config. 
 # Last updated Sun Mar  5 16:44:26 PST 2017
 
+set -o errexit  # ends if an error is returned.
+set -o pipefail # pipe failure causes an error.
+set -o nounset  # ends if an undefined variable is encountered.
+
 echo "updating, upgrading and installing more software....."
 # The echo 'q' | part of command below is to overcome the problem
 # described in file 'dealwith'.
