@@ -182,10 +182,17 @@ After logging on as user `pi`<sup>[2](#2username)</sup>
 using your newly set password, it would be wise as a first step
 to update using the following command::
 
-        sudo apt-get update && apt-get upgrade
+        sudo apt-get -y update && apt-get -y upgrade
 
-install `git` and clone the
-relevant repository<sup>[3](#3reponame)</sup>:
+There are a number of utilities and customizations that are not
+essential but I find them useful to have; the following script
+brings them in::
+
+        ./favourites.sh
+
+The following sequence of commands ensure that you are
+in the home directory of user `pi`, install `git` and then
+clone the piInfo repository<sup>[3](#3reponame)</sup>::
 
         cd
         sudo apt-get -y install git 
@@ -195,12 +202,6 @@ This brings in the `phInfo` file hierarchy containing this
 `README` as well as required scripts and files.
 
         cd phInfo
-
-There are a number of utilities and customizations that are not
-essential but I find them useful to have; the following script
-brings them in::
-
-        ./favourites.sh
 
 
 ##### If using a `Raspberry Pi`
