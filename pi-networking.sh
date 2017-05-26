@@ -19,6 +19,7 @@
 #  you plan to use.  You'll want to avoid conflicts.
 #  2b: The file hostapd.conf.wpa is still a work in progress:
 #  I've been unsuccessful getting protected wifi working.
+# https://pimylifeup.com/raspberry-pi-wireless-access-point/
 
 #  3: interfaces.static is provided in case you want the eth0
 #  interface to have a static address.  If you do, you'll probably
@@ -30,7 +31,7 @@ set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
 set -o nounset  # ends if an undefined variable is encountered.
 
-sudo apt-get -y install iw, hostapd, dnsmasq
+sudo apt-get -y install iw hostapd dnsmasq
 
 if [ -a /etc/default/hostapd.original ]
 then
@@ -41,13 +42,12 @@ else
     sudo cp hostapd /etc/default/hostapd
 fi
 
-if [ -a /etc/hostapd/hostapd.conf.original ]
-# Need to check that /etc/hostapd/hostapd.conf initially exists.
+if [ -a /etc/hostapd/hostapd.conf ]
+# Note: /etc/hostapd/hostapd.conf doesn't initially exist.
 then
-    echo "/etc/hostapd/hostapd.conf.original already exists so we"
+    echo "/etc/hostapd/hostapd.conf already exists so we"
     echo "assume hostapd.conf has already been copied over."
 else
-    sudo mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.original
     sudo cp hostapd.conf /etc/hostapd/hostapd.conf
 fi
 
@@ -65,7 +65,7 @@ else
     # sudo cp interfaces.tatic /etc/network/interfaces
 fi
 
-if [ -a /etc/dnsmasq.conf.original]
+if [ -a /etc/dnsmasq.conf.original ]
 then
     echo "/etc/dnsmasq.conf.original exists so we assume"
     echo "dnsmasq.conf has already been copied over."
@@ -82,29 +82,11 @@ fi
 
 if [ -a /etc/sysctl.conf.original ]
 then
+  echo "/etc/sysctl.conf.original exists so we assume"
+  echo "net.ipv4.ip_forward=1 has been uncommented."
 else
     sudo cp /etc/sysctl.conf /etc/sysctl.conf.original
     # Modify /etc/sysctl.conf: uncomment net.ipv4.ip_forward=1
     sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
-fi
-
-# echo "Setting up the firewall rules."
-# If an error concerning firewall (iptables) comes up, it's probably
-# because there was no reboot after raspi-config or update.sh.
-
-if [ -a /home/pi/iptables ]
-then
-    echo "/home/pi/iptables exists so we assume the iptables "
-    echo "have already been manipulated."
-else
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
-    iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
-
-    echo "The firewall rules just set and about to be saved are:"
-    iptables -t nat -S
-    iptables -S
-    sh -c "iptables-save > /etc/iptables.ipv4.nat"
-    echo `iptables -L` > /home/pi/iptables
 fi
 

@@ -207,16 +207,21 @@ This brings in the `phInfo` file hierarchy containing this
 ##### If using a `Raspberry Pi`
 
 If using a Raspberry Pi there is some set up needed for the
-access point and networking in general. These are all done by
-commands in the pi-networking.sh script but before running it
-have a look through its initial comments; you will probably
-want to edit some of the files mentioned::
+access point and networking in general. These are done by
+commands in the pi-networking.sh and the pi-iptables.sh
+script. There must be a reboot between the two.
+But before beginning have a look through the initial comments
+in pi-networking; you will probably
+want to edit some of the files mentioned.
 
-        vim pi-networking.sh
         ./pi-networking.sh
+        sudo shutdown -r now
+        # Wait a few minutes before loging on again.
+        cd phInfo
+        ./pi-iptables.sh
 
-Even if you are not using a `Raspberry Pi`, it would probably
-be wise to look through the above script so see what is being
+Even if you are not using a `Raspberry Pi`, it would probably be 
+wise to look through the above two scripts so see what is being
 done so you can get an idea what might be needed on your platform.
 
 ##### Bring in dependencies
