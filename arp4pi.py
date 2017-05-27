@@ -50,10 +50,13 @@ expanded = decoded.expandtabs()
 lines = expanded.split("\n")
 end_of_ip = 16
 end_of_mac = 34
+end_of_first_half = 8
+typical_first_half = "b8:27:eb"
 
 found = []
 
 for line in lines:
+    found = False
     if len(line) >= end_of_mac:
         ip = line[:end_of_ip].strip()
         mac = line[end_of_ip:end_of_mac].strip()
@@ -61,7 +64,9 @@ for line in lines:
         for recognized_mac, description in mac_w_id:
             if mac == recognized_mac:
                 print("{} @ {}".format(description, ip))
-#       print(line)
+                found = True
+        if ((not found) and 
+            (mac[:end_of_first_half] == typical_first_half)):
+            print("There is probably a Pi at {}".format(ip))
 
-#print(expanded)
 
