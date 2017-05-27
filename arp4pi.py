@@ -15,12 +15,25 @@ Development was inspired by the Raspberry Pi
 related projects.
 
 To be useful, you'll have to customize by editing:
-1. the mac_w_id variable (replace with your own entries)
-2. the parameters of arp-scan that appear in the
-subprocess.check_output() method (to match your own network.)
+1. the parameters of arp-scan that appear in the
+subprocess.check_output() method to match your own
+network[1].
+2. the mac_w_id variable (replace with your own entries)[1].
+
+[1] Adjust the following two variables to suit your own
+network:
+     interface = "eth0"  # If your personal host is not using wifi.
+     ip_range = "192.168.0.0/24"  # Most home networks.
+
+[2] Provision is made to recognize the Pi by the first half
+of its interface's Mac Address so you will probably get the
+information you need with no modification of the mac_w_id.
 """
 
 import subprocess
+
+interface = "wlan0"  # Change to "eth0" if you're using ethernet.
+ip_range = "10.0.0.0/24"  # Change to "192.168.0.0/24" or whatever.
 
 mac_w_id = (  # MacAddress, Description
     ("b8:27:eb:5a:2d:97", "Heavy Metal Case- RPi2b"),
@@ -35,8 +48,8 @@ mac_w_id = (  # MacAddress, Description
     ("b8:27:eb:53:a3:51", "Vilros Clear Case- RPi3b (Pi3-0)"),
     ("b8:27:eb:06:f6:04", "Vilros Clear Case- RPi3b (Pi3-0)"),
 
-    ("b8:27:eb:da:2a:98", "Vilros Clear Case- RPi3b (Pi3-1)"),
-    ("b8:27:eb:8f:7f:cd", "Vilros Clear Case- RPi3b (Pi3-1)"),
+#   ("b8:27:eb:da:2a:98", "Vilros Clear Case- RPi3b (Pi3-1)"),
+#   ("b8:27:eb:8f:7f:cd", "Vilros Clear Case- RPi3b (Pi3-1)"),
 
     ("00:21:6b:a1:81:44", "My Laptop"),
 
