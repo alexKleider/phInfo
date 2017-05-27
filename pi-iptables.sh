@@ -17,6 +17,9 @@ echo "Setting up the firewall rules."
 #   sudo service dhcpcd restart
 #   sudo ifdown wlan0; sudo ifup wlan0
 #   sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+# But: unlikely according to a comment here:
+# https://pimylifeup.com/raspberry-pi-wireless-access-point/#comment-3679
+# Conclusion: a reboot does seem to be necessary.
 
 if [ -a /home/pi/iptables ]
 then

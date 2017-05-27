@@ -135,13 +135,3 @@ else
     sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
 fi
 
-##########################################################
-#                                                        #
-# Rather than doing a reboot between this script and     #
-# `pi-iptables.sh`, the following commands might work:   #
-#    sudo service dhcpcd restart                         #
-#    sudo ifdown wlan0; sudo ifup wlan0                  #
-#    sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward" #
-#                                                        #
-##########################################################
-

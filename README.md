@@ -22,12 +22,14 @@ The goal is to end up with a device that provides:
 ## The Process
 
 The process is divided up into the following steps, the first
-three of which are specific to the `Raspberry Pi`:
+three and the forth of which are specific to the `Raspberry Pi`:
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
     * Initial RPi Configuration (`raspi-config`)
     * OS Update and Installation of Utilities
+    * Network Setup for `Raspberry Pi`
+    * Bring in Dependencies
     * Server Software Installation
     * Static Content
     * Pathagar Book Server
@@ -163,9 +165,8 @@ Once done go ahead and shutdown:
 
 Since its `SSH Server` has been activated, the `Raspberry Pi`
 can now be run `headless'.  Be sure it is connected to the internet
-and powered up.  Determine its IP address (`arp-scan` is a 
-convenient tool for this) and then use your personal computer to
-log on remotely:
+and powered up.  Determine its IP address <sup>[2](#2arpscan)</sup>
+and then use your personal computer to log on remotely:
 
         ssh pi@<IPAddress>
 
@@ -178,7 +179,7 @@ period (`.`).
 ### OS Update and Installation of Utilities
 
 Be sure your platform is connected to the internet.
-After logging on as user `pi`<sup>[2](#2username)</sup>
+After logging on as user `pi`<sup>[3](#3username)</sup>
 using your newly set password, it would be wise as a first step
 to update using the following command::
 
@@ -192,7 +193,7 @@ brings them in::
 
 The following sequence of commands ensure that you are
 in the home directory of user `pi`, install `git` and then
-clone the piInfo repository<sup>[3](#3reponame)</sup>::
+clone the piInfo repository<sup>[4](#4reponame)</sup>::
 
         cd
         sudo apt-get -y install git 
@@ -204,7 +205,7 @@ This brings in the `phInfo` file hierarchy containing this
         cd phInfo
 
 
-##### If using a `Raspberry Pi`
+##### Network Setup for `Raspberry Pi`
 
 If using a Raspberry Pi there is some set up needed for the
 access point and networking in general. This is done by
@@ -214,6 +215,7 @@ But before beginning have a look through the initial
 comments in pi-networking; you will probably want to edit
 some of the files mentioned.
 
+        # Edit pi-networking.sh
         ./pi-networking.sh
         sudo shutdown -r now
         # Wait a few minutes before loging on again.
@@ -288,8 +290,8 @@ script takes a very long time (largely because of "pip install
 
 #### Adding Content
 
-Consult the README file for instructions how to load content once the
-pathagar server is running.
+Consult the README file for instructions how to load books (and
+other library content) once the pathagar server is running.
 
 ### Add Another Static Content Site
 
@@ -305,14 +307,23 @@ Still need to document this.
     in the most recent (v3) models of the `Raspberry
     Pi` but we've not tested this.
 
-<a name="2username">2</a>.
+<a name="2arpscan">2</a>.
+
+    There are various methods of discovering the IP address of the
+    `Raspberry Pi`.  Use of the `arp-scan` utility is one.  The
+    included `arp4pi.py` script uses `arp-scan` and might be useful
+    to you but it will have to be customized to suit your own network
+    and the devices you own.  Edit `arp4pi.py` and read its docstring
+    for further details.
+
+<a name="3username">3</a>.
 
     The scripts assume user name `pi` and that you are cloning the
     `phInfo` repository and `pathagar` into `/home/pi`.  If you decide
     on a different user or use of a different installation directory,
     the scripts will have to be modified accordingly
 
-<a name="3reponame">3</a>.
+<a name="4reponame">4</a>.
 
     The repository name may change in which case all references to
     `phInfo` will need to be changed.
