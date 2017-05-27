@@ -10,6 +10,7 @@
 #          dnsmasq.conf
 #          hostapd
 #          hostapd.conf
+#          hostapd.conf.protected  (still a work in progress)
 #          interfaces.dhcp
 #          interfaces.static
 
@@ -37,6 +38,7 @@ set -o nounset  # ends if an undefined variable is encountered.
 
 sudo apt-get -y install hostapd dnsmasq iw
 
+## /etc/dhcpcd.conf
 if [ -a /etc/dhcpcd.conf.original ]
 then
     echo "/etc/dhcpcd.conf.original exists so we assume the extra"
@@ -52,26 +54,10 @@ else
     fi
     echo "Ensure (denyinterfaces wlan) line is in /etc/dhcpcd.conf"
     sudo echo "denyinterfaces wlan" >> /etc/dhcpcd.conf
+    # Above command covers us whether or not file existed.
 fi
 
-if [ -a /etc/default/hostapd.original ]
-then
-    echo "/etc/default/hostapd.original already exists so we"
-    echo "can assume that hostapd has alreacy been copied over."
-else
-    sudo mv /etc/default/hostapd /etc/default/hostapd.original
-    sudo cp hostapd /etc/default/hostapd
-fi
-
-if [ -a /etc/hostapd/hostapd.conf ]
-# Note: /etc/hostapd/hostapd.conf doesn't initially exist.
-then
-    echo "/etc/hostapd/hostapd.conf already exists so we"
-    echo "assume hostapd.conf has already been copied over."
-else
-    sudo cp hostapd.conf /etc/hostapd/hostapd.conf
-fi
-
+## /etc/network/interfaces
 if [ -a /etc/network/interfaces.original ]
 then
     echo "/etc/network/interfaces.original already exists"
@@ -83,9 +69,46 @@ else
     sudo cp interfaces.dhcp /etc/network/interfaces.dhcp
     # Only one of the next two lines should be uncommented:
     sudo cp interfaces.dhcp /etc/network/interfaces
-    # sudo cp interfaces.tatic /etc/network/interfaces
+    # sudo cp interfaces.static /etc/network/interfaces
 fi
 
+## /etc/default/hostapd
+if [ -a /etc/default/hostapd.original ]
+then
+    echo "/etc/default/hostapd.original already exists so we"
+    echo "can assume that hostapd has alreacy been modified"
+else
+    sudo cp /etc/default/hostapd /etc/default/hostapd.original
+    sudo sed -i -r "s/\#DEAMON_CONF=\"\"/DEAMON_CONF=\"\/etc\/hostapd\/hostapd.conf\"/g" /etc/default/hostapd
+fi
+
+## /etc/init.d/hostapd
+if [ -a /etc/init.d/hostapd.original ]
+then
+    echo "/etc/init.d/hostapd.original already exists so we"
+    echo "/etc/init.d/hostapd has been modified"
+else
+    sudo cp /etc/init.d/hostapd /etc/init.d/hostapd.original
+    sudo sed -i -r "s/DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
+fi
+
+## /etc/hostapd/hostapd.conf
+if [ -a /etc/hostapd/hostapd.conf.original ]
+# Note: Don't know if /etc/hostapd/hostapd.conf initially exist.
+then
+    echo "/etc/hostapd/hostapd.conf.original already exists so we"
+    echo "assume hostapd.conf has already been copied over."
+else
+    if [ -a /etc/hostapd/hostapd.conf ]
+    then
+        sudo mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.original
+    else
+        sudo touch /etc/hostapd/hostapd.conf.original
+    fi
+    sudo cp hostapd.conf /etc/hostapd/hostapd.conf
+fi
+
+## /etc/dnsmasq.conf
 if [ -a /etc/dnsmasq.conf.original ]
 then
     echo "/etc/dnsmasq.conf.original exists so we assume"
@@ -101,6 +124,7 @@ fi
 #               library.lan directed to pathagar book server
 #           and rachel.lan directed to static content server.
 
+## /etc/sysctl.conf
 if [ -a /etc/sysctl.conf.original ]
 then
   echo "/etc/sysctl.conf.original exists so we assume"
@@ -110,4 +134,14 @@ else
     # Modify /etc/sysctl.conf: uncomment net.ipv4.ip_forward=1
     sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
 fi
+
+##########################################################
+#                                                        #
+# Rather than doing a reboot between this script and     #
+# `pi-iptables.sh`, the following commands might work:   #
+#    sudo service dhcpcd restart                         #
+#    sudo ifdown wlan0; sudo ifup wlan0                  #
+#    sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward" #
+#                                                        #
+##########################################################
 

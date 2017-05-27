@@ -207,12 +207,12 @@ This brings in the `phInfo` file hierarchy containing this
 ##### If using a `Raspberry Pi`
 
 If using a Raspberry Pi there is some set up needed for the
-access point and networking in general. These are done by
+access point and networking in general. This is done by
 commands in the pi-networking.sh and the pi-iptables.sh
-script. There must be a reboot between the two.
-But before beginning have a look through the initial comments
-in pi-networking; you will probably
-want to edit some of the files mentioned.
+scripts. There must be a reboot between the two.
+But before beginning have a look through the initial
+comments in pi-networking; you will probably want to edit
+some of the files mentioned.
 
         ./pi-networking.sh
         sudo shutdown -r now

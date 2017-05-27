@@ -3,10 +3,20 @@
 # File: pi-iptables.sh
 
 echo "Setting up the firewall rules."
-# If an error concerning firewall (iptables) comes up, it's probably
-# because there was no reboot after raspi-config or update.sh or
-# modification (uncommenting the "net.ipv4.ip_forward=1" line) of 
-# the /etc/sysctl.conf file.
+# An error concerning firewall (iptables) comes up:
+# The problem is solved with a reboot.
+# It may have to do with one or more of the following:
+#   raspi-config, 
+#   update.sh or
+#   modification (uncommenting the "net.ipv4.ip_forward=1" line)
+#       of the /etc/sysctl.conf file.  
+# Hence the reason pi-iptables.sh has been split off from
+# pi-networking.sh
+# 
+# A solution might be to do the following:
+#   sudo service dhcpcd restart
+#   sudo ifdown wlan0; sudo ifup wlan0
+#   sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 
 if [ -a /home/pi/iptables ]
 then
@@ -23,5 +33,7 @@ else
     echo "The firewall rules just set and about to be saved are:"
     sudo iptables -S
     sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
+    # Creation of /home/pi/iptables leaves an indication
+    # that iptables have already been set up:
     sudo sh -c "iptables-save > /home/pi/iptables"
 fi
