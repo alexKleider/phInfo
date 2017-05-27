@@ -5,8 +5,8 @@
 
 # BEFORE RUNNING THIS SCRIPT:
 #
-#  1: be sure it and it's dependencies are in the cwd.
-#      Dependencies are:
+#  1: be sure it and the files on which it depends are in the cwd.
+#      Files needed are:
 #          dnsmasq.conf
 #          hostapd
 #          hostapd.conf
@@ -31,7 +31,28 @@ set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
 set -o nounset  # ends if an undefined variable is encountered.
 
-sudo apt-get -y install iw hostapd dnsmasq
+# hostapd: pkg allowing use of Wi-Fi as an access point (AP.)
+# dnsmasq: pkg providing dhcp and dns services.
+# iw: tool for configuring Linux wireless devices.
+
+sudo apt-get -y install hostapd dnsmasq iw
+
+if [ -a /etc/dhcpcd.conf.original ]
+then
+    echo "/etc/dhcpcd.conf.original exists so we assume the extra"
+    echo "line (denyinterfaces wlan) has been added to dhcpcd.conf."
+else
+    if [ -a /etc/dhcpcd.conf ]
+    then
+        echo "Saving a copy of /etc/dhcpcd.conf to /etc/dhcpcd.conf.original"
+        sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.original
+    else
+        echo "Creating /etc/dhcpcd.conf.original."
+        sudo touch /etc/dhcpcd.conf.original
+    fi
+    echo "Ensure (denyinterfaces wlan) line is in /etc/dhcpcd.conf"
+    sudo echo "denyinterfaces wlan" >> /etc/dhcpcd.conf
+fi
 
 if [ -a /etc/default/hostapd.original ]
 then
