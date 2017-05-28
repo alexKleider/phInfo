@@ -12,3 +12,5 @@ apt-get -y install python-pip python-virtualenv
 apt-get -y install python-dev libapache2-mod-wsgi
 apt-get -y install libmysqlclient-dev libxml2-dev libxslt1-dev
 apt-get -y install mysql-server
+
+shutdown -r now

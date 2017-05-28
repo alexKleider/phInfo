@@ -4,6 +4,10 @@
 
 # Before sourcing this file:
 #  1. Adjust the ap_ip variable as needed to suit your situation.
+#  This won't be necessary unless you have elected to change
+#  the Access Point's IP address in which case corresponding 
+#  changes need to be made in dnsmasq.conf and interfaces
+#  and possibly elsewhere as well.)
 #  2. Near the end, you'll see comments pertaining to an entry
 #  in the `/etc/fstab` file; specifically `LABEL=Static`. You
 #  may want to change the `LABEL` to something other than
@@ -21,7 +25,9 @@ then
     echo "additions have already been made to the file."
 else
     sudo cp /etc/hosts /etc/hosts.original
-    sudo echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts
+    $ echo "$ap_ip  library library.lan rachel rachel.lan"|
+        sudo tee -a /etc/hosts >/dev/null
+    echo "Added line to /etc/hosts."
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
 # in /etc/hosts will direct wifi dhcp clients to server.
@@ -36,7 +42,9 @@ then
     echo "Warning: dirctory /mnt/Static already exists!"
 else
     sudo mkdir /mnt/Static
+    echo "Created directory /mnt/Static"
     sudo chown pi:pi /mnt/Static
+    echo "...and changed its ownership to pi:pi."
 fi
 
 if [ -d /var/www/static ]
@@ -46,7 +54,9 @@ else
     # The following directory is created to host content
     # for the static content server.
     sudo mkdir /var/www/static
+    echo "Created directory /var/www/static..."
     sudo chown pi:pi /var/www/static
+    echo "...and changed its ownership to pi:pi."
 fi
 
 # If get an error about resolving host name, check that the correct
@@ -95,7 +105,8 @@ then
     echo "Warning: /etc/fstab.original already exists!"
 else
     sudo cp /etc/fstab /etc/fstab.original
-    sudo echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab
+    echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
+        sudo tee -a /etc/fstab >/dev/null
 fi
 
 echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"

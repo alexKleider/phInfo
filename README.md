@@ -30,7 +30,7 @@ three and the forth of which are specific to the `Raspberry Pi`:
     * OS Update and Installation of Utilities
     * Network Setup for `Raspberry Pi`
     * Bring in Dependencies
-    * Server Software Installation
+    * Server Setup
     * Static Content
     * Pathagar Book Server
     * Add Another Static Content Site
@@ -230,13 +230,13 @@ done so you can get an idea what might be needed on your platform.
 
         sudo ./dependencies.sh
 
-This will take a long time (so be patient!) If at the end of
-this script you are asked to set a `MySQL` "root" password,
-leave it blank- do this by hitting the down arrow so
-that `<Ok>` is highlighted and then hit `Enter`.  You may have
-to do this more than once!  The script ends with a reboot.
+This will take a long time (so be patient!) Near the end of
+this script you are three times asked to set a `MySQL` "root"
+password. Each time leave it blank- do this by hitting the down
+arrow so that `<Ok>` is highlighted and then hit `Enter`.
+The script ends with a reboot.
 
-### Server Software Installation
+### Server Setup
 
 Log on again, `cd` into the project directory (`phInfo`) and then
 have a look through the initial comments in `create-server.sh`.
@@ -244,7 +244,8 @@ Once you've finished editing to suit your own use case,
 go ahead and run the script::
 
         cd phInfo
-        sudo ./create-server.sh
+        # edit create-server.sh
+        ./create-server.sh
 
 Wait for a few minutes for the `Pi` to reboot and then test
 by connecting your wifi to the `Pi` and pointing your browser
