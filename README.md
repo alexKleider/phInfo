@@ -239,22 +239,28 @@ to do this more than once!  The script ends with a reboot.
 ### Server Software Installation
 
 Log on again, `cd` into the project directory (`phInfo`) and then
-have a look through the initial comments in `create_server.sh`.
+have a look through the initial comments in `create-server.sh`.
 Once you've finished editing to suit your own use case,
 go ahead and run the script::
 
         cd phInfo
-        sudo ./create_server.sh
+        sudo ./create-server.sh
+
+Wait for a few minutes for the `Pi` to reboot and then test
+by connecting your wifi to the `Pi` and pointing your browser
+to `http://10.10.10.10`.  You should see the content of our
+test page. Pointing your browser to `rachel.lan` should yield
+the same result.
 
 ### Static Content
 
 To add your own static content simply copy the appropriate
 `index.html` file together with any other supporting files to the
-`/var/www/static/` directory.
+`/var/www/static/` directory, thus replacing the test page.
 
 If your content is available on an
 ext4 formatted USB device with LABEL=Static, (and you haven't 
-modified the `create_server.sh` code,) the following will serve 
+modified the `create-server.sh` code,) the following will serve 
 as a template for the copy command:
 
         rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
@@ -292,6 +298,12 @@ script takes a very long time (largely because of "pip install
 
 Consult the README file for instructions how to load books (and
 other library content) once the pathagar server is running.
+
+#### Before Final Deployment
+
+Once everything is working as it should, before putting your
+server into service, edit `/home/pi/pathagar/localsettings.py`
+and change `DEBUG = True` to `DEBUG = False`.
 
 ### Add Another Static Content Site
 

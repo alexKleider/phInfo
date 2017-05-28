@@ -4,9 +4,10 @@
 
 ## Run from within ~/phInfo/pathagar-setup.sh
 ### BEFORE RUNNING:
-# Be sure you have already assigned a password of your choosing
-# to the MYSQL_PASSWORD environment variable (as described in the
-# README.md file.)
+# Be sure you have already propagated the password of your
+# choosing.  This should have already been done by assigning the
+# MYSQL_PASSWORD environment variable and running the 
+# adjust-db-pasword.sh script (as described in the README.md file.)
 
 ## Set up a mysql server:
 

@@ -3,10 +3,17 @@
 # File last modified Thu May 25 11:36:11 PDT 2017
 
 # Before sourcing this file:
-#  Near the end, you'll see comments pertaining to an entry
+#  1. Adjust the ap_ip variable as needed to suit your situation.
+#  2. Near the end, you'll see comments pertaining to an entry
 #  in the `/etc/fstab` file; specifically `LABEL=Static`. You
 #  may want to change the `LABEL` to something other than
 #  "Static" to suit your own purposes.
+
+set -o errexit  # ends if an error is returned.
+set -o pipefail # pipe failure causes an error.
+set -o nounset  # ends if an undefined variable is encountered.
+
+ap_ip="10.10.10.10"
 
 if [ -a /etc/hosts.original ]
 then
@@ -14,23 +21,33 @@ then
     echo "additions have already been made to the file."
 else
     sudo cp /etc/hosts /etc/hosts.original
-    sudo echo "10.10.10.10  library library.lan rachel rachel.lan" >> /etc/hosts
-fi
-
-# Prepare a mount point for the Static Content
-sudo mkdir /mnt/Static
-sudo chown pi:pi /mnt/Static
+    sudo echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
 # in /etc/hosts will direct wifi dhcp clients to server.
 # The ultimate goal is to have
 #               library.lan directed to pathagar book server
 #           and rachel.lan directed to static content server.
+fi
 
-# The following directory is created to host content
-# for the static content server.
-sudo mkdir /var/www/static
-sudo chown pi:pi /var/www/static
+# Prepare a mount point for the Static Content
+if [ -d /mnt/Static ]
+then
+    echo "Warning: dirctory /mnt/Static already exists!"
+else
+    sudo mkdir /mnt/Static
+    sudo chown pi:pi /mnt/Static
+fi
+
+if [ -d /var/www/static ]
+then
+    echo "Warning: directory /var/www/static already exists!"
+else
+    # The following directory is created to host content
+    # for the static content server.
+    sudo mkdir /var/www/static
+    sudo chown pi:pi /var/www/static
+fi
 
 # If get an error about resolving host name, check that the correct
 # host name appears in /etc/hosts:
@@ -39,12 +56,25 @@ sudo chown pi:pi /var/www/static
 # and that /etc/hostname contains the correct <hostname>
 
 # Server set up:
-sudo cp static.conf /etc/apache2/sites-available/static.conf
+if [ -f /etc/apache2/sites-available/static.conf ]
+then
+    echo "Warning: /etc/apache2/sites-available/static.conf exists!"
+else
+    sudo cp static.conf /etc/apache2/sites-available/static.conf
+    echo "static.conf added to /etc/apache2/sites-available"
+fi
 
 # The following copies an index.html file and gets the site running
 # thus providing an opportunity to test that all is well before
 # copying over the static content:
-cp html-index-file  /var/www/static/index.html
+if [ -f /var/www/static/index.html ]
+then
+    echo "Warning: /var/www/static/index.html exists!"
+else
+    cp html-index-file  /var/www/static/index.html
+    echo "html-index-file copied to /var/www/static/index.html"
+fi
+
 sudo a2ensite static
 sudo service apache2 reload
 # Not sure why but may get the following error:
@@ -60,14 +90,11 @@ sudo service apache2 reload
 # USB device with LABEL=Static, the following will cause
 # it to be automatically mounted:
 
-set -o errexit  # ends if an error is returned.
-set -o pipefail # pipe failure causes an error.
-set -o nounset  # ends if an undefined variable is encountered.
-
 if [ -a /etc/fstab.original ]
 then
-    sudo cp /etc/fstab /etc/fstab.original
+    echo "Warning: /etc/fstab.original already exists!"
 else
+    sudo cp /etc/fstab /etc/fstab.original
     sudo echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab
 fi
 
