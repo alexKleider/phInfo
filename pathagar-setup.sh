@@ -26,7 +26,7 @@ then
 else
     echo "I can't imagine how it could happen, but"
     echo "the phInfo directory is missing or in the"
-    echo "place- MUST ABORT!"
+    echo "wrong place- MUST ABORT!"
     exit 1
 fi
 # Checking that the MYSQL_PASSWORD env var is set:
@@ -40,14 +40,19 @@ else
     ./adjust-db-pw.sh
 fi
 
+echo "Several files need to be copied over:"
+
 # Move the script that will later set the db password:
 cp ~/phInfo/set-db-pw.sh ~/pathagar
+echo "  1. set-db-pw.sh"
 
 ## Add the pathagar config file to Apache's sites-available.
 sudo cp ~/phInfo/ph-site.conf /etc/apache2/sites-available/
+echo "  2. ph-site.conf => sites-available"
 
 ## Modify the default Django settings to suit our purposes:
 cp ~/phInfo/local_settings.py ~/pathagar/
+echo "  3. local_settings.py"
 
 ## Set up the virtualenv for pathagar (penv).
 cd ~/pathagar
@@ -58,28 +63,43 @@ then
     exit 1
 else
     # We call it 'penv' for 'pathagar environment.'
+    echo "The 'penv' (pathager environment) virtual environment"
+    echo "is being created..."
     virtualenv -p python2.7 penv
 fi
+echo "... and activated."
 source penv/bin/activate
+echo "Now installing requirements..."
 pip install -r requirements.pip
+echo "Requirements installed into the penv."
 
 ## Run the script that establishes the data base password.
+echo "Establishing the data base password"
 ./set-db-pw.sh
 
 ## Prepare apache2 for pathagar:
+echo "Enable the apache2 wsgi module.."
 sudo a2enmod wsgi
+echo "Disable the default apache2 static site."
 sudo a2dissite 000-default
+echo "Enable the pathagar site."
 sudo a2ensite ph-site
 if [ -d /var/www/pathagar_media ]
 then
     echo "Something is not right:"
     echo "/var/www/pathagar_media/ already exists!!"
 else
+    echo "Create /var/www/pathagar_media/ ..."
     sudo mkdir /var/www/pathagar_media
 fi
+echo "Change /var/www/pathagar_media ownership to www-data"
 sudo chown www-data:www-data /var/www/pathagar_media
+echo "Restarting apache"
 sudo service apache2 restart
+echo "Run manage.py syncdb --noinput"
 python manage.py syncdb --noinput
+echo "Run manage.py collectstatic --noinput"
 python manage.py collectstatic --noinput
 
-echo "Set up the superuser manually using manage.py."
+echo "You have yet to set up the superuser manually using"
+echo "the python manage.py createsuperuser command."

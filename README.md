@@ -271,6 +271,12 @@ Note that the final slash(`/`) at the end of the first parameter to
 itself, gets copied. Presence or absence of the final slash in 
 the second parameter is immaterial.)
 
+If your content is at the top level of the medium you've mounted
+(rather than inside its own directory) then change the command to
+the following:
+
+        rsync -av /mnt/Static/* /var/www/static/
+
 If your server is the `Raspberry Pi` set up as described here,
 then entering "rachel.lan" in the URL window of a browser running
 on a wifi client machine will result in your content being displayed.
@@ -286,14 +292,19 @@ first substituting your chosen password inside the single quotes:
 
         export MYSQL_PASSWORD='db-password'
 
-Next source the following script which brings in Pathagar and
-carries out the necessary configurations.  Be patient since this
-script takes a very long time (largely because of "pip install
--r requirements.pip".)
+The next sequence of commands bring in Pathagar, carry out necessary
+configurations, activate the virtual environment so that a superuser
+can be created and then deactivate the environment since if all goes
+well you won't need it.  Django arranges for its activation when 
+needed.  The `pip install -r requirements.pip` command in 
+`pathagar-setup.sh` takes a very long time so be patient.
 
-        ./phInfo/pathagar-setup.sh
-
+        cd ~/phInfo
+        ./pathagar-setup.sh
+        cd ~/pathagar
+        source venv/bin/activate
         python manage.py createsuperuser
+        deactivate
 
 #### Adding Content
 
