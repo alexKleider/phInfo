@@ -25,9 +25,13 @@ then
     echo "additions have already been made to the file."
 else
     sudo cp /etc/hosts /etc/hosts.original
-    $ echo "$ap_ip  library library.lan rachel rachel.lan"|
-        sudo tee -a /etc/hosts >/dev/null
-    echo "Added line to /etc/hosts."
+
+    sudo sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
+
+#   $ echo "$ap_ip  library library.lan rachel rachel.lan"|
+#       sudo tee -a /etc/hosts >/dev/null
+
+    echo "Appended a line to /etc/hosts."
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
 # in /etc/hosts will direct wifi dhcp clients to server.
@@ -85,6 +89,7 @@ else
     echo "html-index-file copied to /var/www/static/index.html"
 fi
 
+sudo a2dissite 000-default
 sudo a2ensite static
 sudo service apache2 reload
 # Not sure why but may get the following error:
@@ -105,8 +110,14 @@ then
     echo "Warning: /etc/fstab.original already exists!"
 else
     sudo cp /etc/fstab /etc/fstab.original
-    echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
-        sudo tee -a /etc/fstab >/dev/null
+
+    sudo sh -c 'echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab'
+
+#   echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
+#       sudo tee -a /etc/fstab >/dev/null
+
+    echo "Appended a line to /etc/fstab."
+
 fi
 
 echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
