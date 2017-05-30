@@ -22,7 +22,7 @@ The goal is to end up with a device that provides:
 ## The Process
 
 The process is divided up into the following steps, the first
-three and the forth of which are specific to the `Raspberry Pi`:
+three and the fifth of which are specific to the `Raspberry Pi`:
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
@@ -90,12 +90,13 @@ it) and after you are positive that your SD card is mounted at
 continue with the following commands:
 
         unzip raspbian_lite_latest.zip
-        sudo dd if='-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
+        sudo dd if='2017-04-10-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
         sudo sync
 
 Now your SD card is ready for your Raspberry Pi. You can safely 
 delete the raspbian image from your personal machine if you wish.
 
+        cd -
         rm -rf <newly_created_dirctory>
 
 ### Initial RPi Configuration (`raspi-config`)
@@ -106,9 +107,9 @@ with a screen and keyboard attached.  Be sure the micro SD card is
 securely inserted.
 
 At the beginning of power up you'll briefly see a message that the
-root file system is being resized.  (Whether it is or not is not 
-clear to me because resizing comes up later again at the end of
-`raspi-config`.)
+root file system is being resized.  (When it acutally gets resized
+is not clear to me because resizing comes up again later at the end
+of `raspi-config`.)
 
 Log on as user `pi` with password `raspberry` and then run:
         
@@ -117,7 +118,7 @@ Log on as user `pi` with password `raspberry` and then run:
 As its name implies, this allows you to configure the Pi to suit
 your needs. Make selections by using the up and down arrow keys
 and once your choice is highlighted, use the left and right arrow
-keys to pick <Select> (or <Finish>).  Here is an outline of what
+keys to pick `<Select>` (or `<Finish>`).  Here is an outline of what
 is recommended or appropriate (at least for my use case):
 
     1. Change user password: I've been changing the pw to `pi::root` 
@@ -178,22 +179,24 @@ period (`.`).
 
 ### OS Update and Installation of Utilities
 
-Be sure your platform is connected to the internet.
-After logging on as user `pi`<sup>[3](#3username)</sup>
-using your newly set password, it would be wise as a first step
-to update using the following command::
+Be sure your platform (the `Raspberry Pi` or otherwise) is
+connected to the internet.  After logging on as user
+`pi`<sup>[3](#3username)</sup> using your newly set password,
+(as described in the end of the last section)
+update using the following command (which you can expect to
+take a long time:)
 
         sudo apt-get -y update && apt-get -y upgrade
 
 There are a number of utilities and customizations that are not
-essential but I find them useful to have; the following script
-brings them in::
+essential but I find them useful to have so my practice is to
+also run the following script:
 
         ./favourites.sh
 
-The following sequence of commands ensure that you are
-in the home directory of user `pi`, install `git` and then
-clone the piInfo repository<sup>[4](#4reponame)</sup>::
+The following sequence of commands ensures that you are in the
+current user's home directory (`/home/pi`,) installs `git` and
+then clones the piInfo repository<sup>[4](#4reponame)</sup>:
 
         cd
         sudo apt-get -y install git 
@@ -217,10 +220,11 @@ some of the files mentioned.
 
         # Edit pi-networking.sh
         ./pi-networking.sh
-        sudo shutdown -r now
-        # Wait a few minutes before loging on again.
+        # Wait a few minutes for the reboot before loging on again.
         cd phInfo
         ./pi-iptables.sh
+
+The last command again ends with a reboot.
 
 Even if you are not using a `Raspberry Pi`, it would probably be 
 wise to look through the above two scripts so see what is being
@@ -228,6 +232,7 @@ done so you can get an idea what might be needed on your platform.
 
 ##### Bring in dependencies
 
+        cd phInfo
         sudo ./dependencies.sh
 
 This will take a long time (so be patient!) Near the end of
@@ -241,7 +246,7 @@ The script ends with a reboot.
 Log on again, `cd` into the project directory (`phInfo`) and then
 have a look through the initial comments in `create-server.sh`.
 Once you've finished editing to suit your own use case,
-go ahead and run the script::
+go ahead and run the script:
 
         cd phInfo
         # edit create-server.sh
@@ -292,12 +297,12 @@ first substituting your chosen password inside the single quotes:
 
         export MYSQL_PASSWORD='db-password'
 
-The next sequence of commands bring in Pathagar, carry out necessary
-configurations, activate the virtual environment so that a superuser
-can be created and then deactivate the environment since if all goes
-well you won't need it.  Django arranges for its activation when 
-needed.  The `pip install -r requirements.pip` command in 
-`pathagar-setup.sh` takes a very long time so be patient.
+The next sequence of commands brings in Pathagar, carries out
+necessary configurations, activates the virtual environment so that
+a superuser can be created and then deactivates the environment since
+if all goes well you won't need it any longer.  Django arranges for
+its activation when needed.  The `pip install -r requirements.pip`
+command in `pathagar-setup.sh` takes a very long time so be patient.
 
         cd ~/phInfo
         ./pathagar-setup.sh
@@ -306,12 +311,13 @@ needed.  The `pip install -r requirements.pip` command in
         python manage.py createsuperuser
         deactivate
 
-#### Adding Content
+##### Adding Content
 
-Consult the README file for instructions how to load books (and
-other library content) once the pathagar server is running.
+Consult the README file in the `pathagar` directory/repository for
+instructions how to load books (and other library content) once
+the pathagar server is running.
 
-#### Before Final Deployment
+##### Before Final Deployment
 
 Once everything is working as it should, before putting your
 server into service, edit `/home/pi/pathagar/localsettings.py`

@@ -40,3 +40,6 @@ else
     # that iptables have already been set up:
     sudo sh -c "iptables-save > /home/pi/iptables"
 fi
+
+echo "System going down for a reboot."
+sudo shutdown -r now

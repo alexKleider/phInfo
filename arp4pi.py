@@ -8,17 +8,19 @@ Usage:
 
 Tries to find the IP address of any device
 with any of the known MAC addresses listed
-in mac_w_id.
+in MAC_W_ID. 
 This script must be run with root privileges!
 
 Development was inspired by the Raspberry Pi
-related projects.
+related projects.  Because of this, an added feature
+is that it finds Raspberry Pi IP addresses even if
+not listed in MAC_W_ID.
 
 To be useful, you'll have to customize by editing:
 1. the parameters of arp-scan that appear in the
 subprocess.check_output() method to match your own
 network[1].
-2. the mac_w_id variable (replace with your own entries)[1].
+2. the MAC_W_ID variable (replace with your own entries)[1].
 
 [1] Adjust the following two variables to suit your own
 network:
@@ -27,7 +29,7 @@ network:
 
 [2] Provision is made to recognize the Pi by the first half
 of its interface's Mac Address so you will probably get the
-information you need with no modification of the mac_w_id.
+information you need with no modification of the MAC_W_ID.
 """
 
 import subprocess
@@ -35,7 +37,7 @@ import subprocess
 interface = "wlan0"  # Change to "eth0" if you're using ethernet.
 ip_range = "10.0.0.0/24"  # Change to "192.168.0.0/24" or whatever.
 
-mac_w_id = (  # MacAddress, Description
+MAC_W_ID = (  # MAC addresses with descriptive identifiers.
     ("b8:27:eb:5a:2d:97", "Heavy Metal Case- RPi2b"),
     ("00:0f:54:02:25:08", "Heavy Metal Case- RPi2b"),
 
@@ -74,7 +76,7 @@ for line in lines:
         ip = line[:end_of_ip].strip()
         mac = line[end_of_ip:end_of_mac].strip()
 #       print("processing- IP: {} MAC: {}".format(ip, mac))
-        for recognized_mac, description in mac_w_id:
+        for recognized_mac, description in MAC_W_ID:
             if mac == recognized_mac:
                 print("{} @ {}".format(description, ip))
                 found = True
