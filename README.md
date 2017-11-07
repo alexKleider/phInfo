@@ -23,8 +23,8 @@ The goal is to end up with a device that provides:
 
 The process is divided up into the following steps, the first
 three of which are specific to the `Raspberry Pi`. The fifth
-assumes hardware set up similar to the `Raspberry Pi` and
-will likely have to be modified considerably is using an
+assumes a hardware set up similar to that of the `Raspberry Pi`
+and will likely have to be modified considerably if using an
 alternate server platform:
 
     * Raspberry Pi Acquisition
@@ -58,6 +58,11 @@ good idea to make a copy of the ``sha1sum`` shown below the
 ``Download ZIP`` button.  If you don't know the concept of a
 ``checksum`` or ``hash`` then you could forget all about this
 without much risk of endangering your project. 
+
+NOTE: The recent change from jessie to stretch is rumoured to 
+have brocken a lot of systems so it might be better to stick with
+jessie-lite available
+[here](http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/).
 
 The following assumes you have a micro SD card as well as a card
 reader which will work with your GNU/Linux computer. An Apple will
