@@ -8,6 +8,8 @@ set -o pipefail
   repo=${1:-alexKleider/phInfo}
   branch=${2:-master}
 
+  dir="phInfo-$(echo -n $branch | tr -C a-z - )"
+
   if [[ ! -f ./master.tar.gz ]]; then
     # Download the scripts
     wget "https://github.com/$repo/archive/$branch.tar.gz" -O phInfo.tar.gz
@@ -15,6 +17,6 @@ set -o pipefail
   fi
 
 
-  cd ./phInfo-master
+  cd "./$dir"
   exec ./ubuntu.sh
 }
