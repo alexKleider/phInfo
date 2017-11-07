@@ -5,10 +5,13 @@ set -o pipefail
 
 {
 
+  repo=${1:-alexKleider/phInfo}
+  branch=${2:-master}
+
   if [[ ! -f ./master.tar.gz ]]; then
     # Download the scripts
-    wget 'https://github.com/alexKleider/phInfo/archive/master.tar.gz'
-    tar xvf master.tar.gz
+    wget "https://github.com/$repo/archive/$branch.tar.gz" -O phInfo.tar.gz
+    tar xvf phInfo.tar.gz
   fi
 
 
