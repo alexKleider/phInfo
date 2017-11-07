@@ -5,7 +5,10 @@
 
 # Agreed on the following:
 DEBUG = True
+#DEBUG = False
+
 TIME_ZONE = 'America/Los_Angeles'
+# Look in /usr/share/zoneinfo for your choices.
 
 # In my version, not mentioned in yours:
 # STATIC_URL = '/library/static/'

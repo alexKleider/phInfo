@@ -1,23 +1,23 @@
 #!/bin/bash
 
-# File: pi-iptables.sh
+# File: iptables.sh
 
 echo "Setting up the firewall rules."
 # An error concerning firewall (iptables) comes up:
 # The problem is solved with a reboot.
 # It may have to do with one or more of the following:
-#   raspi-config, 
+#   raspi-config, (specific to the Raspberry Pi)
 #   update.sh or
 #   modification (uncommenting the "net.ipv4.ip_forward=1" line)
 #       of the /etc/sysctl.conf file.  
-# Hence the reason pi-iptables.sh has been split off from
-# pi-networking.sh
+# Hence the reason iptables.sh has been split off from
+# networking.sh
 # 
 # A solution might be to do the following:
 #   sudo service dhcpcd restart
 #   sudo ifdown wlan0; sudo ifup wlan0
 #   sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
-# But: unlikely according to a comment here:
+# But: if using a Raspberry Pi unlikely according to a comment here:
 # https://pimylifeup.com/raspberry-pi-wireless-access-point/#comment-3679
 # Conclusion: a reboot does seem to be necessary.
 

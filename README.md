@@ -22,13 +22,16 @@ The goal is to end up with a device that provides:
 ## The Process
 
 The process is divided up into the following steps, the first
-three and the fifth of which are specific to the `Raspberry Pi`:
+three of which are specific to the `Raspberry Pi`. The fifth
+assumes hardware set up similar to the `Raspberry Pi` and
+will likely have to be modified considerably is using an
+alternate server platform:
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
     * Initial RPi Configuration (`raspi-config`)
     * OS Update and Installation of Utilities
-    * Network Setup for `Raspberry Pi`
+    * Network Setup
     * Bring in Dependencies
     * Server Setup
     * Static Content
@@ -208,21 +211,24 @@ This brings in the `phInfo` file hierarchy containing this
         cd phInfo
 
 
-##### Network Setup for `Raspberry Pi`
+##### Network Setup
 
-If using a Raspberry Pi there is some set up needed for the
-access point and networking in general. This is done by
-commands in the pi-networking.sh and the pi-iptables.sh
-scripts. There must be a reboot between the two.
+Network configuration is dependent on the hardware being used.
+These instructions assume that there is an ethernet (eth0) port
+and either a built in wifi or a usb wifi dongle as is true for
+the Raspberry Pi. The instructions provided will have to be
+modified if this is not your use case.
+Configuration is done by commands in the networking.sh and the
+iptables.sh scripts. There must be a reboot between the two.
 But before beginning have a look through the initial
-comments in pi-networking; you will probably want to edit
+comments in `networking.sh`; you will probably want to edit
 some of the files mentioned.
 
-        # Edit pi-networking.sh
-        ./pi-networking.sh
+        # Edit networking.sh
+        ./networking.sh
         # Wait a few minutes for the reboot before loging on again.
         cd phInfo
-        ./pi-iptables.sh
+        ./iptables.sh
 
 The last command again ends with a reboot.
 
@@ -232,14 +238,14 @@ done so you can get an idea what might be needed on your platform.
 
 ##### Bring in dependencies
 
+The next script will take a long time (so be patient!) Near the end
+you are three times asked to set a `MySQL` "root" password. Each
+time leave it blank- do this by hitting the down arrow so that
+`<Ok>` is highlighted and then hit `Enter`.
+The script ends with a reboot.
+
         cd phInfo
         sudo ./dependencies.sh
-
-This will take a long time (so be patient!) Near the end of
-this script you are three times asked to set a `MySQL` "root"
-password. Each time leave it blank- do this by hitting the down
-arrow so that `<Ok>` is highlighted and then hit `Enter`.
-The script ends with a reboot.
 
 ### Server Setup
 
@@ -252,11 +258,10 @@ go ahead and run the script:
         # edit create-server.sh
         ./create-server.sh
 
-Wait for a few minutes for the `Pi` to reboot and then test
-by connecting your wifi to the `Pi` and pointing your browser
-to `http://10.10.10.10`.  You should see the content of our
-test page. Pointing your browser to `rachel.lan` should yield
-the same result.
+Wait for a few minutes for your server (in my case it's the `Pi`) to
+reboot and then test by connecting your wifi to the server.  Pointing
+your browser to `library.lan` should take you to the pathagar home
+page.  Pointing to `rachel.lan` should take you to the static content.
 
 ### Static Content
 
@@ -264,10 +269,9 @@ To add your own static content simply copy the appropriate
 `index.html` file together with any other supporting files to the
 `/var/www/static/` directory, thus replacing the test page.
 
-If your content is available on an
-ext4 formatted USB device with LABEL=Static, (and you haven't 
-modified the `create-server.sh` code,) the following will serve 
-as a template for the copy command:
+If your content is available on an ext4 formatted USB device with
+LABEL=Static, (and you haven't modified the `create-server.sh` code,)
+the following will serve as a template for the copy command:
 
         rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
 
@@ -297,6 +301,10 @@ first substituting your chosen password inside the single quotes:
 
         export MYSQL_PASSWORD='db-password'
 
+You will also later need a pathagar superuser password so now would
+be a good time to pick one and record it somewhere.  I suggest
+'ph-su-pw'.
+
 The next sequence of commands brings in Pathagar, carries out
 necessary configurations, activates the virtual environment so that
 a superuser can be created and then deactivates the environment since
@@ -320,8 +328,12 @@ the pathagar server is running.
 ##### Before Final Deployment
 
 Once everything is working as it should, before putting your
-server into service, edit `/home/pi/pathagar/localsettings.py`
-and change `DEBUG = True` to `DEBUG = False`.
+server into service, edit `/home/pi/pathagar/localsettings.py`.
+Change `DEBUG = True` to `DEBUG = False`.
+You will probably also want to change the value of 
+`TIME_ZONE = 'America/Los_Angeles'`
+Look at `/usr/share/zoneinfo` on any Linux system for guidance as
+to how to specify your particular zone.
 
 ### Add Another Static Content Site
 

@@ -1,14 +1,21 @@
 #!/bin/bash
 
-# File: pi-networking.sh
-#     installs pi specific requirements
-#     depends on the presence of the following files:
-#          dnsmasq.conf
-#          hostapd
-#          hostapd.conf
-#          hostapd.conf.wpa  (still a work in progress)
-#          interfaces.dhcp
-#          interfaces.static
+# File: networking.sh
+#  Installs networking requirements 
+#    Assumes one ethernet port (to be used for ethernet
+#    connectivity to the Internet if available) and built
+#    in wifi or a usb wifi dongle which is to be used as
+#    an access point. This is the situation in the case
+#    of the Raspberry Pi but would most likely be different
+#    for other hardware.
+          
+#  Depends on the presence of the following files:
+#    dnsmasq.conf
+#    hostapd
+#    hostapd.conf
+#    hostapd.conf.wpa  (still a work in progress)
+#    interfaces.dhcp
+#    interfaces.static
 
 # BEFORE RUNNING THIS SCRIPT:
 #
@@ -18,14 +25,18 @@
 #  you plan to use.  You'll want to avoid conflicts.
 
 #  1b: The file hostapd.conf.wpa is still a work in progress:
-#  I've been unsuccessful getting protected wifi working.
+#  I've been unsuccessful getting protected wifi working on the
+#  Raspberry Pi.
 # https://pimylifeup.com/raspberry-pi-wireless-access-point/
 
-#  2: interfaces.static is provided in case you want the eth0
-#  interface to have a static address.  If you do, you'll probably
-#  also want to edit interfaces.static to suit your own network.
+#  2: interfaces.static is provided if you want the eth0
+#  interface to have a static address.  If so,  you'll
+#  a: probably want to edit this file to suit your own network
+#  and
+#  b: need to comment out the "DHCP" section and 'uncomment'
+#  the "STATIC" section below.
 
-# It's hoped that this script is idempotent.
+# This script is written so as to be idempotent.
 
 set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
@@ -105,7 +116,7 @@ fi
 
 ## /etc/hostapd/hostapd.conf
 if [ -a /etc/hostapd/hostapd.conf.original ]
-# Note: Don't know if /etc/hostapd/hostapd.conf initially exist.
+# Note: Don't know if /etc/hostapd/hostapd.conf initially exists.
 then
     echo "/etc/hostapd/hostapd.conf.original already exists so we"
     echo "assume hostapd.conf has already been copied over."

@@ -69,7 +69,7 @@ else
 fi
 echo "... and activated."
 source penv/bin/activate
-echo "Now installing requirements..."
+echo "Now installing (takes a long time) requirements..."
 pip install -r requirements.pip
 echo "Requirements installed into the penv."
 
