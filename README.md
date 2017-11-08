@@ -203,7 +203,7 @@ connected to the internet.  After logging on as user
 update using the following command (which you can expect to
 take a long time:)
 
-        sudo apt-get -y update && apt-get -y upgrade
+        sudo apt-get -y update && sudo apt-get -y upgrade
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
