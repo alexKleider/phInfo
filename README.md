@@ -63,6 +63,8 @@ NOTE: The recent change from jessie to stretch is rumoured to
 have brocken a lot of systems so it might be better to stick with
 jessie-lite available
 [here](http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/).
+The commands provided below take all of this into consideration so
+you needn't worry about any of this.  
 
 The following assumes you have a micro SD card as well as a card
 reader which will work with your GNU/Linux computer. An Apple will
@@ -83,26 +85,25 @@ empty directory for this purpose might make things less confusing.
 
         mkdir <newly_created_dirctory>
         cd <newly_created_dirctory>
-        wget https://downloads.raspberrypi.org/raspbian_lite_latest
-        mv raspbian_lite_latest raspbian_lite_latest.zip
+        wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip
+        wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip.sha1
+        sha1sum 2017-07-05-raspbian-jessie-lite.zip.sha1 >> 2017-07-05-raspbian-jessie-lite.zip.sha1
+        cat 2017-07-05-raspbian-jessie-lite.zip.sha1
 
-If you know about ``sha1sum`` this would be the time to check that the
-one you copied from the ``raspbian`` download page matches the output
-of the following command:
+The last command should result in two lines, both showing the same
+sha1sum providing assurance that you have an unadulterated copy of
+the image.  Assuming it is so and after you are positive that your
+SD card is mounted at `/dev/sdb` or what ever device name you specify
+in its place, continue with the following commands:
 
-        sha1sum raspbian_lite_latest.zip
-
-Assuming the ``checksum`` checks out (or you aren't bothering with
-it) and after you are positive that your SD card is mounted at
-`/dev/sdb` or what ever device name you specify in its place,
-continue with the following commands:
-
-        unzip raspbian_lite_latest.zip
-        sudo dd if='2017-04-10-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
+        unzip 2017-07-05-raspbian-jessie-lite.zip
+        sudo dd if='2017-07-05-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
         sudo sync
 
-Now your SD card is ready for your Raspberry Pi. You can safely 
-delete the raspbian image from your personal machine if you wish.
+Now the SD card is ready for your Raspberry Pi and, if you wish,
+the raspbian image can now be delete.  The following sequence of 
+commands will remove the whole newly created directory from your
+personal machine (if you wish to do so.)
 
         cd -
         rm -rf <newly_created_dirctory>
@@ -112,7 +113,8 @@ delete the raspbian image from your personal machine if you wish.
 Unfortunately `raspbian` is not shipped with the `ssh server` active
 by default and for this reason the `Pi` must be run the first time
 with a screen and keyboard attached.  Be sure the micro SD card is
-securely inserted.
+securely inserted.  Having an ethernet cable connected is not
+essential at this stage but could be helpful for trouble shooting.
 
 At the beginning of power up you'll briefly see a message that the
 root file system is being resized.  (When it acutally gets resized
@@ -145,7 +147,7 @@ is recommended or appropriate (at least for my use case):
             `en_us.UTF-8`.  Toggle with the space bar again so the
             asterix appears. Here the behaviour of the interface is
             a bit different: the `Enter` key moves you forward to
-            the next panel where you again use the down arrow twice
+            the next panel where you again use the down arrow
             to land on `en_us.UTF-8`.  Use the right arrow and then
             `Enter` over the `<Ok>`.
         Choose option 4 again.
@@ -168,12 +170,19 @@ is recommended or appropriate (at least for my use case):
         Optional: depends on internet connectivity
     9. About raspi-config
 
+If you are connected by ethernet cable to the internet, it might
+be worth checking connectivity:
+
+        ping 8.8.8.8
+
+Quit by using `^C` (Control C.)
+
 Once done go ahead and shutdown:
 
         sudo shutdown -h now
 
-Since its `SSH Server` has been activated, the `Raspberry Pi`
-can now be run `headless'.  Be sure it is connected to the internet
+Since its `SSH Server` is now activate, the `Raspberry Pi`
+can be run `headless'.  Be sure it is connected to the internet
 and powered up.  Determine its IP address <sup>[2](#2arpscan)</sup>
 and then use your personal computer to log on remotely:
 
