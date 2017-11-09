@@ -207,7 +207,7 @@ take a long time:)
 
 The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
-then clones the piInfo repository<sup>[4](#4reponame)</sup>:
+then clones the phInfo repository<sup>[4](#4reponame)</sup>:
 
         cd
         sudo apt-get -y install git 
@@ -245,7 +245,9 @@ some of the files mentioned.
         cd phInfo
         ./iptables.sh
 
-The last command again ends with a reboot.
+The last command again ends with a reboot.  If you end up with a
+frozen terminal, try the following sequence of (3) key strokes:
+`enter`, `~`, `.`
 
 Even if you are not using a `Raspberry Pi`, it would probably be 
 wise to look through the above two scripts so see what is being
@@ -274,7 +276,8 @@ go ahead and run the script:
         ./create-server.sh
 
 Wait for a few minutes for your server (in my case it's the `Pi`) to
-reboot and then test by connecting your wifi to the server.  Pointing
+reboot and then test by connecting your wifi to the server. Once your
+machine is connected to the server's wifi access point, pointing
 your browser to `library.lan` should take you to the pathagar home
 page.  Pointing to `rachel.lan` should take you to the static content.
 

@@ -3,11 +3,11 @@
 # File last modified Thu May 25 11:36:11 PDT 2017
 
 # Before sourcing this file:
-#  1. Adjust the ap_ip variable as needed to suit your situation.
-#  This won't be necessary unless you have elected to change
-#  the Access Point's IP address in which case corresponding 
-#  changes need to be made in dnsmasq.conf and interfaces
-#  and possibly elsewhere as well.)
+#  1. If you have elected to change the Access Point's IP address
+#  then you should change the 10.10.10.10 IP address in line 31
+#  to the same address.  Corresponding changes should have been
+#  or will still need to be made in dnsmasq.conf and interfaces
+#  (and possibly elsewhere as well.)
 #  2. Near the end, you'll see comments pertaining to an entry
 #  in the `/etc/fstab` file; specifically `LABEL=Static`. You
 #  may want to change the `LABEL` to something other than
@@ -17,7 +17,7 @@ set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
 set -o nounset  # ends if an undefined variable is encountered.
 
-ap_ip="10.10.10.10"
+export ap_ip="10.10.10.10"
 
 if [ -a /etc/hosts.original ]
 then
@@ -26,7 +26,9 @@ then
 else
     sudo cp /etc/hosts /etc/hosts.original
 
-    sudo sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
+#   the following didn't seem to work- probably a quoting problem:
+#   sudo sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
+    sudo sh -c 'echo 10.10.10.10  library library.lan rachel rachel.lan" >> /etc/hosts'
 
 #   $ echo "$ap_ip  library library.lan rachel rachel.lan"|
 #       sudo tee -a /etc/hosts >/dev/null
@@ -120,12 +122,13 @@ else
 
 fi
 
-echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
-echo "   | Might get an error:                       |"
-echo "   | Warning: Unit file of apache2.service ... |"
-echo "   |                                           |"
-echo "   | The reboot will probably fix everything.  |"
-echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
+echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
+echo "   | Might get an error:                             |"
+echo "   | Warning: Unit file of apache2.service changed   |"
+echo "   | on disk, 'systemctl daemon-reload' recommended. |"
+echo "   |                                                 |"
+echo "   | The reboot will probably fix everything.        |"
+echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
 
 sudo shutdown -r now
 
