@@ -11,7 +11,6 @@
           
 #  Depends on the presence of the following files:
 #    dnsmasq.conf
-#    hostapd
 #    hostapd.conf
 #    hostapd.conf.wpa  (still a work in progress)
 #    interfaces.dhcp
@@ -65,7 +64,7 @@ else
         sudo touch /etc/dhcpcd.conf.original
     fi
     echo "Adding the (denyinterfaces wlan) line to /etc/dhcpcd.conf"
-    sudo echo "denyinterfaces wlan" >> /etc/dhcpcd.conf
+    sudo sh -c "echo denyinterfaces wlan >> /etc/dhcpcd.conf"
     # Above command covers us whether or not file existed.
 fi
 
@@ -99,7 +98,7 @@ else
     echo "Saving the original /etc/default/hostapd file."
     sudo cp /etc/default/hostapd /etc/default/hostapd.original
     echo "Modify /etc/default/hostapd using a sed command."
-    sudo sed -i -r "s/\#DEAMON_CONF=\"\"/DEAMON_CONF=\"\/etc\/hostapd\/hostapd.conf\"/g" /etc/default/hostapd
+    sudo sed -i -r sudo sed -i -r "s/\#DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" default /etc/default/hostapd
 fi
 
 ## /etc/init.d/hostapd
@@ -162,6 +161,8 @@ else
     # Modify /etc/sysctl.conf: uncomment net.ipv4.ip_forward=1
     echo "Modify /etc/sysctl.conf using a sed command."
     sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
+    # Above command does work, it seems even though it's owned by
+    # root:root
 fi
 
 echo "System going down for a reboot."

@@ -25,14 +25,8 @@ then
     echo "additions have already been made to the file."
 else
     sudo cp /etc/hosts /etc/hosts.original
-
-#   the following didn't seem to work- probably a quoting problem:
-#   sudo sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
-    sudo sh -c 'echo 10.10.10.10  library library.lan rachel rachel.lan" >> /etc/hosts'
-
-#   $ echo "$ap_ip  library library.lan rachel rachel.lan"|
-#       sudo tee -a /etc/hosts >/dev/null
-
+    sudo sh -c "echo $ap_ip  library library.lan rachel rachel.lan >> /etc/hosts"
+#   $ echo "$ap_ip  library library.lan rachel rachel.lan" | sudo tee -a /etc/hosts >/dev/null
     echo "Appended a line to /etc/hosts."
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
