@@ -67,6 +67,7 @@ else
     echo "is being created..."
     virtualenv -p python2.7 penv
 fi
+cd ~/pathagar
 echo "... and activated."
 source penv/bin/activate
 echo "Now installing (takes a long time) requirements..."

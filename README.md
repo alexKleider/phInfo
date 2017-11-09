@@ -333,7 +333,7 @@ command in `pathagar-setup.sh` takes a very long time so be patient.
         cd ~/phInfo
         ./pathagar-setup.sh
         cd ~/pathagar
-        source venv/bin/activate
+        source penv/bin/activate
         python manage.py createsuperuser
         deactivate
 
