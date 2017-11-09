@@ -333,6 +333,12 @@ command in `pathagar-setup.sh` takes a very long time so be patient.
         cd ~/phInfo
         ./pathagar-setup.sh
         cd ~/pathagar
+
+There remains to set a pathagar superuser password. Pick a
+password ('pi::superuser' for example, make a note of it
+so as not to forget,) then proceed with the following:
+
+        cd ~/phInfo
         source penv/bin/activate
         python manage.py createsuperuser
         deactivate
