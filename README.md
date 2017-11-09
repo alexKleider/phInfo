@@ -205,12 +205,6 @@ take a long time:)
 
         sudo apt-get -y update && sudo apt-get -y upgrade
 
-There are a number of utilities and customizations that are not
-essential but I find them useful to have so my practice is to
-also run the following script:
-
-        ./favourites.sh
-
 The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
 then clones the piInfo repository<sup>[4](#4reponame)</sup>:
@@ -218,11 +212,18 @@ then clones the piInfo repository<sup>[4](#4reponame)</sup>:
         cd
         sudo apt-get -y install git 
         git clone https://github.com/alexKleider/phInfo.git
+        cd phInfo
 
 This brings in the `phInfo` file hierarchy containing this
-`README` as well as required scripts and files.
+`README` as well as required scripts and files. The final
+command puts you into that (`phInfo`) directory.
 
-        cd phInfo
+There are a number of utilities and customizations that are not
+essential but I find them useful to have so my practice is to
+also run the following script:
+
+        ./favourites.sh
+
 
 
 ##### Network Setup
