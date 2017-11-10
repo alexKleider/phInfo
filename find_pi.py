@@ -45,7 +45,12 @@ IP_RANGE = "10.0.0.0/24"  # Change to "192.168.0.0/24"?
 # The output of the ifconfig command will help determine
 # the values to enter for both of the above.
 
-MAC_FIRST_HALF = "b8:27:eb:"
+MAC_FIRST_HALF = "b8:27:eb:"  # This is based on the observation that
+# every Raspberry Pi that I've come accross has its ethernet port
+# made by the same manufacturer and hence the first half of the MAC
+# address is always the same.  There's no guarantee that this might
+# not change in the future in which case the code will have to be
+# modified to take this into account.
 
 output_re = r"""
 ^  # IP address comes at the beginning of the line.
@@ -60,9 +65,11 @@ output_re = r"""
 output_pattern = re.compile(output_re, re.VERBOSE)
 
 output = subprocess.check_output(
-("sudo", "arp-scan", "-I", INTERFACE, IP_RANGE)
+    ("sudo", "arp-scan", "-I", INTERFACE, IP_RANGE)
 #   ("arp-scan", "-I", INTERFACE, IP_RANGE)
-#   ("sudo", "-E", "sh", "-c", "arp-scan", "-I", INTERFACE, IP_RANGE)
+# The difference is that with the second option, one has to run the
+# script with root privileges while using the first hides this from
+# the user. The Pi is configured to not ask for the sudo password.
     )
 
 temp ="""
