@@ -4,22 +4,24 @@
 
 """
 Usage:
-    sudo ./find_pi.py
+    ./find_pi.py
 
 Tries to find the IP address of any Raspberry Pi
 that is on the network served by the <INTERFACE>
 and with in the <IP_RANGE> specified (see below.)
 
-THIS SCRIPT MUST BE RUN WITH ROOT PRIVILEGES!
+This script uses `sudo` to run `arp-scan` and so
+in most environments you will be asked to enter
+your sudoer's password.
 
 It is known/assumed that the first half of the
 MAC addresses of the the eth0 interface of
 all RPis are the same (<MAC_FIRST_HALF>.)
 
 To be useful, you'll have to customize by editing
-the 'INTERFACE' and 'IP_RANGE' 'constants' to conform
-to your particular use case. (See comments below
-for some guidance. The result of the 
+the 'INTERFACE' and 'IP_RANGE' variables/constants
+to conform to your particular use case. (See comments
+below for some guidance. The result of the 
 $ ifconfig
 command will help.)
 
@@ -33,9 +35,9 @@ on the network.
 import re
 import subprocess
 
-INTERFACE = "wls1"  # Might be "wlan0" (or something else.)
-# or "eth0" if you're using ethernet.
-IP_RANGE = "10.0.0.0/24"  # Change to "192.168.0.0/24" or whatever.
+INTERFACE = "wls1"  # Might be "wlan0" (or something else?)
+# Something like "eth0" or "enp0s25" if you're using ethernet.
+IP_RANGE = "10.0.0.0/24"  # Change to "192.168.0.0/24"?
 # The output of the ifconfig command will help determine
 # the values to enter for both of the above.
 
@@ -54,7 +56,15 @@ output_re = r"""
 output_pattern = re.compile(output_re, re.VERBOSE)
 
 output = subprocess.check_output(
-    ("arp-scan", "-I", INTERFACE, IP_RANGE))
+("sudo", "arp-scan", "-I", INTERFACE, IP_RANGE)
+#   ("arp-scan", "-I", INTERFACE, IP_RANGE)
+#   ("sudo", "-E", "sh", "-c", "arp-scan", "-I", INTERFACE, IP_RANGE)
+    )
+
+temp ="""
+sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan"
+("sudo ", "-E", "sh", "-c", "arp-scan", "-I", INTERFACE, IP_RANGE)
+"""
 decoded = output.decode("utf-8")
 expanded = decoded.expandtabs()
 lines = expanded.split("\n")
