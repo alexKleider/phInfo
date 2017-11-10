@@ -26,11 +26,12 @@ then
 else
     sudo cp /etc/hosts /etc/hosts.original
 
-    sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
+    sudo sh -c "echo $ap_ip library library.lan rachel rachel.lan >> /etc/hosts"
 # the following are two alternative ways of doing the same thing.
 # the first has been tested, the second has not.
-#   sudo sh -c "echo $ap_ip  library library.lan rachel rachel.lan >> /etc/hosts"
+#   sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
 #   echo "$ap_ip  library library.lan rachel rachel.lan"|sudo tee -a /etc/hosts >/dev/null
+# See footnote by Aaron at end of file.
 
     echo "Appended a line to /etc/hosts."
 # The entry 
@@ -132,3 +133,31 @@ echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
 sudo shutdown -r now
 
 fi
+
+## Foot Note:
+
+# As Michael explains, it really comes down to the quoting you're
+# using and which shell the command is being evaluated in.
+
+# sudo sh -c "echo $ap_ip  library library.lan rachel rachel.lan >> /etc/hosts"
+
+# I would recommend this one as the "correct" solution. IMHO it's
+# the simplest one and avoids `sudo -E`. The `$ap_ip` is evaluated
+# in the current shell. You don't need to export the variable
+# because the subshells don't need to read the variable and never
+# see it. They already have the value within the command. `sh` sees
+# the full command with the shell redirection. With sudo, `sh` has
+# the proper permissions to follow the redirection and write to
+# `/etc/hosts`.
+  
+# In general I would say `sudo -E` is a poor pattern and should be
+# avoided. You can imagine this being problematic:
+
+#   PATH=/tmp/evil/bin:$PATH sudo -E echo foo
+
+# This is why even with `sudo -E`, sudo still blocks certain
+#  environment variables (like PATH) based on the security policy.
+
+# --
+# Aaron D Borden <adborden@a14n.net>
+# Human and Hacker
