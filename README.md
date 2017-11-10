@@ -377,9 +377,9 @@ Still need to document this.
 
     There are various methods of discovering the IP address of the
     `Raspberry Pi`.  Use of the `arp-scan` utility is one.  The
-    included `arp4pi.py` script uses `arp-scan` and might be useful
+    included `find_pi.py` script uses `arp-scan` and might be useful
     to you but it will have to be customized to suit your own network
-    and the devices you own.  Edit `arp4pi.py` and read its docstring
+    and the devices you own.  Edit `find_pi.py` and read its docstring
     for further details.
 
 <a name="3username">3</a>.
