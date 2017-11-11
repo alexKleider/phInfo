@@ -10,10 +10,9 @@ set -o pipefail
 
   dir="phInfo-$(echo -n $branch | tr -C a-z - )"
 
-  if [[ ! -f ./master.tar.gz ]]; then
+  if [[ ! -d "./$dir" ]]; then
     # Download the scripts
-    wget "https://github.com/$repo/archive/$branch.tar.gz" -O phInfo.tar.gz
-    tar xvf phInfo.tar.gz
+    wget "https://github.com/$repo/archive/$branch.tar.gz" -O - | tar xvz
   fi
 
 
