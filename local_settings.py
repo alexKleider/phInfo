@@ -1,4 +1,7 @@
 # File: local_settings.py
+import os
+
+project_dir = os.path.dirname(os.path.realpath(__file__))
 
 # Customized Django settings to over-ride those specified in
 # the 'stock' settings.py:
@@ -16,7 +19,7 @@ TIME_ZONE = 'America/Los_Angeles'
 # LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME
 
 # In your version, not mentioned in what I had:
-STATIC_ROOT='/home/pi/pathagar/staticfiles'  # 'pi'????
+STATIC_ROOT=os.path.join(project_dir, 'staticfiles')
 MEDIA_ROOT='/var/www/pathagar_media'
 
 # Your version extends what I already had => 1 question:
