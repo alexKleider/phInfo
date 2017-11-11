@@ -14,7 +14,8 @@
 echo " Calling sudo mysql ... (from within mysql-setup.sh script.)"
 sudo mysql <<EOF
 CREATE DATABASE IF NOT EXISTS pathagar CHARACTER SET utf8 COLLATE utf8_bin;
-flush privileges;
+DROP USER IF EXISTS pathagar;
+FLUSH PRIVILEGES;
 CREATE USER "pathagar" IDENTIFIED BY "MYSQL_PASSWORD";
 GRANT ALL PRIVILEGES ON pathagar.* TO "pathagar";
 FLUSH PRIVILEGES;
