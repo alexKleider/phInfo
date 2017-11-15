@@ -1,3 +1,4 @@
+#!/bin/bash
 # File: create_server.sh
 
 # Before sourcing this file:

@@ -164,7 +164,7 @@ else
         exit 1
     fi
     echo "Assigning DAEMON_CONF value in /etc/default/hostapd ..."
-    if sudo sed -i -r "s/\#DAEMON_CONF=\"\"/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
+    if sudo sed -i -r 's/#DAEMON_CONF=""/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g' /etc/default/hostapd
     then
         echo "... sed command ran without error- still worth checking."
     else
@@ -191,7 +191,7 @@ else
     fi
 
     echo "Assigning DAEMON_CONF value in /etc/init.d/hostapd."
-    if sudo sed -i -r "s/DAEMON_CONF=/DEEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
+    if sudo sed -i -r 's/DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g' /etc/init.d/hostapd
     then
         echo "... sed command ran without error- still worth checking."
     else
