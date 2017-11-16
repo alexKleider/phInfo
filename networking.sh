@@ -98,7 +98,7 @@ else
     echo "Saving the original /etc/default/hostapd file."
     sudo cp /etc/default/hostapd /etc/default/hostapd.original
     echo "Modify /etc/default/hostapd using a sed command."
-    sudo sed -i -r sudo sed -i -r "s/\#DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" default /etc/default/hostapd
+    sudo sed -i -r "s/\#DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" default /etc/default/hostapd
 fi
 
 ## /etc/init.d/hostapd
