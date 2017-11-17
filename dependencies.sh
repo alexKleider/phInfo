@@ -24,8 +24,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
 # E: Package 'libmysqlclient-dev' has no installation candidate
 
 
-# May need to reboot here??
-# shutdown -r now
+# Do we really need to reboot here??
+shutdown -r now
 
 
 
