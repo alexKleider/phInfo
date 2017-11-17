@@ -17,10 +17,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
   python-virtualenv \
   python-dev \
   libapache2-mod-wsgi \
-  libmysqlclient-dev \
   libxml2-dev \
   libxslt1-dev \
   mysql-server
+# libmysqlclient-dev \
+# E: Package 'libmysqlclient-dev' has no installation candidate
+
 
 # May need to reboot here??
 # shutdown -r now
