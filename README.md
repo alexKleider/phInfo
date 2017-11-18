@@ -21,11 +21,21 @@ The goal is to end up with a device that provides:
 
 ## The Process
 
+In the text that follows it's important that the reader is clear
+about which computer is being used and for what purpose.  The
+`Raspberry Pi` (or other `Debian` based machine that you may be
+trying to configure) will be refered to as your `target` machine.
+Your laptop or other (preferably Linux) computer will be refered to
+as your `staging` machine. As mentioned, it will be assumed that
+your `staging` machine will be running on `Linux`. There's a good
+chance that an Apple will probably work the same but if your OS is
+by `MicroSoft`, you'll have to look for instructions on the internet.
+
 The process is divided up into the following steps, the first
 three of which are specific to the `Raspberry Pi`. The fifth
 assumes a hardware set up similar to that of the `Raspberry Pi`
 and will likely have to be modified considerably if using an
-alternate server platform:
+alternate `target` machine as your server:
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
@@ -34,8 +44,8 @@ alternate server platform:
     * Network Setup
     * Bring in Dependencies
     * Server Setup
-    * Static Content
     * Pathagar Book Server
+    * Static Content
     * Add Another Static Content Site
 
 ### Raspberry Pi
@@ -49,64 +59,89 @@ must be added.
 
 ### SD Card Preparation
 
-A high capacity SD Card
-is recommended<sup>[1](#1sdcard)</sup> and **RASPBIAN JESSIE LITE** 
-is the recommended 
-[image](https://www.raspberrypi.org/downloads/raspbian/)
-to use.  While at the ``raspbian`` download site, it would be a
-good idea to make a copy of the ``sha1sum`` shown below the
-``Download ZIP`` button.  If you don't know the concept of a
-``checksum`` or ``hash`` then you could forget all about this
-without much risk of endangering your project. 
+Since the goal is to set up a content server, and since the
+capacity of your SD Card will dictate the amount of content
+it's possible to provide, a high capacity SD Card is
+recommended<sup>[1](#1sdcard)</sup>.
 
-NOTE: The recent change from jessie to stretch is rumoured to 
-have brocken a lot of systems so it might be better to stick with
-jessie-lite available
-[here](http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/).
-The commands provided below take all of this into consideration so
-you needn't worry about any of this.  
+Use the browser on your staging machine to find **RASPBIAN**
+[here](https://www.raspberrypi.org/downloads/raspbian/)
+<sup>[5](#5oldraspian)</sup>.
+Pick the **LITE** (not **DESKTOP**) version.  If you know
+about `Torrent`, by all means use it; otherwise just click 
+on the `Download ZIP` button and your browser will download
+the zip file.  Where it will end up depends on your browser's
+settings.  `~/Downloads` would be the logical place for it to
+end up.  The download process may take a long time. Be sure it
+has completed before going on. If a listing of your `Download`
+directory contains a file ending in `.zip.part`, then the
+download is NOT yet complete.
 
-The following assumes you have a micro SD card as well as a card
-reader which will work with your GNU/Linux computer. An Apple will
-probably work the same but if your OS is by MicroSoft, you'll have
-to look for instructions on the internet.
+While at the ``raspbian`` download site, it would be a
+good idea to make a copy of the ``SHA-256`` checksum shown below
+the ``Download ZIP`` button.
 
-Unequivocally establish the `device name` your computer assigns
-to the SD card and then unmount any of the possibly auto-mounted
-volumes associated with this device. (A google search will
-provide further information on how to do this.) We'll assume the
-device is `/dev/sdb`; substitute as appropriate.  Getting this wrong
-can be hazardous!!
+Change into your `Downloads` directory where you will find the
+zip file that's been downloaded.  Enter the following commands:
 
-Change into a directory where the image can be downloaded and then
-unzipped.  It can eventually be deleted from your personal machine
-so which directory you use doesn't much matter. Creating a new
-empty directory for this purpose might make things less confusing.
+        cd ~/Downloads
+        ls -lA
 
-        mkdir <newly_created_dirctory>
-        cd <newly_created_dirctory>
-        wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip
-        wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip.sha1
-        sha1sum 2017-07-05-raspbian-jessie-lite.zip.sha1 >> 2017-07-05-raspbian-jessie-lite.zip.sha1
-        cat 2017-07-05-raspbian-jessie-lite.zip.sha1
+... and expect to see output which includes a line that looks 
+like the following:
 
-The last command should result in two lines, both showing the same
-sha1sum providing assurance that you have an unadulterated copy of
-the image.  Assuming it is so and after you are positive that your
-SD card is mounted at `/dev/sdb` or what ever device name you specify
-in its place, continue with the following commands:
+-rw-rw-r-- 1 user user  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip
 
-        unzip 2017-07-05-raspbian-jessie-lite.zip
-        sudo dd if='2017-07-05-raspbian-jessie-lite.img' of=/dev/sdb bs=4M
+The name of the zip file will reflect version updates so may not
+be the same.  Substitute the name you get for the one shown above.
+
+        
+        sha1sum 2017-09-07-raspbian-stretch-lite.zip
+
+The output should match the hash you copied from the download page.
+
+Next, unzip the file:
+
+        unzip 2017-09-07-raspbian-stretch-lite.zip
+
+This results in the appearance of another file named the same but
+without the ending ".zip".
+
+The challenge now is to unequivocally establish the `device name`
+your computer assigns to the SD card and then unmount any of the
+possibly auto-mounted volumes associated with this device. One way
+of doing this is to run the following command twice, the first time
+before and the second time after inserting your SD card into your 
+staging machine's card reader (or an external USB attached reader.)
+The line(s) (there may be more than one) that appear at the end of
+the second output that weren't there at the end of the first hold
+the key information.  In my case the beginning of such a (very long)
+line (that spills over) is
+
+        /dev/sdb1 on /media/alex/6330-3266 type vfat ....
+
+The device name is the first part without the trailing number,
+specifically `/dev/sdb`.  On your staging machine it could be 
+something else.  Also note how many such lines there are; you
+might find `/dev/sdb2`, possible `/dev/sdb3` and so on.
+
+For each of these issue the following command.
+
+        umount /dev/sdb1
+        umount /dev/sdb3
+
+and so on until all are unmounted.
+
+So we'll assume the device is `/dev/sdb`; substitute as appropriate. 
+Getting this wrong can be hazardous!!
+
+        sudo dd if='2017-09-07-raspbian-stretch-lite.zip' of=/dev/sdb bs=4M
         sudo sync
 
-Now the SD card is ready for your Raspberry Pi and, if you wish,
-the raspbian image can now be delete.  The following sequence of 
-commands will remove the whole newly created directory from your
-personal machine (if you wish to do so.)
-
-        cd -
-        rm -rf <newly_created_dirctory>
+Now the SD card is ready for your target machine and, if you wish,
+the raspbian image (both the `zip` file and the `img` file) can be
+deleted from your staging machine.
+        
 
 ### Initial RPi Configuration (`raspi-config`)
 
@@ -281,34 +316,6 @@ machine is connected to the server's wifi access point, pointing
 your browser to `library.lan` should take you to the pathagar home
 page.  Pointing to `rachel.lan` should take you to the static content.
 
-### Static Content
-
-To add your own static content simply copy the appropriate
-`index.html` file together with any other supporting files to the
-`/var/www/static/` directory, thus replacing the test page.
-
-If your content is available on an ext4 formatted USB device with
-LABEL=Static, (and you haven't modified the `create-server.sh` code,)
-the following will serve as a template for the copy command:
-
-        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
-
-Note that the final slash(`/`) at the end of the first parameter to
-`rsync` is important (so that only the content, not the directory
-itself, gets copied. Presence or absence of the final slash in 
-the second parameter is immaterial.)
-
-If your content is at the top level of the medium you've mounted
-(rather than inside its own directory) then change the command to
-the following:
-
-        rsync -av /mnt/Static/* /var/www/static/
-
-If your server is the `Raspberry Pi` set up as described here,
-then entering "rachel.lan" in the URL window of a browser running
-on a wifi client machine will result in your content being displayed.
-
-
 ### Pathagar Book Server
 
 Choose a database password consisting of alphanumerics, dashes and
@@ -359,6 +366,35 @@ You will probably also want to change the value of
 Look at `/usr/share/zoneinfo` on any Linux system for guidance as
 to how to specify your particular zone.
 
+
+### Static Content
+
+To add your own static content simply copy the appropriate
+`index.html` file together with any other supporting files to the
+`/var/www/static/` directory, thus replacing the test page.
+
+If your content is available on an ext4 formatted USB device with
+LABEL=Static, (and you haven't modified the `create-server.sh` code,)
+the following will serve as a template for the copy command:
+
+        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
+
+Note that the final slash(`/`) at the end of the first parameter to
+`rsync` is important (so that only the content, not the directory
+itself, gets copied. Presence or absence of the final slash in 
+the second parameter is immaterial.)
+
+If your content is at the top level of the medium you've mounted
+(rather than inside its own directory) then change the command to
+the following:
+
+        rsync -av /mnt/Static/* /var/www/static/
+
+If your server is the `Raspberry Pi` set up as described here,
+then entering "rachel.lan" in the URL window of a browser running
+on a wifi client machine will result in your content being displayed.
+
+
 ### Add Another Static Content Site
 
 Still need to document this.
@@ -404,3 +440,7 @@ Still need to document this.
     The repository name may change in which case all references to
     `phInfo` will need to be changed.
 
+<a name="5oldraspian">5</a>
+
+Older versions of raspian can be found 
+[here](http://downloads.raspberrypi.org/raspbian_lite/images/).
