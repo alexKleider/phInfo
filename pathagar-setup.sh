@@ -87,10 +87,11 @@ set +x
 echo "The 'penv' (pathager environment) virtual environment"
 echo "is being created..."
 set -x
-set -euox pipefail
 virtualenv -p python2.7 penv
-unset PS1
+
+set +o nounset  # To overcome PS1 unset bug in virtualenv.
 source penv/bin/activate
+set -o nounset  # ends if an undefined variable is encountered.
 set +x
 echo "... and activated."
 echo "Now installing (takes a long time) requirements..."
