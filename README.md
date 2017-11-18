@@ -49,7 +49,7 @@ must be added.
 
 ### SD Card Preparation
 
-A high capacity Micro SD [Card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
+A high capacity SD Card
 is recommended<sup>[1](#1sdcard)</sup> and **RASPBIAN JESSIE LITE** 
 is the recommended 
 [image](https://www.raspberrypi.org/downloads/raspbian/)
@@ -255,14 +255,14 @@ done so you can get an idea what might be needed on your platform.
 
 ##### Bring in dependencies
 
-The next script will take a long time (so be patient!) Near the end
-you are three times asked to set a `MySQL` "root" password. Each
-time leave it blank- do this by hitting the down arrow so that
-`<Ok>` is highlighted and then hit `Enter`.
-The script ends with a reboot.
+The next script script contains two install commands, one of which is
+expected to fail with a message along the lines of "E: Package
+'libmysqlclient-dev' has no installation candidate".  If you are
+curious, edit the file and read the comments.
+Expect the script to take a long time (so be patient!)
 
         cd phInfo
-        sudo ./dependencies.sh
+        ./dependencies.sh
 
 ### Server Setup
 
@@ -369,9 +369,19 @@ Still need to document this.
 
 <a name="1sdcard">1</a>.
     
-    128GB cards are available and are said to work
-    in the most recent (v3) models of the `Raspberry
-    Pi` but we've not tested this.
+    If using a version 2 (or earlier) Pi, you are limited to
+    at most a 64GB
+    [card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card).
+    Version 3 (or later?) `Raspberry Pi`s require a micro SD
+    card.  Some 128GB cards can be used but many sold on the market do
+    not work! 
+    [Here](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
+    is one that has been tested successfully in the most
+    recent (v3) model of the `Raspberry Pi`. Others have reported that
+    [this](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
+    one also works.
+
+
 
 <a name="2arpscan">2</a>.
 
