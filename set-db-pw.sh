@@ -21,7 +21,7 @@ FLUSH PRIVILEGES;
 EOF
 ####################################
 # Now trying pi instead of pathagar:
-???
+# ??? Remains to be seen if that will solve the problem.
 #####################################
 # after adding   drop user pathagar; flush privileges; got the
 # following error:

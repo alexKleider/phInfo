@@ -37,17 +37,17 @@ elsewhere.
 
 ## The Process
 
-The process is divided up into the following steps, the first
-three of which are specific to the `Raspberry Pi`. The Network Setup
-step is also very specific to the hardware of the `Raspberry Pi`.
-If using a different target machine you'll have to modify
-considerably.
+The process is divided up into the following steps. The first
+three,  the 6th (Updating ...) and the 8th (Network ...) are
+specific to the `Raspberry Pi`.
+If using a different target machine you'll have to modify the code.
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
     * Configuring (`raspi-config`) and Upgrading the Pi
     * Preparation of the Staging Machine
     * Log on to the Target Machine
+    * Updating and Upgrading the Raspberry Pi
     * Installation of Utilities
     * Network Setup
     * Bring in Dependencies
@@ -151,7 +151,8 @@ For each of these issue the following command
 until all are unmounted.
 
 So we'll assume the device is `/dev/sdb`; substitute as appropriate. 
-Getting this wrong can be hazardous!!
+Getting this wrong can be hazardous!!  The `dd` command took 10
+minutes to complete on my staging machine.
 
         sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M
         sudo sync
@@ -170,8 +171,9 @@ is securely inserted and that you have an ethernet cable connecting
 the `Pi` to your your local network and through it to the Internet.
 
 At the beginning of power up you'll briefly see a message that
-the root file system is being resized.  Log on as user `pi` with
-password `raspberry` and then run:
+the root file system is being resized and then that it will do
+a reboot. Once the boot process has completed, log on as user
+`pi` with password `raspberry` and then run:
         
         sudo raspi-config
 
@@ -226,19 +228,14 @@ is recommended or appropriate for our use case:
     9. About raspi-config
         Nothing important here.
 
-After `raspi-config` completes, the `Pi` should be rebooted.
-After a few minutes to give it time to come back up again, log
-back on as user `pi` but this time you'll have to use your newly
-set password (`pi::root`.)  Then do an update, upgrade, and a dist-upgrade.  These
-commands take a long time!  When done, the `Pi` should be shut
-down.
+After `raspi-config` completes, rather than rebooting the `Pi`
+as suggested, shut it down with the following command.
 
-        sudo apt-get --fix-missing update
-        sudo apt -y --fix-missing upgrade
-        sudo apt -y --fix-missing dist-upgrade
         sudo shutdown -h now
+        
+It can now be disconnected from the key board and monitor.  It is
+ready to be run 'headless.'
 
-Now you can disconnect the `Pi` from it's key board and monitor.
 
 ### Preparation of the Staging Machine
 
@@ -268,7 +265,8 @@ The file is well commented to help guide you.
 
 Still using the command line of your staging machine,
 once you know the IP address of your target machine
-(output of the find_pi.py script) proceed with the following:
+(output of the find_pi.py script) proceed with the
+ following:<sup>[7](#7nasty)</sup>
 
         ssh pi@<target-ip-adr>
 
@@ -283,6 +281,20 @@ or after you log off.
 
 All subsequent instructions assume that you are logged onto the
 target machine using the ssh client on your staging machine.
+
+
+### Updating and Upgrading the Raspberry Pi
+
+This is specific for the `Raspberry Pi`.  There may well be an
+equivalent process necessary if you are using some other target.
+Run the following command (best to use copy and past) on the `Pi`:
+
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
+
+A reboot is necessary in order to implement the new kernel; the
+command to do this is included in the script.  You'll have to log back
+on (after a few minutes delay) to continue.
+
 
 ### Installation of Utilities
 
@@ -493,3 +505,12 @@ When using SSH, following a shutdown or a reboot, the client
 teminal sometimes freezes.  This can be remedied with the
 following 3 key strokes: Enter (the `Enter key`), tilde (`~`),
 period (`.`).
+
+<a name="7nasty">7</a>
+
+When attempting to log on you might be presented with a "Host key
+verification" failure.
+If so, look for a line that ends with ...ssh/known_hosts:7. Make a
+note of the number (in this case it's 7) and then delete the 7th
+line (or what ever number it is) in your ~/.ssh/known_hosts file.
+
