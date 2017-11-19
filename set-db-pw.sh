@@ -13,12 +13,25 @@
 
 sudo mysql <<EOF
 CREATE DATABASE IF NOT EXISTS pathagar CHARACTER SET utf8 COLLATE utf8_bin;
-drop user pathagar;
+drop user pi;
 flush privileges;
 CREATE USER "pathagar" IDENTIFIED BY "MYSQL_PASSWORD";
 GRANT ALL PRIVILEGES ON pathagar.* TO "pathagar";
 FLUSH PRIVILEGES;
 EOF
+####################################
+# Now trying pi instead of pathagar:
+???
+#####################################
+# after adding   drop user pathagar; flush privileges; got the
+# following error:
+# Establishing the data base password
+# + ./set-db-pw.sh
+# ERROR 1396 (HY000) at line 2: Operation DROP USER failed for
+# 'pathagar'@'%'
+######################################
+# before adding   drop user pathagar; flush privileges; got the
+# following error:
 # CREATE USER ....
 # fails:
 # + ./set-db-pw.sh

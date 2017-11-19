@@ -335,8 +335,9 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 The next script contains two install commands, one of which is
 expected to fail with a message along the lines of "E: Package
-'libmysqlclient-dev' has no installation candidate".  If you are
-curious, edit the file and read the comments; otherwise just procede.
+'default-libmysqlclient-dev' or 'libmysqlclient-dev' has no
+installation candidate".  (If you are curious, edit the file and
+read the comments; otherwise just procede.)
 Expect the script to take a long time (so be patient!)
 
         cd phInfo
@@ -346,26 +347,27 @@ Expect the script to take a long time (so be patient!)
 
 Log on again, `cd` into the project directory (`phInfo`) and then
 have a look through the initial comments in `create-server.sh`.
-Once you've finished editing to suit your own use case,
-go ahead and run the script:
+It's unlikely there'll be anything you need to change.
 
         cd phInfo
         # edit create-server.sh
         ./create-server.sh
 
-Wait for a few minutes for your server (in my case it's the `Pi`) to
-reboot and then test by connecting your wifi to the server. Once your
-machine is connected to the server's wifi access point, pointing
-your browser to `library.lan` should take you to the pathagar home
-page.  Pointing to `rachel.lan` should take you to the static content.
+Wait for a few minutes for your target machine to reboot and then
+direct your staging machine's wifi to the target wifi access point.
+The SSID will be 'piServer' unless you've previously changed it by
+editing `hostapd.conf`.  If all has gone well, pointing your browser
+to `rachel.lan` will take you to the example static html home page.
+Once the test has passed point your staging machine's wifi back to
+your home network, not that of your target machine.
 
 ### Pathagar Book Server
 
 Choose a database password consisting of alphanumerics, dashes and
 underscores but no other special characters. Make a record of it
-somewhere so as to be sure not to forget it. Then log on to your
-`Raspberry Pi` as user `pi` and run the following command after
-first substituting your chosen password inside the single quotes:
+somewhere so as to be sure not to forget it. I suggest 'db-password'.
+Then log on to your target machine as user `pi` and run the following
+command:
 
         export MYSQL_PASSWORD='db-password'
 
@@ -384,9 +386,13 @@ command in `pathagar-setup.sh` takes a very long time so be patient.
         ./pathagar-setup.sh
         cd ~/pathagar
 
+Note: ./pathagar-setup.sh calls ./set-db-pw.sh which fails!
+See comments in the latter file for current progress in efforts 
+to solve this.
+
 There remains to set a pathagar superuser password. Pick a
-password ('pi::superuser' for example, make a note of it
-so as not to forget,) then proceed with the following:
+password ('ph-su-pw' was previously suggested;) make a note
+of it so as not to forget, then proceed with the following:
 
         cd ~/phInfo
         source penv/bin/activate
