@@ -8,8 +8,8 @@ title: Raspberry Pi Content Server
 
 This directory hierarchy attempts to provide all that is needed
 (information and support files) to make a `Raspberry Pi` into a
-content server running a static content site as well as a
-`Pathagar Book Server` suitable for classroom or library use.
+content server running the `Pathagar Book Server` as well as one
+or more static content sites suitable for classroom or library use.
 Since `Raspbian`, the default `Raspberry Pi` `OS`, is `Debian`
 based, these instructions (with modifications discussed in the
 text) should be applicable to any other `Debian` based system.
@@ -19,28 +19,36 @@ The goal is to end up with a device that provides:
 * the Pathagar Book Server, and 
 * one or more static sites.
 
-## The Process
+## Terminology
 
 In the text that follows it's important that the reader is clear
-about which computer is being used and for what purpose.  The
-`Raspberry Pi` (or other `Debian` based machine that you may be
-trying to configure) will be refered to as your `target` machine.
-Your laptop or other (preferably Linux) computer will be refered to
-as your `staging` machine. As mentioned, it will be assumed that
-your `staging` machine will be running on `Linux`. There's a good
-chance that an Apple will probably work the same but if your OS is
-by `MicroSoft`, you'll have to look for instructions on the internet.
+about which computer is being used and for what purpose.
+
+The `Raspberry Pi` (or any other `Debian` based machine that you
+may be trying to configure) will be refered to as your `target`
+machine.  Your laptop or other (preferably Linux) computer (it
+could even be another `Raspberry Pi`) will be refered to as your
+`staging` machine.  It will be assumed that your `staging` machine
+will have `Linux` as its operating system. There's a good chance
+that an Apple (running OSX) will work the same (not tested) but
+if your OS is by `MicroSoft`, you'll have to look for instruction
+elsewhere.
+
+
+## The Process
 
 The process is divided up into the following steps, the first
-three of which are specific to the `Raspberry Pi`. The fifth
-assumes a hardware set up similar to that of the `Raspberry Pi`
-and will likely have to be modified considerably if using an
-alternate `target` machine as your server:
+three of which are specific to the `Raspberry Pi`. The Network Setup
+step is also very specific to the hardware of the `Raspberry Pi`.
+If using a different target machine you'll have to modify
+considerably.
 
     * Raspberry Pi Acquisition
     * SD Card Preparation
-    * Initial RPi Configuration (`raspi-config`)
-    * OS Update and Installation of Utilities
+    * Configuring (`raspi-config`) and Upgrading the Pi
+    * Preparation of the Staging Machine
+    * Log on to the Target Machine
+    * Installation of Utilities
     * Network Setup
     * Bring in Dependencies
     * Server Setup
@@ -61,8 +69,16 @@ must be added.
 
 Since the goal is to set up a content server, and since the
 capacity of your SD Card will dictate the amount of content
-it's possible to provide, a high capacity SD Card is
-recommended<sup>[1](#1sdcard)</sup>.
+it's possible to provide, choose an SD Card of comensurate
+capacity<sup>[1](#1sdcard)</sup>. The following products have
+been used successfully:
+[64GB](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
+and
+[128GB](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1).
+We've heard that the following
+[128GB card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
+will also function properly.
+
 
 Use the browser on your staging machine to find **RASPBIAN**
 [here](https://www.raspberrypi.org/downloads/raspbian/)
@@ -73,7 +89,7 @@ on the `Download ZIP` button and your browser will download
 the zip file.  Where it will end up depends on your browser's
 settings.  `~/Downloads` would be the logical place for it to
 end up.  The download process may take a long time. Be sure it
-has completed before going on. If a listing of your `Download`
+has completed before going on. If a listing of your `~/Download`
 directory contains a file ending in `.zip.part`, then the
 download is NOT yet complete.
 
@@ -98,7 +114,8 @@ be the same.  Substitute the name you get for the one shown above.
         
         sha1sum 2017-09-07-raspbian-stretch-lite.zip
 
-The output should match the hash you copied from the download page.
+The output should match the ``SHA-256`` checksum you copied from the
+download page.
 
 Next, unzip the file:
 
@@ -125,17 +142,18 @@ specifically `/dev/sdb`.  On your staging machine it could be
 something else.  Also note how many such lines there are; you
 might find `/dev/sdb2`, possible `/dev/sdb3` and so on.
 
-For each of these issue the following command.
+For each of these issue the following command
 
         umount /dev/sdb1
-        umount /dev/sdb3
+        umount /dev/sdb2
+        # etc....
 
-and so on until all are unmounted.
+until all are unmounted.
 
 So we'll assume the device is `/dev/sdb`; substitute as appropriate. 
 Getting this wrong can be hazardous!!
 
-        sudo dd if='2017-09-07-raspbian-stretch-lite.zip' of=/dev/sdb bs=4M
+        sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M
         sudo sync
 
 Now the SD card is ready for your target machine and, if you wish,
@@ -143,31 +161,29 @@ the raspbian image (both the `zip` file and the `img` file) can be
 deleted from your staging machine.
         
 
-### Initial RPi Configuration (`raspi-config`)
+### Configuring (`raspi-config`) and Upgrading the Pi
 
 Unfortunately `raspbian` is not shipped with the `ssh server` active
-by default and for this reason the `Pi` must be run the first time
-with a screen and keyboard attached.  Be sure the micro SD card is
-securely inserted.  Having an ethernet cable connected is not
-essential at this stage but could be helpful for trouble shooting.
+by default and for this reason the target `Pi` must be run the first
+time with a screen and keyboard attached.  Be sure the micro SD card
+is securely inserted and that you have an ethernet cable connecting
+the `Pi` to your your local network and through it to the Internet.
 
-At the beginning of power up you'll briefly see a message that the
-root file system is being resized.  (When it acutally gets resized
-is not clear to me because resizing comes up again later at the end
-of `raspi-config`.)
-
-Log on as user `pi` with password `raspberry` and then run:
+At the beginning of power up you'll briefly see a message that
+the root file system is being resized.  Log on as user `pi` with
+password `raspberry` and then run:
         
         sudo raspi-config
 
-As its name implies, this allows you to configure the Pi to suit
-your needs. Make selections by using the up and down arrow keys
+As its name implies, `raspi-config` is an interactive utility
+providing access to the Pi's configuration.
+Make selections by using the up and down arrow keys
 and once your choice is highlighted, use the left and right arrow
 keys to pick `<Select>` (or `<Finish>`).  Here is an outline of what
-is recommended or appropriate (at least for my use case):
+is recommended or appropriate for our use case:
 
     1. Change user password: I've been changing the pw to `pi::root` 
-    2. Hostname: I suggest `rpi` (something short)
+    2. Hostname: I suggest `rpi` or `pi-1` (something short)
     3. Boot options:
         We are not installing a GUI so select B1 (boot into the
         command line interface) following which you will be given
@@ -188,6 +204,10 @@ is recommended or appropriate (at least for my use case):
         Choose option 4 again.
         12 Change Time Zone: US, New Pacific
         13 Change Keyboard Layout: 
+            Since our goal is to run the `Pi` 'headless',
+            I don't think changing any of this is necessary but if you
+            do expect to be using a keyboard the following is
+            suggested:
             generic 105-key (the default) seems to work
             I chose `Other` rather than the default
             (`English (UK)') and then select 'English (US)'
@@ -204,41 +224,67 @@ is recommended or appropriate (at least for my use case):
     8. Update this tool to latest version
         Optional: depends on internet connectivity
     9. About raspi-config
+        Nothing important here.
 
-If you are connected by ethernet cable to the internet, it might
-be worth checking connectivity:
+After `raspi-config` completes, the `Pi` should be rebooted.
+After a few minutes to give it time to come back up again, log
+back on as user `pi` but this time you'll have to use your newly
+set password (`pi::root`.)  Then do an update, upgrade, and a dist-upgrade.  These
+commands take a long time!  When done, the `Pi` should be shut
+down.
 
-        ping 8.8.8.8
-
-Quit by using `^C` (Control C.)
-
-Once done go ahead and shutdown:
-
+        sudo apt-get --fix-missing update
+        sudo apt -y --fix-missing upgrade
+        sudo apt -y --fix-missing dist-upgrade
         sudo shutdown -h now
 
-Since its `SSH Server` is now activate, the `Raspberry Pi`
-can be run `headless'.  Be sure it is connected to the internet
-and powered up.  Determine its IP address <sup>[2](#2arpscan)</sup>
-and then use your personal computer to log on remotely:
+Now you can disconnect the `Pi` from it's key board and monitor.
 
-        ssh pi@<IPAddress>
+### Preparation of the Staging Machine
 
-When using SSH, following a shutdown or a reboot, the client
-teminal sometimes freezes up.  This can be remedied with the
-following 3 key strokes: Enter (the `Enter key`), tilde (`~`),
-period (`.`).
+Make sure the **target** machine is connected (via ethernet cable)
+to the internet and is powered up.  (If you are using an external
+wifi dongle it should be installed before power up.)
+
+From the command line of your **staging** machine, issue the
+following commands:
+        
+        cd
+        sudo apt-get install git arp-scan
+        git clone https://github.com/alexKleider/phInfo.git
+        cd phInfo 
+
+The next challenge is to discover the IP address of the target
+machine.  The utility `find_pi.py` (now within the current file
+structure on the staging machine) is provided for this purpose.
+Before using it, you will want to open it in your favourite editor
+and possibly change the one or two constants to suit your network.
+The file is well commented to help guide you.
+
+        python find_pi.py
 
 
-### OS Update and Installation of Utilities
+### Log on to the Target Machine
 
-Be sure your platform (the `Raspberry Pi` or otherwise) is
-connected to the internet.  After logging on as user
-`pi`<sup>[3](#3username)</sup> using your newly set password,
-(as described in the end of the last section)
-update using the following command (which you can expect to
-take a long time:)
+Still using the command line of your staging machine,
+once you know the IP address of your target machine
+(output of the find_pi.py script) proceed with the following:
 
-        sudo apt-get -y update && sudo apt-get -y upgrade
+        ssh pi@<target-ip-adr>
+
+Respond to the prompt with pi's password ('pi::root') and with
+any luck you will now be logged onto the target machine (running it
+'headless'.)
+
+You will have to repeat this process
+each time the target machine goes through a
+reboot<sup>[6](#6screenfreeze)</sup>
+or after you log off.
+
+All subsequent instructions assume that you are logged onto the
+target machine using the ssh client on your staging machine.
+
+### Installation of Utilities
 
 The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
@@ -260,19 +306,19 @@ also run the following script:
         ./favourites.sh
 
 
-
 ##### Network Setup
 
-Network configuration is dependent on the hardware being used.
-These instructions assume that there is an ethernet (eth0) port
-and either a built in wifi or a usb wifi dongle as is true for
-the Raspberry Pi. The instructions provided will have to be
-modified if this is not your use case.
+Network configuration is dependent on the target machine's
+hardware.  These instructions assume that there is an ethernet
+(eth0) port and either a built in wifi or a usb wifi dongle as
+is true for the Raspberry Pi. The scripts used will most
+certainly have to be modified if this is not your use case.
+
 Configuration is done by commands in the networking.sh and the
-iptables.sh scripts. There must be a reboot between the two.
-But before beginning have a look through the initial
-comments in `networking.sh`; you will probably want to edit
-some of the files mentioned.
+iptables.sh scripts. There must be a reboot between the two
+<sup>[6](#6screenfreeze)</sup>.
+Before beginning have a look through the initial comments in
+`networking.sh`; you may want to edit some of the files mentioned.
 
         # Edit networking.sh
         ./networking.sh
@@ -280,20 +326,17 @@ some of the files mentioned.
         cd phInfo
         ./iptables.sh
 
-The last command again ends with a reboot.  If you end up with a
-frozen terminal, try the following sequence of (3) key strokes:
-`enter`, `~`, `.`
+The last command also ends with a reboot. Remember that after each
+reboot you'll have to use your staging machine to log back on to the
+target machine<sup>[6](#6screenfreeze)</sup>.
 
-Even if you are not using a `Raspberry Pi`, it would probably be 
-wise to look through the above two scripts so see what is being
-done so you can get an idea what might be needed on your platform.
 
 ##### Bring in dependencies
 
-The next script script contains two install commands, one of which is
+The next script contains two install commands, one of which is
 expected to fail with a message along the lines of "E: Package
 'libmysqlclient-dev' has no installation candidate".  If you are
-curious, edit the file and read the comments.
+curious, edit the file and read the comments; otherwise just procede.
 Expect the script to take a long time (so be patient!)
 
         cd phInfo
@@ -406,17 +449,10 @@ Still need to document this.
 <a name="1sdcard">1</a>.
     
     If using a version 2 (or earlier) Pi, you are limited to
-    at most a 64GB
-    [card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card).
+    at most a 64GB card.
     Version 3 (or later?) `Raspberry Pi`s require a micro SD
     card.  Some 128GB cards can be used but many sold on the market do
     not work! 
-    [Here](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1)
-    is one that has been tested successfully in the most
-    recent (v3) model of the `Raspberry Pi`. Others have reported that
-    [this](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
-    one also works.
-
 
 
 <a name="2arpscan">2</a>.
@@ -444,3 +480,10 @@ Still need to document this.
 
 Older versions of raspian can be found 
 [here](http://downloads.raspberrypi.org/raspbian_lite/images/).
+
+<a name="6screenfreeze">6</a>
+
+When using SSH, following a shutdown or a reboot, the client
+teminal sometimes freezes.  This can be remedied with the
+following 3 key strokes: Enter (the `Enter key`), tilde (`~`),
+period (`.`).

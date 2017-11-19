@@ -33,17 +33,20 @@ The output consists of a header and then (if found)
 the IP address(es) of any Raspberry Pi that might be
 on the network.
 
-© Alex Kleider 2017
+(c) Alex Kleider 2017
 """
 
 import re
 import subprocess
 
-INTERFACE = "wls1"  # Might be "wlan0" (or something else?)
+# The next two assignment statements (those NOT preceded by a '#')
+# may have to be edited to suit your staging machine's network
+# configuration.  Output of the ifconfig command will help.
+INTERFACE = "wlan0"
+# Might be "wls1" (or something else?)
 # Something like "eth0" or "enp0s25" if you're using ethernet.
-IP_RANGE = "10.0.0.0/24"  # Change to "192.168.0.0/24"?
-# The output of the ifconfig command will help determine
-# the values to enter for both of the above.
+IP_RANGE = "192.168.0.0/24"
+# On my network it's "10.0.0.0/24".
 
 MAC_FIRST_HALF = "b8:27:eb:"  # This is based on the observation that
 # every Raspberry Pi that I've come accross has its ethernet port
