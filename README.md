@@ -159,8 +159,7 @@ So we'll assume the device is `/dev/sdb`; substitute as appropriate.
 Getting this wrong can be hazardous!!  The `dd` command took 10
 minutes to complete on my staging machine.
 
-        sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M
-        sudo sync
+        sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
 
 Now the SD card is ready for your target machine and, if you wish,
 the raspbian image (both the `zip` file and the `img` file) can be
@@ -301,7 +300,8 @@ The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so you'll have to log back on (after a few
 minutes delay) to continue.
 
-OPTIONAL
+#### OPTIONAL
+
 At this point you have an up to date `Raspberry Pi` as represented by
 the content of its SD card.  To avoid having to repeat the lengthly
 upgrade process each time I want to test the following instructions
@@ -318,7 +318,7 @@ do that on my staging machine are:
 
         umount /dev/sdb1
         umount /dev/sdb2
-        sudo dd of='~/Downloads/2017-09-07-stretch-after-upgrade.img' if=/dev/sdb bs=4M
+        sudo dd of='~/Downloads/2017-09-07-stretch-after-upgrade.img' if=/dev/sdb bs=4M && sudo sync
 
 
 ### Installation of Utilities
