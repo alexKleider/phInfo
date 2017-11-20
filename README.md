@@ -423,15 +423,11 @@ command in `pathagar-setup.sh` takes a very long time so be patient.
         ./pathagar-setup.sh
         cd ~/pathagar
 
-Note: ./pathagar-setup.sh calls ./set-db-pw.sh which fails!
-See comments in the latter file for current progress in efforts 
-to solve this.
-
 There remains to set a pathagar superuser password. Pick a
 password ('ph-su-pw' was previously suggested;) make a note
 of it so as not to forget, then proceed with the following:
 
-        cd ~/phInfo
+        cd ~/pathagar
         source penv/bin/activate
         python manage.py createsuperuser
         deactivate

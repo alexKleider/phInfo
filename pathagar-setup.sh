@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # File: pathagar-setup.sh
-# ... assumes the env var MYSQL_PASSWORD has already been set:
-# the adjust-db-pw.sh script depends on it.
+# ... assumes the env var MYSQL_PASSWORD has already been set.
 
 set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
@@ -105,7 +104,14 @@ set -x
 set +x
 echo "Establishing the data base password"
 set -x
-./set-db-pw.sh
+## Set up a mysql server:
+sudo mysql <<EOF
+CREATE DATABASE IF NOT EXISTS pathagar CHARACTER SET utf8 COLLATE utf8_bin;
+flush privileges;
+CREATE USER "pathagar" IDENTIFIED BY "MYSQL_PASSWORD";
+GRANT ALL PRIVILEGES ON pathagar.* TO "pathagar";
+FLUSH PRIVILEGES;
+EOF
 
 ## Prepare apache2 for pathagar:
 set +x
