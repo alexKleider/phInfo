@@ -13,15 +13,18 @@
 
 sudo mysql <<EOF
 CREATE DATABASE IF NOT EXISTS pathagar CHARACTER SET utf8 COLLATE utf8_bin;
-drop user pi;
 flush privileges;
 CREATE USER "pathagar" IDENTIFIED BY "MYSQL_PASSWORD";
 GRANT ALL PRIVILEGES ON pathagar.* TO "pathagar";
 FLUSH PRIVILEGES;
 EOF
+########################################
+# Finally deleted the drop user part and completed OK
 ####################################
 # Now trying pi instead of pathagar:
-# ??? Remains to be seen if that will solve the problem.
+# Still getting
+# ERROR 1396 (HY000) at line 2: Operation DROP USER failed for
+# 'pi'@'%'
 #####################################
 # after adding   drop user pathagar; flush privileges; got the
 # following error:
