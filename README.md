@@ -311,7 +311,7 @@ To do so, log onto the `Pi`, issue the following command:
         sudo shutdown -h now
 
 ... and then power down the `Pi` (simply pull out the micro USB power
-cord,) and move its SD card into your card reader of your staging
+cord,) and move its SD card into the card reader of your staging
 machine.  Then on the staging machine, unmount anything that's been
 automounted and save an image of the card.  The commands necessary to
 do that on my staging machine are:
@@ -331,7 +331,10 @@ then clones the phInfo repository<sup>[4](#4reponame)</sup>:
 
 This brings in the `phInfo` file hierarchy containing this
 `README` as well as required scripts and files. After completion
-you should find yourself in the `phInfo` directory.
+you should find yourself in the `phInfo` directory; just to be sure,
+issue the following command:
+
+        cd phInfo
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
@@ -379,12 +382,12 @@ Expect the script to take a long time (so be patient!)
 
 ### Server Setup
 
-Log on again, `cd` into the project directory (`phInfo`) and then
-have a look through the initial comments in `create-server.sh`.
+There's no reboot after the last command so you should still be logged
+on; be sure you are still in the ~/phInfo directory.
+Have a look through the initial comments in `create-server.sh`.
 It's unlikely there'll be anything you need to change.
 
-        cd phInfo
-        # edit create-server.sh
+        cd ~/phInfo
         ./create-server.sh
 
 Wait for a few minutes for your target machine to reboot and then

@@ -45,5 +45,5 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
   mysql-server \
   libmysqlclient-dev      # jesse
 
-# Do we need to reboot here??
+# Do we need to reboot here?? No, we don't.
 

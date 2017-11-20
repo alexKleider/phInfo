@@ -121,7 +121,7 @@ else
     set +x
     echo "Modify /etc/default/hostapd using a sed command."
     set -x
-    sudo sed -i -r "s/\#DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
+    sudo sed -i -r "s/\#DAEMON_CONF=\"\"/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
 fi
 
 ## /etc/init.d/hostapd
