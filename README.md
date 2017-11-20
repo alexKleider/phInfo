@@ -301,6 +301,25 @@ The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so you'll have to log back on (after a few
 minutes delay) to continue.
 
+OPTIONAL
+At this point you have an up to date `Raspberry Pi` as represented by
+the content of its SD card.  To avoid having to repeat the lengthly
+upgrade process each time I want to test the following instructions
+I've made an image of the SD card in its current state.
+To do so, log onto the `Pi`, issue the following command:
+
+        sudo shutdown -h now
+
+... and then power down the `Pi` (simply pull out the micro USB power
+cord,) and move its SD card into your card reader of your staging
+machine.  Then on the staging machine, unmount anything that's been
+automounted and save an image of the card.  The commands necessary to
+do that on my staging machine are:
+
+        umount /dev/sdb1
+        umount /dev/sdb2
+        sudo dd of='~/Downloads/2017-09-07-stretch-after-upgrade.img' if=/dev/sdb bs=4M
+
 
 ### Installation of Utilities
 
