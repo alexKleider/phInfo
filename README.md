@@ -25,9 +25,9 @@ In the text that follows it's important that the reader is clear
 about which computer is being used and for what purpose.
 
 The `Raspberry Pi` (or any other `Debian` based machine that you
-may be trying to configure) will be refered to as your `target`
+may be trying to configure) will be referred to as your `target`
 machine.  Your laptop or other (preferably Linux) computer (it
-could even be another `Raspberry Pi`) will be refered to as your
+could even be another `Raspberry Pi`) will be refereed to as your
 `staging` machine.  It will be assumed that your `staging` machine
 will have `Linux` as its operating system. There's a good chance
 that an Apple (running OSX) will work the same (not tested) but
@@ -40,23 +40,28 @@ elsewhere.
 The process is divided up into the following steps. The first
 three,  the 6th (Updating ...) and the 8th (Network ...) are
 specific to the `Raspberry Pi`.
-If using a different target machine you'll have to modify the code.
+If using a different target machine the first three will
+probably be of no relevance. Updating and Upgrading might
+work as is; Network Setup will almost certainly differ.
+Look over the code and modify to suit your use case.
+Sensible defaults are chosen for everything so if using
+a Raspberry Pi, there'll be no necessity to modify anything.
 
     * Raspberry Pi Acquisition
-    * SD Card Preparation
-    * Configuring (`raspi-config`) and Upgrading the Pi
+    * SD Card Preparation (RASPBIAN-LITE)
+    * Configuring (`raspi-config`) the Pi
     * Preparation of the Staging Machine
     * Log on to the Target Machine
     * Updating and Upgrading the Raspberry Pi
     * Installation of Utilities
-    * Network Setup
+    * Network Setup  (Specific to Pi's hardware)
     * Bring in Dependencies
     * Server Setup
     * Pathagar Book Server
     * Static Content
     * Add Another Static Content Site
 
-### Raspberry Pi
+### Raspberry Pi Acquisition
 
 The [Vilros basic starter kit](https://www.amazon.com/Vilros-Raspberry-Basic-Starter-Kit/dp/B01D92SSX6/ref=sr_1_4?s=pc&ie=UTF8&qid=1478455788&sr=1-4&keywords=raspberry+pi)
 is recommended since it includes the required power cord, and a
@@ -69,7 +74,7 @@ must be added.
 
 Since the goal is to set up a content server, and since the
 capacity of your SD Card will dictate the amount of content
-it's possible to provide, choose an SD Card of comensurate
+it's possible to provide, choose an SD Card of commensurate
 capacity<sup>[1](#1sdcard)</sup>. The following products have
 been used successfully:
 [64GB](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
@@ -94,7 +99,7 @@ directory contains a file ending in `.zip.part`, then the
 download is NOT yet complete.
 
 While at the ``raspbian`` download site, it would be a
-good idea to make a copy of the ``SHA-256`` checksum shown below
+good idea to make a copy of the ``SHA-256`` check-sum shown below
 the ``Download ZIP`` button.
 
 Change into your `Downloads` directory where you will find the
@@ -114,7 +119,7 @@ be the same.  Substitute the name you get for the one shown above.
         
         sha1sum 2017-09-07-raspbian-stretch-lite.zip
 
-The output should match the ``SHA-256`` checksum you copied from the
+The output should match the ``SHA-256`` check-sum you copied from the
 download page.
 
 Next, unzip the file:
@@ -167,11 +172,11 @@ deleted from your staging machine.
 Unfortunately `raspbian` is not shipped with the `ssh server` active
 by default and for this reason the target `Pi` must be run the first
 time with a screen and keyboard attached.  Be sure the micro SD card
-is securely inserted and that you have an ethernet cable connecting
+is securely inserted and that you have an Ethernet cable connecting
 the `Pi` to your your local network and through it to the Internet.
 
 At the beginning of power up you'll briefly see a message that
-the root file system is being resized and then that it will do
+the root file system is being re-sized and then that it will do
 a reboot. Once the boot process has completed, log on as user
 `pi` with password `raspberry` and then run:
         
@@ -194,11 +199,11 @@ is recommended or appropriate for our use case:
     4. Localization Options:
         11 Change Locale: The default is `en_gb.UTF-8`: suitable
             for Great Britain.  For the American locale, scroll down
-            (with the down arrow) until encountering the asterix (*)
+            (with the down arrow) until encountering the asterisk (*)
             next to `en_gb.UTF-8`, toggle with the space bar, and
             then continue scrolling down until coming to
             `en_us.UTF-8`.  Toggle with the space bar again so the
-            asterix appears. Here the behaviour of the interface is
+            asterisk appears. Here the behavior of the interface is
             a bit different: the `Enter` key moves you forward to
             the next panel where you again use the down arrow
             to land on `en_us.UTF-8`.  Use the right arrow and then
@@ -229,19 +234,20 @@ is recommended or appropriate for our use case:
         Nothing important here.
 
 After `raspi-config` completes, rather than rebooting the `Pi`
-as suggested, shut it down with the following command.
+as suggested, `Finish` `raspi-config` and when returned to the
+command line, issue the following command:
 
         sudo shutdown -h now
         
-It can now be disconnected from the key board and monitor.  It is
-ready to be run 'headless.'
+The `Raspberry Pi` can now be disconnected from the key board
+and monitor.  It is ready to be run 'headless.'
 
 
 ### Preparation of the Staging Machine
 
-Make sure the **target** machine is connected (via ethernet cable)
+Make sure the **target** machine is connected (via Ethernet cable)
 to the internet and is powered up.  (If you are using an external
-wifi dongle it should be installed before power up.)
+WiFi dongle it should be installed before power up.)
 
 From the command line of your **staging** machine, issue the
 following commands:
@@ -291,9 +297,9 @@ Run the following command (best to use copy and past) on the `Pi`:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
 
-A reboot is necessary in order to implement the new kernel; the
-command to do this is included in the script.  You'll have to log back
-on (after a few minutes delay) to continue.
+The command you just ran ends with a reboot (necessary in order to
+implement the new kernel) so you'll have to log back on (after a few
+minutes delay) to continue.
 
 
 ### Installation of Utilities
@@ -302,14 +308,11 @@ The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
 then clones the phInfo repository<sup>[4](#4reponame)</sup>:
 
-        cd
-        sudo apt-get -y install git 
-        git clone https://github.com/alexKleider/phInfo.git
-        cd phInfo
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
 
 This brings in the `phInfo` file hierarchy containing this
-`README` as well as required scripts and files. The final
-command puts you into that (`phInfo`) directory.
+`README` as well as required scripts and files. After completion
+you should find yourself in the `phInfo` directory.
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
@@ -321,20 +324,20 @@ also run the following script:
 ##### Network Setup
 
 Network configuration is dependent on the target machine's
-hardware.  These instructions assume that there is an ethernet
-(eth0) port and either a built in wifi or a usb wifi dongle as
+hardware.  These instructions assume that there is an Ethernet
+(eth0) port and either a built in WiFi or a USB WiFi dongle as
 is true for the Raspberry Pi. The scripts used will most
 certainly have to be modified if this is not your use case.
 
 Configuration is done by commands in the networking.sh and the
 iptables.sh scripts. There must be a reboot between the two
 <sup>[6](#6screenfreeze)</sup>.
-Before beginning have a look through the initial comments in
-`networking.sh`; you may want to edit some of the files mentioned.
+If you think you might want to make any customizations, have
+a look through the initial comments in `networking.sh`; you
+may want to edit some of the files mentioned.
 
-        # Edit networking.sh
         ./networking.sh
-        # Wait a few minutes for the reboot before loging on again.
+        # Wait a few minutes for the reboot before logging on again.
         cd phInfo
         ./iptables.sh
 
@@ -349,7 +352,7 @@ The next script contains two install commands, one of which is
 expected to fail with a message along the lines of "E: Package
 'default-libmysqlclient-dev' or 'libmysqlclient-dev' has no
 installation candidate".  (If you are curious, edit the file and
-read the comments; otherwise just procede.)
+read the comments; otherwise just proceed.)
 Expect the script to take a long time (so be patient!)
 
         cd phInfo
@@ -366,11 +369,11 @@ It's unlikely there'll be anything you need to change.
         ./create-server.sh
 
 Wait for a few minutes for your target machine to reboot and then
-direct your staging machine's wifi to the target wifi access point.
+direct your staging machine's WiFi to the target WiFi access point.
 The SSID will be 'piServer' unless you've previously changed it by
 editing `hostapd.conf`.  If all has gone well, pointing your browser
-to `rachel.lan` will take you to the example static html home page.
-Once the test has passed point your staging machine's wifi back to
+to `rachel.lan` will take you to the example static HTML home page.
+Once the test has passed point your staging machine's WiFi back to
 your home network, not that of your target machine.
 
 ### Pathagar Book Server
@@ -453,7 +456,7 @@ the following:
 
 If your server is the `Raspberry Pi` set up as described here,
 then entering "rachel.lan" in the URL window of a browser running
-on a wifi client machine will result in your content being displayed.
+on a WiFi client machine will result in your content being displayed.
 
 
 ### Add Another Static Content Site

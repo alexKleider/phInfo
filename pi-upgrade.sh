@@ -2,11 +2,8 @@
 
 # File: pi-upgrade.sh
 
-# must be run as super user (sudo)
-
 set -o errexit  # ends if an error is returned.
 set -x     # Echo commands to stdout.
-
 
 sudo apt --fix-missing update
 sudo apt -y --fix-missing upgrade
