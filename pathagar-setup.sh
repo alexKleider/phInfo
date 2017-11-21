@@ -3,7 +3,8 @@
 # File: pathagar-setup.sh
 # ... assumes (and checks) that the env var MYSQL_PASSWORD
 # has already been set.
-# Calls adjust-db-pw.sh
+# Calls mysql-setup.sh (formerly called set-db-pw.sh.)
+# Script adjust-db-pw.sh has been incorporated into this script.
 
 set -o errexit  # ends if an error is returned.
 # set -o nounset  # ends if an undefined variable is encountered.
@@ -16,7 +17,7 @@ if [ -d /home/pi/pathagar ]
 then
     echo "It seems the pathagar repo has already been cloned."
     echo "You have probably already run this script."
-    echo "Script \"pathagar-setup.sh\" ending now."
+    echo "Script \"pathagar-setup.sh\" is being aborted."
     exit 1
 else
     echo "Cloning the pathagar repo."
@@ -28,9 +29,9 @@ then
     echo "Change into the phInfo repo's directory."
     cd /home/pi/phInfo
 else
-    echo "I can't imagine how it could happen, but"
-    echo "the phInfo directory is missing or in the"
-    echo "wrong place- MUST ABORT!"
+    echo "I can't imagine how it could happen, but the phInfo"
+    echo "directory is missing or in the wrong place-"
+    echo "Script \"pathagar-setup.sh\" is being aborted."
     exit 1
 fi
 
@@ -38,7 +39,7 @@ echo "Checking that the MYSQL_PASSWORD env var is set."
 if [ -z $MYSQL_PASSWORD ]
 then
     echo "The MYSQL_PASSWORD environment variable hasn't been set!"
-    echo "Script pathagar-setup.sh is being aborted."
+    echo "Script \"pathagar-setup.sa\"h is being aborted."
     exit 1
 else
 # the following 17 lines are content of adjust-db-pw.sh
@@ -54,13 +55,14 @@ else
         echo "Running sed to set password variable in the two target files."
         sed -i s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g mysql-setup.sh local_settings.py
     else
-        echo "Target files: mysql-setup.sh, local_settings.py"
-        echo "One or both target files are not present- ABORTING!"
+        echo "Target files: mysql-setup.sh, local_settings.py..."
+        echo "One or both target files are not present-"
+        echo "Script \"pathagar-setup.sh\" is being aborted."
         exit 1
     fi
 # end of the 17 line content of adjust-db-password.sh
 
-# the following two lines is how it used to be done:
+# the following two lines == how it used to be done:
 #   echo "Modifying files that will later use the MYSQL_PASSWORD."
 #   ./adjust-db-pw.sh
 fi
