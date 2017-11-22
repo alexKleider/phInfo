@@ -68,14 +68,14 @@ else
 fi
 
 echo "Several files need to be copied:"
-echo "The script mysql-setup.sh => ~/pathagar"
+echo "1. the script mysql-setup.sh => ~/pathagar"
 cp ~/phInfo/mysql-setup.sh ~/pathagar
-echo "The pathagar config file to Apache's sites-available"
-sudo cp ~/phInfo/ph-site.conf /etc/apache2/sites-available/
-echo "the default Django settings => ~/pathagar"
+echo "2. the default Django settings => ~/pathagar"
 cp ~/phInfo/local_settings.py ~/pathagar/
+echo "3. the pathagar config file to Apache's sites-available"
+sudo cp ~/phInfo/ph-site.conf /etc/apache2/sites-available/
 
-echo "cd into ~/pathagar and set up the virtualenv for pathagar (penv)"
+echo "Change into the ~/pathagar directory"
 cd ~/pathagar
 if [ -d penv ]
 then
@@ -83,6 +83,8 @@ then
     echo "already exists!  ABORTING!"
     exit 1
 fi
+
+echo "Set up the virtualenv for pathagar (penv)"
 virtualenv -p python2.7 penv
 # a bug in the above forces us to NOT set -o nounset
 
@@ -93,15 +95,18 @@ pip install -r requirements.pip
 echo "... finished installing requirements into the penv."
 
 echo "Running mysql-setup.sh"
-./set-db-pw.sh
+./mysql-setup.sh
 
 echo "Prepare apache2 for pathagar"
-echo "Enable (sudo a2enmod wsgi) the apache2 wsgi module.."
+echo "Enable (sudo a2enmod wsgi) the apache2 wsgi module."
 sudo a2enmod wsgi
+
 echo "Disable (sudo a2dissite 000-default) the"
 echo "default apache2 static site."
+sudo a2dissite 000-default
 
 echo "Enable (sudo a2ensite ph-site) the pathagar site."
+sudo a2ensite ph-site
 
 echo "Check that /var/www/pathagar_media doesn't already exist."
 if [ -d /var/www/pathagar_media ]
