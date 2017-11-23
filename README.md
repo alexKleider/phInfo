@@ -257,6 +257,8 @@ appropriate<sup>[7](#7nasty)</sup>:
 
         ssh pi@<target-ip-adr>
 
+Before being asked for a password, you may be warned about host
+authenticity.  Simply do what is requested.
 After responding to the prompt with the  correct password
 ('raspberry',) with any luck you will now be logged onto the
 target machine (running it 'headless'.)
