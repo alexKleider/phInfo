@@ -1,32 +1,24 @@
 # File: create_server.sh
 
-# File last modified Thu May 25 11:36:11 PDT 2017
-
 # Before sourcing this file:
 #  1. If you have elected to change the Access Point's IP address
-#  then you should change the 10.10.10.10 IP address in line 31
-#  to the same address.  Corresponding changes should have been
-#  or will still need to be made in dnsmasq.conf and interfaces
-#  (and possibly elsewhere as well.)
+#  then you should change the '10.10.10.10' IP address in the
+#  "export ap_ip="10.10.10.10" line early in the script.
+#  to the address you choose.  Corresponding changes should have
+#  been or will still need to be made in dnsmasq.conf and
+#  interfaces (and possibly elsewhere as well.)
 #  2. Near the end, you'll see comments pertaining to an entry
 #  in the `/etc/fstab` file; specifically `LABEL=Static`. You
 #  may want to change the `LABEL` to something other than
 #  "Static" to suit your own purposes.
 
-set -o errexit  # ends if an error is returned.
-set -o pipefail # pipe failure causes an error.
-set -o nounset  # ends if an undefined variable is encountered.
-
-set -x
-
 export ap_ip="10.10.10.10"
+echo "We assume the server's WiFi IP address is $ap_ip"
 
 if [ -a /etc/hosts.original ]
 then
-    set +x
     echo "/etc/hosts.original exists so we assume"
     echo "additions have already been made to the file."
-    set -x
 else
     sudo cp /etc/hosts /etc/hosts.original
 
@@ -36,13 +28,10 @@ else
 #   sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
 #   echo "$ap_ip  library library.lan rachel rachel.lan"|sudo tee -a /etc/hosts >/dev/null
 # See footnote by Aaron at end of file.
-
-    set +x
     echo "Appended a line to /etc/hosts."
-    set -x
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
-# in /etc/hosts will direct wifi dhcp clients to server.
+# in /etc/hosts will direct WiFi dhcp clients to server.
 # The ultimate goal is to have
 #               library.lan directed to pathagar book server
 #           and rachel.lan directed to static content server.
@@ -51,9 +40,7 @@ fi
 # Prepare a mount point for the Static Content
 if [ -d /mnt/Static ]
 then
-    set +x
-    echo "Warning: dirctory /mnt/Static already exists!"
-    set -x
+    echo "Warning: directory /mnt/Static already exists!"
 else
     sudo mkdir /mnt/Static
     sudo chown pi:pi /mnt/Static
@@ -61,9 +48,7 @@ fi
 
 if [ -d /var/www/static ]
 then
-    set +x
     echo "Warning: directory /var/www/static already exists!"
-    set -x
 else
     # The following directory is created to host content
     # for the static content server.
@@ -80,9 +65,7 @@ fi
 # Server set up:
 if [ -f /etc/apache2/sites-available/static.conf ]
 then
-    set +x
     echo "Warning: /etc/apache2/sites-available/static.conf exists!"
-    set -x
 else
     sudo cp static.conf /etc/apache2/sites-available/static.conf
 fi
@@ -92,14 +75,10 @@ fi
 # copying over the static content:
 if [ -f /var/www/static/index.html ]
 then
-    set +x
     echo "Warning: /var/www/static/index.html exists!"
-    set -x
 else
     cp html-index-file  /var/www/static/index.html
-    set +x
     echo "html-index-file copied to /var/www/static/index.html"
-    set -x
 fi
 
 sudo a2dissite 000-default
@@ -120,21 +99,15 @@ sudo service apache2 reload
 
 if [ -a /etc/fstab.original ]
 then
-    set +x
     echo "Warning: /etc/fstab.original already exists!"
-    set -x
 else
     sudo cp /etc/fstab /etc/fstab.original
     sudo sh -c 'echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab'
 #   echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
 #       sudo tee -a /etc/fstab >/dev/null
-    set +x
     echo "Appended a line to /etc/fstab."
-    set -x
 
 fi
-
-set +x
 
 echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
 echo "   | Might get an error:                             |"
@@ -144,11 +117,7 @@ echo "   |                                                 |"
 echo "   | The reboot will probably fix everything.        |"
 echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
 
-set -x
-
 sudo shutdown -r now
-
-fi
 
 ## Foot Note:
 
@@ -160,7 +129,7 @@ fi
 # I would recommend this one as the "correct" solution. IMHO it's
 # the simplest one and avoids `sudo -E`. The `$ap_ip` is evaluated
 # in the current shell. You don't need to export the variable
-# because the subshells don't need to read the variable and never
+# because the sub-shells don't need to read the variable and never
 # see it. They already have the value within the command. `sh` sees
 # the full command with the shell redirection. With sudo, `sh` has
 # the proper permissions to follow the redirection and write to

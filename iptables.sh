@@ -41,5 +41,5 @@ else
     sudo sh -c "iptables-save > /home/pi/iptables"
 fi
 
-echo "System going down for a reboot."
+echo "SYSTEM GOING DOWN FOR A REBOOT"
 sudo shutdown -r now

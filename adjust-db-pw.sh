@@ -15,8 +15,13 @@ then
     echo "  a. mysql-setup.sh"
     echo "  b. local_settings.py"
 
-    echo "Running sed to set password variable in the two target files."
-    sed -i s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g mysql-setup.sh local_settings.py
+    echo "Running sed to set password variable in the two target files..."
+    if sed -i s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g mysql-setup.sh local_settings.py
+    then
+        echo "...sed ran successfully but still worth checking that"
+        echo "MYSQL_PASSWORD has been set correctly in both"
+        echo "mysql-setup.sh and local_settings.py"
+    fi
 else
     echo "Target files: mysql-setup.sh, local_settings.py"
     echo "One or both target files are not present- ABORTING!"
