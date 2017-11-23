@@ -25,33 +25,38 @@ In the text that follows it's important that the reader is clear
 about which computer is being used and for what purpose.
 
 The `Raspberry Pi` (or any other `Debian` based machine that you
-may be trying to configure) will be referred to as your `target`
-machine.  Your laptop or other (preferably Linux) computer (it
-could even be another `Raspberry Pi`) will be refereed to as your
-`staging` machine.  It will be assumed that your `staging` machine
-will have `Linux` as its operating system. There's a good chance
-that an Apple (running OSX) will work the same (not tested) but
-if your OS is by `MicroSoft`, you'll have to look for instruction
-elsewhere.
+may be trying to configure to use as a content server) will be
+referred to as your `target` machine.  Your laptop or other
+(preferably Linux) computer (it could even be another `Raspberry
+Pi`) will be referred to as your `staging` machine.  It will be
+assumed that your `staging` machine will have `Linux` as its
+operating system. There's a good chance that an Apple (running
+OSX) will work the same (not tested) but if your OS is by
+`MicroSoft`, you'll have to look for instruction elsewhere.
 
 
 ## The Process
 
-The process is divided up into the following steps. The first
-three,  the 6th (Updating ...) and the 8th (Network ...) are
-specific to the `Raspberry Pi`.
-If using a different target machine the first three will
-probably be of no relevance. Updating and Upgrading might
-work as is; Network Setup will almost certainly differ.
+The process is divided up into the following steps.
+Some are specific for the `Raspberry Pi`. These include 
+the first two and the 4th.
+The 6th (Configuring ...,)  7th (Updating ...)( and the 9th
+(Network ...) are also specific to the `Raspberry Pi` but if
+you are using some other target machine, these same instructions
+could probably be fairly easily adapted.  Updating and Upgrading
+might work as is since pretty standard `Debian` commands are used;
+Network Setup will almost certainly differ.
 Look over the code and modify to suit your use case.
+
 Sensible defaults are chosen for everything so if using
 a Raspberry Pi, there'll be no necessity to modify anything.
 
     * Raspberry Pi Acquisition
     * SD Card Preparation (RASPBIAN-LITE)
-    * Configuring (`raspi-config`) the Pi
-    * Preparation of the Staging Machine
+    * Staging Machine Preparation
+    * IP Address Discovery
     * Log on to the Target Machine
+    * Configuring (`raspi-config`) the Pi
     * Updating and Upgrading the Raspberry Pi
     * Installation of Utilities
     * Network Setup  (Specific to Pi's hardware)
@@ -75,8 +80,8 @@ must be added.
 Since the goal is to set up a content server, and since the
 capacity of your SD Card will dictate the amount of content
 it's possible to provide, choose an SD Card of commensurate
-capacity<sup>[1](#1sdcard)</sup>. The following products have
-been used successfully:
+capacity<sup>[1](#1sdcard)</sup>. In general, 'more is better.'
+The following products have been used successfully:
 [64GB](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
 and
 [128GB](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1).
@@ -84,6 +89,10 @@ We've heard that the following
 [128GB card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
 will also function properly.
 
+As mentioned, this guide assumes that you are using Linux on your
+staging machine.  Microsoft Windows users might find this
+[link](https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0)
+useful.
 
 Use the browser on your staging machine to find **RASPBIAN**
 [here](https://www.raspberrypi.org/downloads/raspbian/)
@@ -102,8 +111,12 @@ While at the ``raspbian`` download site, it would be a
 good idea to make a copy of the ``SHA-256`` check-sum shown below
 the ``Download ZIP`` button.
 
-Change into your `Downloads` directory where you will find the
-zip file that's been downloaded.  Enter the following commands:
+The remainder of this section involves use of the command line
+on your staging machine.
+
+Change into your `Downloads` directory: the directory into which
+the zip file was downloaded.  Enter the following commands
+substituting the directory name if your download went else where:
 
         cd ~/Downloads
         ls -lA
@@ -111,7 +124,7 @@ zip file that's been downloaded.  Enter the following commands:
 ... and expect to see output which includes a line that looks 
 like the following:
 
--rw-rw-r-- 1 user user  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip
+`-rw-rw-r-- 1 user user  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip`
 
 The name of the zip file will reflect version updates so may not
 be the same.  Substitute the name you get for the one shown above.
@@ -127,27 +140,37 @@ Next, unzip the file:
         unzip 2017-09-07-raspbian-stretch-lite.zip
 
 This results in the appearance of another file named the same but
-without the ending ".zip".
+without the trailing ".zip".
 
 The challenge now is to unequivocally establish the `device name`
-your computer assigns to the SD card and then unmount any of the
-possibly auto-mounted volumes associated with this device. One way
-of doing this is to run the following command twice, the first time
-before and the second time after inserting your SD card into your 
-staging machine's card reader (or an external USB attached reader.)
-The line(s) (there may be more than one) that appear at the end of
-the second output that weren't there at the end of the first hold
-the key information.  In my case the beginning of such a (very long)
-line (that spills over) is
+your computer assigns to the SD card so that you can first unmount
+any of the possibly auto-mounted volumes associated with this device
+and then copy the raspbian image to this device.  Each device might
+contain one or more volumes, each designated by appending a digit to
+the device name.
+
+The safest way to discover the device name is to run the `mount`
+command:
+
+        mount
+
+... once before inserting the SD card into your staging machine's
+card reader, and then again after doing so.  The second time you
+run the mount command, there will be one or more new lines that
+weren't there before.  Each of these lines begin with a volume name.
+Ignoring the ending digit of one of these volume names provides you
+with the device name.  In my case, the beginning of such a (very
+long) line (that spills over) is
 
         /dev/sdb1 on /media/alex/6330-3266 type vfat ....
 
-The device name is the first part without the trailing number,
-specifically `/dev/sdb`.  On your staging machine it could be 
-something else.  Also note how many such lines there are; you
-might find `/dev/sdb2`, possible `/dev/sdb3` and so on.
+So on my staging machine the device name is `/dev/sdb`.
+Make a note of this device (what ever it is on your staging machine.)
+You will need to know it latter.  Also note how many such lines there
+are; that is to say, how many `volumes` are listed, each differing
+by the digit appended to the device name.
 
-For each of these issue the following command
+For each volume name, issue the following command:
 
         umount /dev/sdb1
         umount /dev/sdb2
@@ -156,37 +179,111 @@ For each of these issue the following command
 until all are unmounted.
 
 So we'll assume the device is `/dev/sdb`; substitute as appropriate. 
-Getting this wrong can be hazardous!!  The `dd` command took 10
-minutes to complete on my staging machine.
+Getting this wrong can be hazardous!!  Making the appropriate
+substitutions as necessary, run the next command (which took 10
+minutes to complete on my staging machine):
 
         sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
 
+Be absolutely sure the command has completed before going on.
+
+Unfortunately `raspbian` is not shipped with the `ssh server` active
+by default.  It's possible to overcome this problem by continuing
+with the following commands, again substituting your `device name`
+with the digit `1` appended to it to make it a `volume name`:
+
+        sudo mount /dev/sdb1 /media 
+        sudo touch /media/ssh
+        sudo sync
+        sudo umount /dev/sdb1
+
 Now the SD card is ready for your target machine and, if you wish,
 the raspbian image (both the `zip` file and the `img` file) can be
-deleted from your staging machine.
+deleted from the `Downloads` directory of your staging machine.
+
+Be sure the micro SD card is securely inserted into the `Raspberry
+Pi`  and that you have an Ethernet cable connecting the `Pi` to your
+local network (and through it to the Internet.) If using an external
+(USB connected) WiFi dongle, make sure it is also installed.
+Now power up the `Pi`.
         
+
+### Staging Machine Preparation
+
+From the command line of your **staging** machine, issue the
+following commands:
+        
+        cd
+        sudo apt-get install git arp-scan
+        git clone https://github.com/alexKleider/phInfo.git
+        cd phInfo 
+
+
+### IP Address Discovery
+
+Make sure the **target** machine is connected (via Ethernet cable)
+to the internet and is powered up.  (If you are using an external
+WiFi dongle it should be installed before power up.)
+
+The challenge now is to discover the IP address of the target
+machine.  The utility `find_pi.py` (now within the current file
+structure on the staging machine) is provided for this purpose but
+will only be of use if your target machine is a `Raspberry Pi`.
+Before using it, you will want to open it in your favourite editor
+and possibly change the one or two constants to suit your network.
+The file is well commented to help guide you.
+
+        python find_pi.py
+
+The output will look something like this:
+
+        Probable Pi IP(s):
+            192.168.0.11
+
+If your target machine is not a `Raspberry Pi`, then using the Unix
+arp-scan utility before and again after powering up the target machine
+will likely work.  Look for an IP address that appears only after the
+target power up, not before.
+
+
+### Log on to the Target Machine
+
+To log on to the target machine you will have to know the appropriate
+user's name and password as well as the target's IP address.  For the
+`Pi`, the user name is `pi` and the password is `raspberry`.  Still
+using the command line of your staging machine, proceed with the
+following command, substituting the user name and the IP address as
+appropriate<sup>[7](#7nasty)</sup>:
+
+        ssh pi@<target-ip-adr>
+
+After responding to the prompt with the  correct password
+('raspberry',) with any luck you will now be logged onto the
+target machine (running it 'headless'.)
+
+You will have to repeat this process each time the target machine
+goes through a reboot<sup>[6](#6screenfreeze)</sup> or after you
+log off.
+
+All subsequent instructions assume that you are logged onto the
+target machine using the ssh client on your staging machine.
+
 
 ### Configuring (`raspi-config`) and Upgrading the Pi
 
-Unfortunately `raspbian` is not shipped with the `ssh server` active
-by default and for this reason the target `Pi` must be run the first
-time with a screen and keyboard attached.  Be sure the micro SD card
-is securely inserted and that you have an Ethernet cable connecting
-the `Pi` to your your local network and through it to the Internet.
-
-At the beginning of power up you'll briefly see a message that
-the root file system is being re-sized and then that it will do
-a reboot. Once the boot process has completed, log on as user
-`pi` with password `raspberry` and then run:
+Use the command line of your staging machine to log onto the target
+`Raspberry Pi` as described in the previous section.  You can safely
+ignore the warning about changing the password.  We'll do that in a
+moment. Run `raspi-config`:
         
         sudo raspi-config
 
 As its name implies, `raspi-config` is an interactive utility
-providing access to the Pi's configuration.
-Make selections by using the up and down arrow keys
-and once your choice is highlighted, use the left and right arrow
-keys to pick `<Select>` (or `<Finish>`).  Here is an outline of what
-is recommended or appropriate for our use case:
+providing access to the Pi's configuration.  Make selections by
+using the up and down arrow keys and once your choice is
+highlighted, use the left and right arrow keys to pick `<Select>`
+(or `<Finish>`).  Here is an outline of what is recommended or
+appropriate for our use case:
 
     1. Change user password: I've been changing the pw to `pi::root` 
     2. Hostname: I suggest `rpi` or `pi-1` (something short)
@@ -207,7 +304,7 @@ is recommended or appropriate for our use case:
             the next panel where you again use the down arrow
             to land on `en_us.UTF-8`.  Use the right arrow and then
             `Enter` over the `<Ok>`.
-        Choose option 4 again.
+        Choose option 4 two more times:
         12 Change Time Zone: US, New Pacific
         13 Change Keyboard Layout: 
             Since our goal is to run the `Pi` 'headless',
@@ -222,90 +319,50 @@ is recommended or appropriate for our use case:
     5. Interfacing Options:
         Only the second option is relevant to us:
         P2 SSH: Enable ssh server
-        Be sure to select <Yes>, this is very important.
+        Be sure <Yes> is selected, this is very important.
     6. Overclock: Left in the default state.
     7. Advanced options:
         A1 Expand file system: This is also very important.
         None of the other advance options concern us.
     8. Update this tool to latest version
-        Optional: depends on internet connectivity
+        Optional: not necessary.
     9. About raspi-config
         Nothing important here.
 
-After `raspi-config` completes, rather than rebooting the `Pi`
-as suggested, `Finish` `raspi-config` and when returned to the
-command line, issue the following command:
-
-        sudo shutdown -h now
-        
-The `Raspberry Pi` can now be disconnected from the key board
-and monitor.  It is ready to be run 'headless.'
-
-
-### Preparation of the Staging Machine
-
-Make sure the **target** machine is connected (via Ethernet cable)
-to the internet and is powered up.  (If you are using an external
-WiFi dongle it should be installed before power up.)
-
-From the command line of your **staging** machine, issue the
-following commands:
-        
-        cd
-        sudo apt-get install git arp-scan
-        git clone https://github.com/alexKleider/phInfo.git
-        cd phInfo 
-
-The next challenge is to discover the IP address of the target
-machine.  The utility `find_pi.py` (now within the current file
-structure on the staging machine) is provided for this purpose.
-Before using it, you will want to open it in your favourite editor
-and possibly change the one or two constants to suit your network.
-The file is well commented to help guide you.
-
-        python find_pi.py
-
-
-### Log on to the Target Machine
-
-Still using the command line of your staging machine,
-once you know the IP address of your target machine
-(output of the find_pi.py script) proceed with the
- following:<sup>[7](#7nasty)</sup>
-
-        ssh pi@<target-ip-adr>
-
-Respond to the prompt with pi's password ('pi::root') and with
-any luck you will now be logged onto the target machine (running it
-'headless'.)
-
-You will have to repeat this process
-each time the target machine goes through a
-reboot<sup>[6](#6screenfreeze)</sup>
-or after you log off.
-
-All subsequent instructions assume that you are logged onto the
-target machine using the ssh client on your staging machine.
+After `raspi-config` completes, reboot the `Pi` as suggested.
 
 
 ### Updating and Upgrading the Raspberry Pi
 
-This is specific for the `Raspberry Pi`.  There may well be an
-equivalent process necessary if you are using some other target.
-Run the following command (best to use copy and past) on the `Pi`:
+After the reboot, you'll have to again use the ssh client on your
+staging machine to log onto the target machine,
+this time using your newly set password (`pi::root`).
+
+This section is specific for the `Raspberry Pi`.  If you are using
+some other `Debian` based target, it would probably do no harm to
+still try to run the curl command.  If an error is reported then
+have a look at the `pi-upgrade.sh` script (part of the `phInfo`
+repository.)  You could probably simply run the same commands
+individually with only minor modification.
+
+The following command has been tested and is known to  work on
+the `Raspberry Pi`. (It's best to use copy and past):
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
 
 The command you just ran ends with a reboot (necessary in order to
-implement the new kernel) so you'll have to log back on (after a few
-minutes delay) to continue.
+implement the new kernel) so wait for a few minutes for the boot
+process to complete before logging back on.
 
-#### OPTIONAL
+### OPTIONAL
 
-At this point you have an up to date `Raspberry Pi` as represented by
-the content of its SD card.  To avoid having to repeat the lengthly
-upgrade process each time I want to test the following instructions
-I've made an image of the SD card in its current state.
+For testing purposes, I've been using a very small SD card: only 4GB. 
+What follows would NOT be feasible when using a high capacity card.
+
+At this point we have an up to date `Raspberry Pi` as represented by
+the content of its SD card.  To avoid having to repeat the lengthy
+upgrade process each time I want to test the instructions that follow,
+I've made an image of the SD card in its/this current state.
 To do so, log onto the `Pi`, issue the following command:
 
         sudo shutdown -h now
@@ -313,7 +370,7 @@ To do so, log onto the `Pi`, issue the following command:
 ... and then power down the `Pi` (simply pull out the micro USB power
 cord,) and move its SD card into the card reader of your staging
 machine.  Then on the staging machine, unmount anything that's been
-automounted and save an image of the card.  The commands necessary to
+auto-mounted and save an image of the card.  The commands necessary to
 do that on my staging machine are:
 
         umount /dev/sdb1
@@ -323,16 +380,16 @@ do that on my staging machine are:
 
 ### Installation of Utilities
 
+Using your staging machine, log on to your target machine.
 The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
 then clones the phInfo repository<sup>[4](#4reponame)</sup>:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
 
-This brings in the `phInfo` file hierarchy containing this
-`README` as well as required scripts and files. After completion
-you should find yourself in the `phInfo` directory; just to be sure,
-issue the following command:
+The clone operation brings in the `phInfo` file hierarchy containing
+this `README` as well as required scripts and files. After completion
+change into this directory:
 
         cd phInfo
 
@@ -343,7 +400,7 @@ also run the following script:
         ./favourites.sh
 
 
-##### Network Setup
+### Network Setup
 
 Network configuration is dependent on the target machine's
 hardware.  These instructions assume that there is an Ethernet
@@ -368,7 +425,7 @@ reboot you'll have to use your staging machine to log back on to the
 target machine<sup>[6](#6screenfreeze)</sup>.
 
 
-##### Bring in dependencies
+### Bring in Dependencies
 
 The next script contains two install commands, one of which is
 expected to fail with a message along the lines of "E: Package
@@ -396,7 +453,8 @@ The SSID will be 'piServer' unless you've previously changed it by
 editing `hostapd.conf`.  If all has gone well, pointing your browser
 to `rachel.lan` will take you to the example static HTML home page.
 Once the test has passed point your staging machine's WiFi back to
-your home network, not that of your target machine.
+your home network.
+
 
 ### Pathagar Book Server
 
@@ -412,25 +470,15 @@ You will also later need a pathagar superuser password so now would
 be a good time to pick one and record it somewhere.  I suggest
 'ph-su-pw'.
 
-The next sequence of commands brings in Pathagar, carries out
-necessary configurations, activates the virtual environment so that
-a superuser can be created and then deactivates the environment since
-if all goes well you won't need it any longer.  Django arranges for
-its activation when needed.  The `pip install -r requirements.pip`
-command in `pathagar-setup.sh` takes a very long time so be patient.
+The next sequence of commands brings in Pathagar, and sets up its
+environment.  The `pip install -r requirements.pip` command in
+`pathagar-setup.sh` script takes a very long time so be patient.
+Just before the script finishes, you'll be asked to enter the
+pathagar superuser password.
 
         cd ~/phInfo
         ./pathagar-setup.sh
         cd ~/pathagar
-
-There remains to set a pathagar superuser password. Pick a
-password ('ph-su-pw' was previously suggested;) make a note
-of it so as not to forget, then proceed with the following:
-
-        cd ~/pathagar
-        source penv/bin/activate
-        python manage.py createsuperuser
-        deactivate
 
 ##### Adding Content
 

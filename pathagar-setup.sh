@@ -126,5 +126,8 @@ python manage.py syncdb --noinput
 echo "Run manage.py collectstatic --noinput"
 python manage.py collectstatic --noinput
 
-echo "You have yet to set up the superuser manually using"
-echo "the python manage.py createsuperuser command."
+echo "Last thing: set up the superuser:"
+cd ~/pathagar
+source penv/bin/activate
+python manage.py createsuperuser
+deactivate
