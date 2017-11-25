@@ -350,7 +350,7 @@ individually with only minor modification.
 The following command has been tested and is known to  work on
 the `Raspberry Pi`. (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/pi-upgrade.sh | bash -s
 
 The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
@@ -387,7 +387,7 @@ The following sequence of commands ensures that you are in the
 current user's home directory (`/home/pi`,) installs `git` and
 then clones the phInfo repository<sup>[4](#4reponame)</sup>:
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
 this `README` as well as required scripts and files. After completion
