@@ -6,7 +6,6 @@
 # Calls mysql-setup.sh (formerly called set-db-pw.sh.)
 # Script adjust-db-pw.sh has been incorporated into this script.
 
-set -o errexit  # ends if an error is returned.
 # set -o nounset  # ends if an undefined variable is encountered.
 # set +o nounset  # To overcome PS1 unset bug in virtualenv.
 # The only environment variable we care about is MYSQL_PASSWORD
@@ -112,7 +111,7 @@ then
     exit 1
 fi
 
-echo "Set up the virtualenv for pathagar (penv)"
+echo "Set up the virtualenv for pathagar (penv)..."
 if virtualenv -p python2.7 penv
 then
     echo "... success."
@@ -122,7 +121,7 @@ else
 fi
 # a bug in the above forces us to NOT set -o nounset
 
-echo "Activate the penv and then .."
+echo "Activate the penv..."
 if source penv/bin/activate
 then
     echo "... success."
@@ -140,7 +139,7 @@ else
     exit 1
 fi
 
-echo "Running mysql-setup.sh"
+echo "Running mysql-setup.sh..."
 if ./mysql-setup.sh
 then
     echo "... success."
@@ -149,7 +148,7 @@ else
     exit 1
 fi
 
-echo "Prepare apache2 for pathagar"
+echo "Prepare apache2 for pathagar..."
 echo "Enable (sudo a2enmod wsgi) the apache2 wsgi module."
 if sudo a2enmod wsgi
 then
@@ -160,7 +159,7 @@ else
 fi
 
 echo "Disable (sudo a2dissite 000-default) the"
-echo "default apache2 static site."
+echo "default apache2 static site..."
 if sudo a2dissite 000-default
 then
     echo "... success."
@@ -169,7 +168,7 @@ else
     exit 1
 fi
 
-echo "Enable (sudo a2ensite ph-site) the pathagar site."
+echo "Enable (sudo a2ensite ph-site) the pathagar site..."
 if sudo a2ensite ph-site
 then
     echo "... success."
@@ -196,7 +195,7 @@ else
     fi
 fi
 
-echo "Change /var/www/pathagar_media ownership to www-data"
+echo "Change /var/www/pathagar_media ownership to www-data..."
 if sudo chown -R www-data:www-data /var/www/pathagar_media
 then
     echo "... success."
@@ -205,7 +204,7 @@ else
     exit 1
 fi
 
-echo "Restarting apache"
+echo "Restarting apache..."
 if sudo service apache2 restart
 then
     echo "... success."
@@ -214,7 +213,7 @@ else
     exit 1
 fi
 
-echo "Run manage.py syncdb --noinput"
+echo "Run manage.py syncdb --noinput..."
 if python manage.py syncdb --noinput
 then
     echo "... success."
@@ -223,7 +222,7 @@ else
     exit 1
 fi
 
-echo "Run manage.py collectstatic --noinput"
+echo "Run manage.py collectstatic --noinput..."
 if python manage.py collectstatic --noinput
 then
     echo "... success."
@@ -233,7 +232,7 @@ else
 fi
 
 echo "Last thing: set up the superuser:"
-echo "1. cd into ~/pathagar:"
+echo "1. cd into ~/pathagar..."
 if cd ~/pathagar
 then
     echo "... success."
@@ -242,7 +241,7 @@ else
     exit 1
 fi
 
-echo "2. source penv/bin/activate:"
+echo "2. source penv/bin/activate..."
 if source penv/bin/activate
 then
     echo "... success."
@@ -251,7 +250,7 @@ else
     exit 1
 fi
 
-echo "3. createsuperuser:"
+echo "3. createsuperuser..."
 if python manage.py createsuperuser
 then
     echo "... success."
@@ -260,7 +259,7 @@ else
     exit 1
 fi
 
-echo "4. deactivate the environment:"
+echo "4. deactivate the environment..."
 if deactivate
 then
     echo "... success."

@@ -190,7 +190,6 @@ else
     fi
 
     echo "Assigning DAEMON_CONF value in /etc/init.d/hostapd."
-    set -x
     if sudo sed -i -r "s/DAEMON_CONF=/DEEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
     then
         echo "... sed command ran without error- still worth checking."

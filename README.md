@@ -429,12 +429,7 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-The next script contains two install commands, one of which is
-expected to fail with a message along the lines of "E: Package
-'default-libmysqlclient-dev' or 'libmysqlclient-dev' has no
-installation candidate".  (If you are curious, edit the file and
-read the comments; otherwise just proceed.)
-Expect the script to take a long time (so be patient!)
+Expect the next script to take a long time (so be patient!)
 
         cd phInfo
         ./dependencies.sh
@@ -475,12 +470,14 @@ be a good time to pick one and record it somewhere.  I suggest
 The next sequence of commands brings in Pathagar, and sets up its
 environment.  The `pip install -r requirements.pip` command in
 `pathagar-setup.sh` script takes a very long time so be patient.
-Just before the script finishes, you'll be asked to enter the
-pathagar superuser password.
+If it fails see footnote<sup>[8](#8piperror)</sup>.
+The set-su-pw.sh script prompts you for a *Django SuperUser*.
+It'll want you to enter a user name (or default to the current
+user,) email and the password- e.g. `ph-su-pw`.
 
         cd ~/phInfo
         ./pathagar-setup.sh
-        cd ~/pathagar
+        ./set-pathagar-su.sh
 
 ##### Adding Content
 
@@ -584,4 +581,14 @@ verification" failure.
 If so, look for a line that ends with ...ssh/known_hosts:7. Make a
 note of the number (in this case it's 7) and then delete the 7th
 line (or what ever number it is) in your ~/.ssh/known_hosts file.
+
+<a name="8piperror">8</a>
+
+During testing I encountered an error within the `pip install`
+command called from `pathagar-setup.sh`.  Details can be found
+in the `pip-error.txt` file.  The following script run after the
+failure, resulted in recovery:
+
+        ./pip-error.sh
+
 
