@@ -4,6 +4,9 @@ title: Raspberry Pi Content Server
 ---
 # The Raspberry Pi as a Content Server
 
+You can read these instructions by pointing your browser to
+https://github.com/alexKleider/phInfo/tree/development
+
 ## Introduction
 
 This directory hierarchy attempts to provide all that is needed
@@ -215,7 +218,7 @@ Now power up the `Pi`.
 From the command line of your **staging** machine, issue the
 following commands<sup>[10](#10branch)</sup>:
         
-        export BRANCH=master
+        export BRANCH=development
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
@@ -588,5 +591,9 @@ it cool.
 
 <a name="10branch">10</a>
 
-The `export BRANCH=master` command is not necessary unless you are
-testing (a branch other than master.)
+The `export BRANCH=development` and `git checkout $BRANCH` commands
+are not necessary unless you are testing a branch other than master:
+https://github.com/alexKleider/phInfo/tree/master
+Currently you appear to be testing...
+https://github.com/alexKleider/phInfo/tree/development
+so those lines are required.
