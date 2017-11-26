@@ -35,7 +35,7 @@ else
 fi
 
 echo "There remains to install [default-]libmysqlclient..."
-# Try first the Stretch version; if fail, run the Jessie version:
+echo " Try first Stretch version; if fail run Jessie version:"
 if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
     default-libmysqlclient-dev \
 || \
