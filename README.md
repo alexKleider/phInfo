@@ -213,10 +213,12 @@ Now power up the `Pi`.
 From the command line of your **staging** machine, issue the
 following commands:
         
+        export BRANCH=master
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
         cd phInfo 
+        git checkout $BRANCH
 
 
 ### IP Address Discovery
