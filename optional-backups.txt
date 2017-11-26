@@ -1,0 +1,90 @@
+
+
+### OPTIONAL
+
+For testing purposes, I've been using a very small SD card: only 4GB. 
+What follows would NOT be feasible when using a high capacity card.
+
+Several of the steps outlined in the README take a long time,
+especially if the quality of your Internet connection is less than you
+might wish.  During testing, there fore, I've been doing a back up
+after each such step so that if there is a failure, I don't have to
+begin from the beginning to test a corrected version of a failed
+command. 
+
+Each time such a step completes successfully I shutdown the target:
+
+        sudo shutdown -h now
+
+... and then power it down; on the `Pi` simply pull out the micro
+USB power cord. After moving the SD card into the card reader of
+the staging machine an image can be made.  The following code is
+provided to modify and use (copy and paste is very helpful) as
+appropriate.  Be sure you understand any code you choose to run!
+
+
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="2017-09-07-raspbian-stretch-lite.img"
+export DeviceName="sde"
+export IMAGE="2017-09-07-stretch-after-upgrade.img"
+
+
+# after-upgrade
+From card (device) to file (image):
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+
+From file (image) to card:
+export DLDir="/Downloads"
+export IMAGE="2017-09-07-raspbian-stretch-lite.img"
+export DeviceName="sdb"
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && sudo sync
+
+# Stretch image to card
+export DLDir="/Downloads"
+export DeviceName="sde"
+export IMAGE="2017-09-07-raspbian-stretch-lite.img"
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && sudo sync
+
+# Save image after 1st curl command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after1stcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+rm "${DLDir}/${IMAGE}"
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+
+# Restore card after 1st curl command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after1stcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && sudo sync
+
+#card after 2nd curl command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after2ndcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+
+#card after favourites.sh command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterfavourites.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+
+
+total 13782332
+-rw-r--r-- 1 alex alex 1854590976 Sep  7 18:26 2017-09-07-raspbian-stretch-lite.img
+-rw-rw-r-- 1 alex alex  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip
+-rw-r--r-- 1 root root 3965190144 Nov 19 22:54 2017-09-07-ssh-enabled.img
+-rw-r--r-- 1 root root 3965190144 Nov 19 20:05 2017-09-07-stretch-after-server-setup.img
+-rw-r--r-- 1 root root 3965190144 Nov 22 05:19 2017-09-07-stretch-after-upgrade.img
+-rw-rw-r-- 1 alex alex        271 Nov 23 12:40 my-dd
+-rw-rw-r-- 1 alex alex        169 Nov 12 18:26 sha-256

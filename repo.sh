@@ -2,6 +2,8 @@
 
 # File: repo.sh
 
+export BRANCH=master
+
 echo "Installing git..."
 if  sudo apt-get -y install git 
 then
@@ -18,6 +20,13 @@ echo "Cloning phInfo repository..."
 if  git clone https://github.com/alexKleider/phInfo.git 
 then
     echo "... phInfo repository successfully cloned."
+    echo "Changing into edit-scripts branch..."
+    if git checkout edit-scripts
+    then
+        echo "... changed into $BRANCH branch."
+    else
+        echo "... branch change failed."
+    fi
     echo "You'll have to 'cd phInfo', script can't do it."
     # We are in a subsidiary shell.
 else

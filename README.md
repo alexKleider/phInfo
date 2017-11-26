@@ -70,7 +70,7 @@ a Raspberry Pi, there'll be no necessity to modify anything.
 
 The [Vilros basic starter kit](https://www.amazon.com/Vilros-Raspberry-Basic-Starter-Kit/dp/B01D92SSX6/ref=sr_1_4?s=pc&ie=UTF8&qid=1478455788&sr=1-4&keywords=raspberry+pi)
 is recommended since it includes the required power cord, and a
-protective case. WiFi is built in to this newer (v3) model
+protective case<sup>[9](#9cooling)</sup>. WiFi is built in to this newer (v3) model
 `Raspberry Pi`. The older (v2) model will work but a separate
 [USB WiFi dongle](https://www.amazon.com/CanaKit-Raspberry-Wireless-Adapter-Dongle/dp/B00GFAN498/ref=sr_1_1?s=pc&ie=UTF8&qid=1486968857&sr=1-1&keywords=CanaKit+WIFI)
 must be added.
@@ -115,8 +115,10 @@ The remainder of this section involves use of the command line
 on your staging machine.
 
 Change into your `Downloads` directory: the directory into which
-the zip file was downloaded.  Enter the following commands
-substituting the directory name if your download went else where:
+the zip file was downloaded.  Double check again that none of the
+files in that directory end in `.zip.part` and then enter the
+following commands substituting the directory name if your
+download went else where:
 
         cd ~/Downloads
         ls -lA
@@ -347,8 +349,9 @@ have a look at the `pi-upgrade.sh` script (part of the `phInfo`
 repository.)  You could probably simply run the same commands
 individually with only minor modification.
 
-The following command has been tested and is known to  work on
-the `Raspberry Pi`. (It's best to use copy and past):
+The following command (the first of two times that we'll be using
+the `curl` command) has been tested and is known to  work on the
+`Raspberry Pi`. (It's best to use copy and past):
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/pi-upgrade.sh | bash -s
 
@@ -356,36 +359,14 @@ The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
 process to complete before logging back on.
 
-### OPTIONAL
-
-For testing purposes, I've been using a very small SD card: only 4GB. 
-What follows would NOT be feasible when using a high capacity card.
-
-At this point we have an up to date `Raspberry Pi` as represented by
-the content of its SD card.  To avoid having to repeat the lengthy
-upgrade process each time I want to test the instructions that follow,
-I've made an image of the SD card in its/this current state.
-To do so, log onto the `Pi`, issue the following command:
-
-        sudo shutdown -h now
-
-... and then power down the `Pi` (simply pull out the micro USB power
-cord,) and move its SD card into the card reader of your staging
-machine.  Then on the staging machine, unmount anything that's been
-auto-mounted and save an image of the card.  The commands necessary to
-do that on my staging machine are:
-
-        umount /dev/sdb1
-        umount /dev/sdb2
-        sudo dd of='~/Downloads/2017-09-07-stretch-after-upgrade.img' if=/dev/sdb bs=4M && sudo sync
-
 
 ### Installation of Utilities
 
 Using your staging machine, log on to your target machine.
-The following sequence of commands ensures that you are in the
-current user's home directory (`/home/pi`,) installs `git` and
-then clones the phInfo repository<sup>[4](#4reponame)</sup>:
+The following command (the second of the two times we use
+`curl`) ensures that you are in the current user's home
+directory (`/home/pi`,) installs `git` and then clones the
+phInfo repository<sup>[4](#4reponame)</sup>:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/repo.sh | bash -s
 
@@ -417,6 +398,7 @@ If you think you might want to make any customizations, have
 a look through the initial comments in `networking.sh`; you
 may want to edit some of the files mentioned.
 
+        cd phInfo
         ./networking.sh
         # Wait a few minutes for the reboot before logging on again.
         cd phInfo
@@ -592,3 +574,10 @@ failure, resulted in recovery:
         ./pip-error.sh
 
 
+<a name="9piperror">9</a>
+
+It has been reported (Adam Holt, personal communication) that in warm
+climates when run inside a protective case the `Raspberry Pi` is
+inclined to over heat.  It has there fore been recommended to have it
+mounted open.  It seems the gentlest of breezes is sufficient to keep
+it cool.
