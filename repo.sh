@@ -2,7 +2,7 @@
 
 # File: repo.sh
 
-export BRANCH=master
+export BRANCH=development
 
 echo "Installing git..."
 if  sudo apt-get -y install git 
@@ -23,12 +23,12 @@ then
     echo "Change directory into the repo..."
     if cd ~/phInfo
     then
-        echo "...successfully changed into repo directory."
+        echo "...successful 'cd ~/phInfo'"
     else
         echo "... Failed 'cd ~/phInfo'"
     fi
-    echo "Changing into edit-scripts branch..."
-    if git checkout edit-scripts
+    echo "Changing into $BRANCH branch..."
+    if git checkout $BRANCH
     then
         echo "... changed into $BRANCH branch."
     else

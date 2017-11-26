@@ -213,11 +213,13 @@ Now power up the `Pi`.
 ### Staging Machine Preparation
 
 From the command line of your **staging** machine, issue the
-following commands:
+following commands<sup>[10](#10branch)</sup>:
         
+        export BRANCH=master
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
+        git checkout $BRANCH
         cd phInfo 
 
 
@@ -353,7 +355,7 @@ The following command (the first of two times that we'll be using
 the `curl` command) has been tested and is known to  work on the
 `Raspberry Pi`. (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/pi-upgrade.sh | bash -s
 
 The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
@@ -368,7 +370,7 @@ The following command (the second of the two times we use
 directory (`/home/pi`,) installs `git` and then clones the
 phInfo repository<sup>[4](#4reponame)</sup>:
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/edit-scripts/repo.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
 this `README` as well as required scripts and files. After completion
@@ -582,3 +584,9 @@ climates when run inside a protective case the `Raspberry Pi` is
 inclined to over heat.  It has there fore been recommended to have it
 mounted open.  It seems the gentlest of breezes is sufficient to keep
 it cool.
+
+
+<a name="10branch">10</a>
+
+The `export BRANCH=master` command is not necessary unless you are
+testing (a branch other than master.)
