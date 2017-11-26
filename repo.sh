@@ -20,6 +20,13 @@ echo "Cloning phInfo repository..."
 if  git clone https://github.com/alexKleider/phInfo.git 
 then
     echo "... phInfo repository successfully cloned."
+    echo "Change directory into the repo..."
+    if cd ~/phInfo
+    then
+        echo "...successfully changed into repo directory."
+    else
+        echo "... Failed 'cd ~/phInfo'"
+    fi
     echo "Changing into edit-scripts branch..."
     if git checkout edit-scripts
     then
