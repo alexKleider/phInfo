@@ -20,15 +20,28 @@ then
     echo "/etc/hosts.original exists so we assume"
     echo "additions have already been made to the file."
 else
-    sudo cp /etc/hosts /etc/hosts.original
+    echo "Saving a copy of the original /etc/hosts file..."
+    if sudo cp /etc/hosts /etc/hosts.original
+    then
+        echo "...successfull copy to ...original."
+    else
+        echo "... cp /etc/hosts => /etc/hosts failed! Terminating!"
+        exit 1
+    fi
 
-    sudo sh -c "echo $ap_ip library library.lan rachel rachel.lan >> /etc/hosts"
+    echo "Append a line to /etc/hosts..."
+    if sudo sh -c "echo $ap_ip library library.lan rachel rachel.lan >> /etc/hosts"
 # the following are two alternative ways of doing the same thing.
 # the first has been tested, the second has not.
 #   sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
 #   echo "$ap_ip  library library.lan rachel rachel.lan"|sudo tee -a /etc/hosts >/dev/null
 # See footnote by Aaron at end of file.
-    echo "Appended a line to /etc/hosts."
+    then
+        echo "... success appending a line to /etc/hosts."
+    else
+        echo "... appending line to /etc/hosts failed! Terminating."
+        exit 1
+    fi
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
 # in /etc/hosts will direct WiFi dhcp clients to server.
@@ -37,13 +50,25 @@ else
 #           and rachel.lan directed to static content server.
 fi
 
-# Prepare a mount point for the Static Content
+echo "Prepare a mount point for the Static Content..."
 if [ -d /mnt/Static ]
 then
-    echo "Warning: directory /mnt/Static already exists!"
+    echo "...Warning: directory /mnt/Static already exists!"
 else
-    sudo mkdir /mnt/Static
-    sudo chown pi:pi /mnt/Static
+    echo "Creating a /mnt/Static directory..."
+    if sudo mkdir /mnt/Static
+    then
+        echo "... success."
+        echo "Change its ownership to user 'pi'..."
+        if sudo chown pi:pi /mnt/Static
+        then
+            echo "...ownership successfully changed to 'pi'"
+        else
+            echo "...change of ownership failed!"
+        fi
+    else
+        else "... creation of /mnt/Static direcotry failed!"
+    fi
 fi
 
 if [ -d /var/www/static ]
@@ -52,8 +77,21 @@ then
 else
     # The following directory is created to host content
     # for the static content server.
-    sudo mkdir /var/www/static
-    sudo chown pi:pi /var/www/static
+    echo "Creating /var/www/static directory..."
+    if sudo mkdir /var/www/static
+    then
+        echo "... /var/www/static created."
+        echo "Changing its ownership to user 'pi'..."
+        if sudo chown pi:pi /var/www/static
+        then
+            echo "... ownership successfully changed."
+        else
+            echo "... failure of ownership change!"
+        fi
+    else
+        echo "...failure of directory creation! Teminating!"
+        exit 1
+    fi
 fi
 
 # If get an error about resolving host name, check that the correct
@@ -62,28 +100,70 @@ fi
 #       127.0.1.1 <hostname>.
 # and that /etc/hostname contains the correct <hostname>
 
-# Server set up:
+echo "Setting up the Apache Server..."
 if [ -f /etc/apache2/sites-available/static.conf ]
 then
     echo "Warning: /etc/apache2/sites-available/static.conf exists!"
 else
-    sudo cp static.conf /etc/apache2/sites-available/static.conf
+    echo "  1. Copy static.conf to sites-available..."
+    if sudo cp static.conf /etc/apache2/sites-available/static.conf
+    then
+        echo "    ... successful copy."
+    else
+        echo "    ... copy failed! Teminating!"
+        exit 1
+    fi
 fi
 
-# The following copies an index.html file and gets the site running
+echo "Copy an index.html file; get a sample site running..."
 # thus providing an opportunity to test that all is well before
 # copying over the static content:
 if [ -f /var/www/static/index.html ]
 then
     echo "Warning: /var/www/static/index.html exists!"
 else
-    cp html-index-file  /var/www/static/index.html
-    echo "html-index-file copied to /var/www/static/index.html"
+    echo "  1. Copy to /var/www/static/index.html..."
+    if cp html-index-file  /var/www/static/index.html
+    then
+        echo "    ...copy successful"
+    else
+        echo "    ...copy command failed! Terminating!"
+        exit 1
+    fi
 fi
 
-sudo a2dissite 000-default
-sudo a2ensite static
-sudo service apache2 reload
+echo "Dissable Apache's default site..."
+if sudo a2dissite 000-default
+then
+    echo "...default site disabled."
+else
+    echo "...Failed to disable default site!!"
+fi
+
+echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
+echo "   | Expect a warning:                                   |"
+echo "   | To activate the new configuration, you need to run: |"
+echo "   |   systemctl reload apache2.                         |"
+echo "   |                                                     |"
+echo "   | The upcoming reboot will accomplish the same thing. |"
+echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
+
+echo "Enable the static site..."
+if sudo a2ensite static
+then
+    echo "...static site enabled"
+else
+    echo "...Failed to enable static site!"
+fi
+
+echo "Reload apache..."
+if sudo service apache2 reload
+then
+    echo "...successful reload."
+else
+    echo "...reload failed!"
+fi
+
 # Not sure why but may get the following error:
 # Warning: Unit file of apache2.service changed on disk, 'systemctl
 # daemon-reload' recommended.
@@ -97,25 +177,30 @@ sudo service apache2 reload
 # USB device with LABEL=Static, the following will cause
 # it to be automatically mounted:
 
+echo "Customizing /etc/fstab..."
 if [ -a /etc/fstab.original ]
 then
-    echo "Warning: /etc/fstab.original already exists!"
+    echo "...Warning: /etc/fstab.original already exists!"
 else
-    sudo cp /etc/fstab /etc/fstab.original
-    sudo sh -c 'echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab'
+    echo "  1. Save a copy of the original /etc/fstab file..."
+    if sudo cp /etc/fstab /etc/fstab.original
+    then
+        echo "    .../etc/fstab.original saved."
+        echo "  2. Add a 'LABEL=Static ... line to /etc/fstab..."
+        if sudo sh -c 'echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab'
+        then
+            echo "    ... successfully added the line."
+        else
+            echo "    ... Appending the line failed!"
+        fi
+    else
+        echo "    ...failure to save /etc/fstab.original!"
+    fi
+
 #   echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
 #       sudo tee -a /etc/fstab >/dev/null
-    echo "Appended a line to /etc/fstab."
 
 fi
-
-echo "   |vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv|"
-echo "   | Might get an error:                             |"
-echo "   | Warning: Unit file of apache2.service changed   |"
-echo "   | on disk, 'systemctl daemon-reload' recommended. |"
-echo "   |                                                 |"
-echo "   | The reboot will probably fix everything.        |"
-echo "   |^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|"
 
 sudo shutdown -r now
 

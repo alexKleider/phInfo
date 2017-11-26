@@ -17,7 +17,7 @@
 
 
 echo "First attempt installation of dependencies with names"
-echo "that haven't changed between 'jessie' and 'stretch':"
+echo "that haven't changed between 'jessie' and 'stretch'..."
 if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
   apache2 \
   python-pip \
@@ -28,12 +28,13 @@ if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
   libxslt1-dev \
   mysql-server 
 then
-    echo "'Easy ones' installed; now try [default-]libmysqlclient-dev:"
+    echo "...'Easy ones' installed; now try [default-]libmysqlclient-dev:"
 else
-    echo "Installation of 'easy' dependencies failed!"
+    echo "...Installation of 'easy' dependencies failed!"
     exit 1
 fi
 
+echo "There remains to install [default-]libmysqlclient..."
 # Try first the Stretch version; if fail, run the Jessie version:
 if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
     default-libmysqlclient-dev \
@@ -41,9 +42,9 @@ if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
   libmysqlclient-dev
 then
-  echo "All is well.[default-]libmysqlclient successfully installed."
+  echo "... all is well.[default-]libmysqlclient successfully installed."
 else
-  echo "Still having problems loading [default-]libmysqlclient!"
+  echo "... Unsuccessfull- problems loading [default-]libmysqlclient!"
 fi
 
 # Do we need to reboot here?? No, we don't.

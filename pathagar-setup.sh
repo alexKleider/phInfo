@@ -4,6 +4,8 @@
 # ... assumes (and checks) that the env var MYSQL_PASSWORD
 # has already been set.
 # Calls mysql-setup.sh (formerly called set-db-pw.sh.)
+# 'mysql-setup.sh' is derived from 'proto-mysql-setup.sh'
+# and then subsequently deleted.
 # Script adjust-db-pw.sh has been incorporated into this script.
 
 # set -o nounset  # ends if an undefined variable is encountered.
@@ -38,13 +40,20 @@ echo "Checking that the MYSQL_PASSWORD env var is set."
 if [ -z $MYSQL_PASSWORD ]
 then
     echo "The MYSQL_PASSWORD environment variable hasn't been set!"
-    echo "Script \"pathagar-setup.sa\"h is being aborted."
+    echo "Script 'pathagar-setup.sh' is being aborted."
     exit 1
 else
-# the following 17 lines are content of adjust-db-pw.sh
     echo "Checking for presence of the two target files."
-    if [ -f mysql-setup.sh ] && [ -f local_settings.py ]
+    if [ -f proto-mysql-setup.sh ] && [ -f local_settings.py ]
     then
+        echo "Creating mysql-setup.sh from proto-mysql-setup.sh..."
+        if cp proto-mysql-setup.sh mysql-setup.sh
+        then
+            echo "...successfully copied proto... => mysql-setup.sh"
+        else
+            echo "...copy failed! Terminating!!"
+            exit 1
+        fi
         echo "All is in order:"
         echo " 1. MYSQL_PASSWORD variable has been set to $MYSQL_PASSWORD"
         echo " 2. Both target files are present:"
@@ -52,7 +61,15 @@ else
         echo "  b. local_settings.py"
 
         echo "Running sed to set password variable in the two target files."
-        sed -i s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g mysql-setup.sh local_settings.py
+        if sed -i s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g mysql-setup.sh local_settings.py
+        then
+            echo "...success, but still worth checking if the"
+            echo "...password is properly set in the two files."
+        else
+            echo "...password setting sed command failed!"
+            echo "...Terminating!"
+            exit 1
+        fi
     else
         echo "Target files: mysql-setup.sh, local_settings.py..."
         echo "One or both target files are not present-"
@@ -66,9 +83,9 @@ else
 #   ./adjust-db-pw.sh
 fi
 
-echo "Several files need to be copied:"
+echo "Several files need to be copied and one deleted:"
 
-echo "1. the script mysql-setup.sh => ~/pathagar"
+echo "1. the script mysql-setup.sh => ~/pathagar..."
 if cp ~/phInfo/mysql-setup.sh ~/pathagar
 then
     echo "... success."
@@ -77,7 +94,7 @@ else
     exit 1
 fi
 
-echo "2. the default Django settings => ~/pathagar"
+echo "2. the default Django settings => ~/pathagar..."
 if cp ~/phInfo/local_settings.py ~/pathagar/
 then
     echo "... success."
@@ -87,7 +104,7 @@ else
 fi
 
 
-echo "3. the pathagar config file to Apache's sites-available"
+echo "3. the pathagar config file to Apache's sites-available..."
 if sudo cp ~/phInfo/ph-site.conf /etc/apache2/sites-available/
 then
     echo "... success."
@@ -96,12 +113,21 @@ else
     exit 1
 fi
 
+echo "3. delete ~/phInfo/mysql-setup.sh..."
+if rm ~/phInfo/mysql-setup.sh
+then
+    echo "... success."
+else
+    echo "... deletion failed!"
+fi
+
 echo "Change into the ~/pathagar directory..."
 if cd ~/pathagar
 then
     echo "... successfull."
 else
     echo "... failed! Terminating"
+    exit 1
 fi
 
 if [ -d penv ]
@@ -137,6 +163,14 @@ then
 else
     echo "... pip install failed! Terminating!"
     exit 1
+fi
+
+echo "Ensure that mysql-setup.sh is executable..."
+if chmod 755 mysql-setup.sh
+then
+    echo "... chmod ran successfully"
+else
+    echo "... chmod failed!"
 fi
 
 echo "Running mysql-setup.sh..."

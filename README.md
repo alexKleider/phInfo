@@ -400,7 +400,8 @@ may want to edit some of the files mentioned.
 
         cd phInfo
         ./networking.sh
-        # Wait a few minutes for the reboot before logging on again.
+        # You'll have to wait for some utilities to be installed and
+        # then for the reboot to take place before logging on again.
         cd phInfo
         ./iptables.sh
 

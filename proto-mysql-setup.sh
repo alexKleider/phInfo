@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# File mysql-setup.sh
-# Used to be called set-db-pw.sh
+# File: proto-mysql-setup.sh
+# To be distinguished from mysql-setup.sh
+# This file is derived from mysql-setup.sh by 
+# using sed to set the password- this is done within 
+# the ~/phInfo/pathagar-setup.sh script.
 
 ## Must be run from within ~/phInfo/pathagar-setup.sh
 ## Do not merge into the pathagar-setup.sh script!!
