@@ -1,0 +1,145 @@
+File: Extras/save-and-restore.txt
+
+Sequences of commands that can be copied and pasted
+facilitating copying an image to an SD card or saving an
+image representing a specific stage of SD card preparation.
+$IMAGE: the image file found in
+$DLDir: the download directory.
+$DeviceName: sdb, sde, or what ever your machine chooses to name it.
+
+
+# Stretch image to SD card:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="2017-09-07-raspbian-stretch-lite.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# Will have to enter sudo pw a 2nd time (for the sync)
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Store an image of after the upgrade
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterupgrade.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# May have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Restore an image of after the upgrade
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterupgrade.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# May have to enter sudo pw a 2nd time (for the sync)
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Store an image of after 1st curl (raspi upgrade) command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after1stcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# May have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Restore an image of after 1st curl (raspi upgrade) command:
+# takes 22 minutes
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after1stcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# Will have to enter sudo pw a 2nd time (for the sync)
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+
+# Store an image after 2nd curl command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="after2ndcurl.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# Will have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+date
+
+# Store an image after favourites.sh command:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterfavourites.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# Will have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && sudo sync
+date
+
+# Restore the after favourites.sh image:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterfavourites.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+# Will have to enter sudo pw a 2nd time (for the sync)
+date
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Store an image after dependencies.sh command (takes 7 minutes):
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterdependencies.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# May have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && date && sudo sync
+
+
+# Restore the after dependencies.sh image:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="afterdependencies.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+# Will have to enter sudo pw a 2nd time (for the sync)
+date
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+# Store an image after create-server.sh command (takes 7 minutes):
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="aftercreate-server.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+date
+# May have to enter sudo pw a 2nd time (for the sync)
+sudo dd of="${DLDir}/${IMAGE}" if=/dev/$DeviceName bs=4M && date && sudo sync
+
+
+# Restore the after create-server.sh image:
+export DLDir="/Downloads"
+export DeviceName="sdb"
+export IMAGE="aftercreate-server.img"
+umount /dev/${DeviceName}1
+umount /dev/${DeviceName}2
+# Will have to enter sudo pw a 2nd time (for the sync)
+date
+sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
+
+
+total 13782332
+-rw-r--r-- 1 alex alex 1854590976 Sep  7 18:26 2017-09-07-raspbian-stretch-lite.img
+-rw-rw-r-- 1 alex alex  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip
+-rw-r--r-- 1 root root 3965190144 Nov 19 22:54 2017-09-07-ssh-enabled.img
+-rw-r--r-- 1 root root 3965190144 Nov 19 20:05 2017-09-07-stretch-after-server-setup.img
+-rw-r--r-- 1 root root 3965190144 Nov 22 05:19 2017-09-07-stretch-after-upgrade.img
+-rw-rw-r-- 1 alex alex        271 Nov 23 12:40 my-dd
+-rw-rw-r-- 1 alex alex        169 Nov 12 18:26 sha-256

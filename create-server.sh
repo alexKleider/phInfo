@@ -68,7 +68,7 @@ else
             echo "...change of ownership failed!"
         fi
     else
-        echo "... creation of /mnt/Static direcotry failed!"
+        echo "... creation of /mnt/Static directory failed!"
     fi
 fi
 

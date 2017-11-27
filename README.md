@@ -356,13 +356,12 @@ have a look at the `pi-upgrade.sh` script (part of the `phInfo`
 repository.)  You could probably simply run the same commands
 individually with only minor modification.
 
-The following command (the first of two times that we'll be using
-the `curl` command) has been tested and is known to  work on the
-`Raspberry Pi`. (It's best to use copy and past):
+The following (first `curl`) command upgrades `raspbian` components.
+(It's best to use copy and past):
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
 
-The command you just ran ends with a reboot (necessary in order to
+The above command ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
 process to complete before logging back on.
 
@@ -370,10 +369,10 @@ process to complete before logging back on.
 ### Installation of Utilities
 
 Using your staging machine, log on to your target machine.
-The following command (the second of the two times we use
-`curl`) ensures that you are in the current user's home
-directory (`/home/pi`,) installs `git` and then clones the
-phInfo repository<sup>[4](#4reponame)</sup>. It takes about
+The following (second `curl`) command ensures that you are
+in the current user's home directory (`/home/pi`,)
+installs `git` and then clones the phInfo
+repository<sup>[4](#4reponame)</sup>. It takes about
 3 minutes to run:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
