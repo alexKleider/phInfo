@@ -371,7 +371,8 @@ Using your staging machine, log on to your target machine.
 The following command (the second of the two times we use
 `curl`) ensures that you are in the current user's home
 directory (`/home/pi`,) installs `git` and then clones the
-phInfo repository<sup>[4](#4reponame)</sup>:
+phInfo repository<sup>[4](#4reponame)</sup>. It takes about
+3 minutes to run:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/development/repo.sh | bash -s
 
@@ -383,7 +384,7 @@ change into this directory:
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
-also run the following script:
+also run the following script (it takes about 3 minutes):
 
         ./favourites.sh
 
@@ -417,7 +418,8 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-Expect the next script to take a long time (so be patient!)
+Expect the next script to take a long time
+(~30 min., so be patient!)
 
         cd phInfo
         ./dependencies.sh

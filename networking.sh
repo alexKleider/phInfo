@@ -48,10 +48,11 @@ set -o nounset  # ends if an undefined variable is encountered.
 # dnsmasq: pkg providing dhcp and dns services.
 # iw: tool for configuring Linux wireless devices.
 
+echo "Begin networking.sh script: `date`"
 echo "Installing hostapd, dnsmasq, iw...."
 if sudo apt-get -y install hostapd dnsmasq iw
 then
-    echo "...success."
+    echo "...success installing hostapd, dnsmasq, iw...."
 else
     echo "...failed! Terminating."
     exit 1
@@ -291,6 +292,7 @@ else
     fi
 fi
 
-echo "SYSTEM GOING DOWN FOR A REBOOT."
+echo "SYSTEM GOING DOWN FOR A REBOOT"
+echo "End networking.sh script: `date`"
 sudo shutdown -r now
 

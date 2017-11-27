@@ -12,7 +12,7 @@
 # set +o nounset  # To overcome PS1 unset bug in virtualenv.
 # The only environment variable we care about is MYSQL_PASSWORD
 # and we test for that in the code.
-
+echo "Begin pathagar-setup.sh script: `date`"
 cd
 if [ -d /home/pi/pathagar ]
 then
@@ -301,3 +301,4 @@ else
     echo "... failed! Terminating!"
     exit 1
 fi
+echo "End pathagar-setup.sh script: `date`"

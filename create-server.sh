@@ -12,6 +12,7 @@
 #  may want to change the `LABEL` to something other than
 #  "Static" to suit your own purposes.
 
+echo "Begin create_server.sh script: `date`"
 export ap_ip="10.10.10.10"
 echo "We assume the server's WiFi IP address is $ap_ip"
 
@@ -67,7 +68,7 @@ else
             echo "...change of ownership failed!"
         fi
     else
-        else "... creation of /mnt/Static direcotry failed!"
+        echo "... creation of /mnt/Static direcotry failed!"
     fi
 fi
 
@@ -201,6 +202,8 @@ else
 #       sudo tee -a /etc/fstab >/dev/null
 
 fi
+
+echo "End create-server.sh script: `date`"
 
 sudo shutdown -r now
 

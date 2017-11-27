@@ -2,6 +2,7 @@
 
 # File: repo.sh
 
+echo "Begin repo.sh script: `date`"
 export BRANCH=development
 
 echo "Installing git..."
@@ -39,3 +40,4 @@ then
 else
     echo "Cloning of the phInfo repo failed!"
 fi
+echo "End repo.sh script: `date`"
