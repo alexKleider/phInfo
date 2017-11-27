@@ -4,6 +4,9 @@ title: Raspberry Pi Content Server
 ---
 # The Raspberry Pi as a Content Server
 
+You can read these instructions by pointing your browser to
+https://github.com/alexKleider/phInfo/tree/development
+
 ## Introduction
 
 This directory hierarchy attempts to provide all that is needed
@@ -70,7 +73,7 @@ a Raspberry Pi, there'll be no necessity to modify anything.
 
 The [Vilros basic starter kit](https://www.amazon.com/Vilros-Raspberry-Basic-Starter-Kit/dp/B01D92SSX6/ref=sr_1_4?s=pc&ie=UTF8&qid=1478455788&sr=1-4&keywords=raspberry+pi)
 is recommended since it includes the required power cord, and a
-protective case. WiFi is built in to this newer (v3) model
+protective case<sup>[9](#9cooling)</sup>. WiFi is built in to this newer (v3) model
 `Raspberry Pi`. The older (v2) model will work but a separate
 [USB WiFi dongle](https://www.amazon.com/CanaKit-Raspberry-Wireless-Adapter-Dongle/dp/B00GFAN498/ref=sr_1_1?s=pc&ie=UTF8&qid=1486968857&sr=1-1&keywords=CanaKit+WIFI)
 must be added.
@@ -115,8 +118,10 @@ The remainder of this section involves use of the command line
 on your staging machine.
 
 Change into your `Downloads` directory: the directory into which
-the zip file was downloaded.  Enter the following commands
-substituting the directory name if your download went else where:
+the zip file was downloaded.  Double check again that none of the
+files in that directory end in `.zip.part` and then enter the
+following commands substituting the directory name if your
+download went else where:
 
         cd ~/Downloads
         ls -lA
@@ -211,12 +216,14 @@ Now power up the `Pi`.
 ### Staging Machine Preparation
 
 From the command line of your **staging** machine, issue the
-following commands:
+following commands<sup>[10](#10branch)</sup>:
         
         export BRANCH=master
+
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
+        git checkout $BRANCH
         cd phInfo 
         git checkout $BRANCH
 
@@ -259,6 +266,8 @@ appropriate<sup>[7](#7nasty)</sup>:
 
         ssh pi@<target-ip-adr>
 
+Before being asked for a password, you may be warned about host
+authenticity.  Simply do what is requested.
 After responding to the prompt with the  correct password
 ('raspberry',) with any luck you will now be logged onto the
 target machine (running it 'headless'.)
@@ -347,47 +356,27 @@ have a look at the `pi-upgrade.sh` script (part of the `phInfo`
 repository.)  You could probably simply run the same commands
 individually with only minor modification.
 
-The following command has been tested and is known to  work on
-the `Raspberry Pi`. (It's best to use copy and past):
+The following command (the first of two times that we'll be using
+the `curl` command) has been tested and is known to  work on the
+`Raspberry Pi`. (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/pi-upgrade.sh | bash -s
 
 The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
 process to complete before logging back on.
 
-### OPTIONAL
-
-For testing purposes, I've been using a very small SD card: only 4GB. 
-What follows would NOT be feasible when using a high capacity card.
-
-At this point we have an up to date `Raspberry Pi` as represented by
-the content of its SD card.  To avoid having to repeat the lengthy
-upgrade process each time I want to test the instructions that follow,
-I've made an image of the SD card in its/this current state.
-To do so, log onto the `Pi`, issue the following command:
-
-        sudo shutdown -h now
-
-... and then power down the `Pi` (simply pull out the micro USB power
-cord,) and move its SD card into the card reader of your staging
-machine.  Then on the staging machine, unmount anything that's been
-auto-mounted and save an image of the card.  The commands necessary to
-do that on my staging machine are:
-
-        umount /dev/sdb1
-        umount /dev/sdb2
-        sudo dd of='~/Downloads/2017-09-07-stretch-after-upgrade.img' if=/dev/sdb bs=4M && sudo sync
-
 
 ### Installation of Utilities
 
 Using your staging machine, log on to your target machine.
-The following sequence of commands ensures that you are in the
-current user's home directory (`/home/pi`,) installs `git` and
-then clones the phInfo repository<sup>[4](#4reponame)</sup>:
+The following command (the second of the two times we use
+`curl`) ensures that you are in the current user's home
+directory (`/home/pi`,) installs `git` and then clones the
+phInfo repository<sup>[4](#4reponame)</sup>. It takes about
+3 minutes to run:
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
 this `README` as well as required scripts and files. After completion
@@ -397,7 +386,7 @@ change into this directory:
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
-also run the following script:
+also run the following script (it takes about 3 minutes):
 
         ./favourites.sh
 
@@ -417,8 +406,10 @@ If you think you might want to make any customizations, have
 a look through the initial comments in `networking.sh`; you
 may want to edit some of the files mentioned.
 
+        cd phInfo
         ./networking.sh
-        # Wait a few minutes for the reboot before logging on again.
+        # You'll have to wait for some utilities to be installed and
+        # then for the reboot to take place before logging on again.
         cd phInfo
         ./iptables.sh
 
@@ -429,12 +420,8 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-The next script contains two install commands, one of which is
-expected to fail with a message along the lines of "E: Package
-'default-libmysqlclient-dev' or 'libmysqlclient-dev' has no
-installation candidate".  (If you are curious, edit the file and
-read the comments; otherwise just proceed.)
-Expect the script to take a long time (so be patient!)
+Expect the next script to take a long time
+(~30 min., so be patient!)
 
         cd phInfo
         ./dependencies.sh
@@ -475,12 +462,14 @@ be a good time to pick one and record it somewhere.  I suggest
 The next sequence of commands brings in Pathagar, and sets up its
 environment.  The `pip install -r requirements.pip` command in
 `pathagar-setup.sh` script takes a very long time so be patient.
-Just before the script finishes, you'll be asked to enter the
-pathagar superuser password.
+If it fails see footnote<sup>[8](#8piperror)</sup>.
+The set-su-pw.sh script prompts you for a *Django SuperUser*.
+It'll want you to enter a user name (or default to the current
+user,) email and the password- e.g. `ph-su-pw`.
 
         cd ~/phInfo
         ./pathagar-setup.sh
-        cd ~/pathagar
+        ./set-pathagar-su.sh
 
 ##### Adding Content
 
@@ -585,3 +574,27 @@ If so, look for a line that ends with ...ssh/known_hosts:7. Make a
 note of the number (in this case it's 7) and then delete the 7th
 line (or what ever number it is) in your ~/.ssh/known_hosts file.
 
+<a name="8piperror">8</a>
+
+During testing I encountered an error within the `pip install`
+command called from `pathagar-setup.sh`.  Details can be found
+in the `pip-error.txt` file.  The following script run after the
+failure, resulted in recovery:
+
+        ./pip-error.sh
+
+
+<a name="9piperror">9</a>
+
+It has been reported (Adam Holt, personal communication) that in warm
+climates when run inside a protective case the `Raspberry Pi` is
+inclined to over heat.  It has there fore been recommended to have it
+mounted open.  It seems the gentlest of breezes is sufficient to keep
+it cool.
+
+
+<a name="10branch">10</a>
+
+The `export BRANCH=master` and `git checkout $BRANCH` commands
+are not necessary unless you are testing a branch other than master:
+https://github.com/alexKleider/phInfo/tree/master

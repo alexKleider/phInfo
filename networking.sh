@@ -39,152 +39,225 @@
 # This script is written so as to be idempotent.
 
 set -o errexit  # ends if an error is returned.
-set -o pipefail # pipe failure causes an error.
+# set -o pipefail # pipe failure causes an error, we have no pipes.
 set -o nounset  # ends if an undefined variable is encountered.
+            # we use none in this script
 
-set -x
 
 # hostapd: pkg allowing use of Wi-Fi as an access point (AP.)
 # dnsmasq: pkg providing dhcp and dns services.
 # iw: tool for configuring Linux wireless devices.
 
-sudo apt-get -y install hostapd dnsmasq iw
+echo "Begin networking.sh script: `date`"
+echo "Installing hostapd, dnsmasq, iw...."
+if sudo apt-get -y install hostapd dnsmasq iw
+then
+    echo "...success installing hostapd, dnsmasq, iw...."
+else
+    echo "...failed! Terminating."
+    exit 1
+fi
 
-## /etc/dhcpcd.conf
+echo
+echo "Deal with /etc/dhcpcd.conf...."
 if [ -a /etc/dhcpcd.conf.original ]
 then
-    set +x
     echo "/etc/dhcpcd.conf.original exists so we assume the extra"
     echo "line (denyinterfaces wlan) has been added to dhcpcd.conf."
-    set -x
 else
     if [ -a /etc/dhcpcd.conf ]
     then
-        set +x
         echo "Saving a copy of /etc/dhcpcd.conf to /etc/dhcpcd.conf.original"
-        set -x
-        sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.original
+        if sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.original
+        then
+            echo "...success."
+        else
+            echo "...failed! Terminating."
+            exit 1
+        fi
     else
-        set +x
         echo "Creating /etc/dhcpcd.conf.original."
-        set -x
-        sudo touch /etc/dhcpcd.conf.original
+        if sudo touch /etc/dhcpcd.conf.original
+        then
+            echo "...success."
+        else
+            echo "...failed! Terminating."
+            exit 1
+        fi
     fi
-    set +x
-    echo "Adding the (denyinterfaces wlan) line to /etc/dhcpcd.conf"
-    set -x
-    sudo sh -c "echo denyinterfaces wlan >> /etc/dhcpcd.conf"
+
+    echo "Adding the 'denyinterfaces wlan' line to /etc/dhcpcd.conf"
+    if sudo sh -c "echo denyinterfaces wlan >> /etc/dhcpcd.conf"
+    then
+        echo "...success."
+    else
+        echo "...failed! Terminating."
+        exit 1
+    fi
     # Above command covers us whether or not file existed.
 fi
 
 ## /etc/network/interfaces
+echo
+echo "Deal with /etc/network/interfaces...."
 if [ -a /etc/network/interfaces.original ]
 then
-    set +x
     echo "/etc/network/interfaces.original already exists"
     echo "so we assume files belonging in /etc/network/"
     echo "have already been copied over."
-    set -x
 else
-    set +x
     echo "Preserving the original network/interfaces file,"
-    set -x
-    sudo mv /etc/network/interfaces /etc/network/interfaces.original
-    set +x
-    echo "copying over modified network/interfaces files,"
-    set -x
-    sudo cp interfaces.static /etc/network/interfaces.static
-    sudo cp interfaces.dhcp /etc/network/interfaces.dhcp
+    if sudo mv /etc/network/interfaces /etc/network/interfaces.original
+    then
+        echo "...success."
+    else
+        echo "...failed! Terminating."
+        exit 1
+    fi
+
+    echo "Copying over the two modified network/interfaces files,"
+    echo "1. interfaces.static ..."
+    if sudo cp interfaces.static /etc/network/interfaces.static
+    then
+        echo "...success."
+    else
+        echo "...failed! Terminating."
+        exit 1
+    fi
+    echo "2. interfaces.dhcp ..."
+    if sudo cp interfaces.dhcp /etc/network/interfaces.dhcp
+    then
+        echo "...success."
+    else
+        echo "...failed! Terminating."
+        exit 1
+    fi
     # Only one of the next two line pairs should be uncommented:
-    # DHCP:
-    set +x
-    echo "setting the dhcp version of network/interfaces."
-    set -x
-    sudo cp interfaces.dhcp /etc/network/interfaces
-    # or STATIC:
-    # sudo cp interfaces.static /etc/network/interfaces
-    # echo "setting the static version of network/interfaces."
+    # 1. DHCP:
+    echo "Activating the dhcp version of network/interfaces."
+    if sudo cp interfaces.dhcp /etc/network/interfaces
+    # 2. STATIC:
+    # echo "Activating the static version of network/interfaces."
+    # if sudo cp interfaces.static /etc/network/interfaces
+    then
+        echo "...success."
+    else
+        echo "...failed! Terminating."
+        exit 1
+    fi
 fi
 
 ## /etc/default/hostapd
+echo 
+echo "Deal with /etc/default/hostapd.original...." 
 if [ -a /etc/default/hostapd.original ]
 then
-    set +x
     echo "/etc/default/hostapd.original already exists so we"
     echo "can assume that hostapd has alreacy been modified"
-    set -x
 else
-    set +x
-    echo "Saving the original /etc/default/hostapd file."
-    set -x
-    sudo cp /etc/default/hostapd /etc/default/hostapd.original
-    set +x
-    echo "Modify /etc/default/hostapd using a sed command."
-    set -x
-    sudo sed -i -r "s/\#DAEMON_CONF=\"\"/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
+    echo "Saving the original /etc/default/hostapd file..."
+    if sudo cp /etc/default/hostapd /etc/default/hostapd.original
+    then
+        echo "Modify /etc/default/hostapd using a sed command."
+    else
+        echo "... the copy command failed! Terminating!"
+        exit 1
+    fi
+    echo "Assigning DAEMON_CONF value in /etc/default/hostapd ..."
+    if sudo sed -i -r "s/\#DAEMON_CONF=\"\"/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
+    then
+        echo "... sed command ran without error- still worth checking."
+    else
+        echo "... sed command failed! Terminating!"
+        exit 1
+    fi
 fi
 
 ## /etc/init.d/hostapd
+echo
+echo "Deal with /etc/init.d/hostapd...."
 if [ -a /etc/init.d/hostapd.original ]
 then
-    set +x
     echo "/etc/init.d/hostapd.original already exists so we"
-    echo "/etc/init.d/hostapd has been modified"
-    set -x
+    echo "can assume /etc/init.d/hostapd has been modified"
 else
-    set +x
-    echo "Saving original /etc/init.d/hostapd file."
-    set -x
-    sudo cp /etc/init.d/hostapd /etc/init.d/hostapd.original
-    set +x
-    echo "Modify /etc/init.d/hostapd using a sed command."
-    set -x
-    sudo sed -i -r "s/DAEMON_CONF=/DEEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
+    echo "Saving original /etc/init.d/hostapd file..."
+    if sudo cp /etc/init.d/hostapd /etc/init.d/hostapd.original
+    then
+        echo "... cp command ran successfully."
+    else
+        echo "... cp command failed! Terminating!"
+        exit 1
+    fi
+
+    echo "Assigning DAEMON_CONF value in /etc/init.d/hostapd."
+    if sudo sed -i -r "s/DAEMON_CONF=/DEEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
+    then
+        echo "... sed command ran without error- still worth checking."
+    else
+        echo "... sed command failed! Terminating!"
+        exit 1
+    fi
 fi
 
 ## /etc/hostapd/hostapd.conf
+echo
+echo "Deal with /etc/hostapd/hostapd.conf...."
 if [ -a /etc/hostapd/hostapd.conf.original ]
 # Note: Don't know if /etc/hostapd/hostapd.conf initially exists.
 then
-    set +x
     echo "/etc/hostapd/hostapd.conf.original already exists so we"
     echo "assume hostapd.conf has already been copied over."
-    set -x
 else
     if [ -a /etc/hostapd/hostapd.conf ]
     then
-        set +x
-        echo "Save the original /etc/hostapd/hostapd.conf file."
-        set -x
-        sudo mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.original
+        echo "Saving the original /etc/hostapd/hostapd.conf file..."
+        if sudo mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.original
+        then
+            echo "... success."
+        else
+            echo "... command failed! Terminating!"
+            exit 1
+        fi
     else
-        set +x
-        echo "Creating an empty /etc/hostapd/hostapd.conf.original file."
-        set -x
+        echo "Creating an empty /etc/hostapd/hostapd.conf.original file..."
         sudo touch /etc/hostapd/hostapd.conf.original
     fi
-    set +x
-    echo "Copy over our custom version of /etc/hostapd/hostapd.conf."
-    set -x
-    sudo cp hostapd.conf /etc/hostapd/hostapd.conf
+    echo "Copy over our custom version of /etc/hostapd/hostapd.conf..."
+    if sudo cp hostapd.conf /etc/hostapd/hostapd.conf
+    then
+        echo "...copied successfully."
+    else
+        echo " ...copy command failed! Teminating!"
+        exit 1
+    fi
 fi
 
 ## /etc/dnsmasq.conf
+echo
+echo "Deal with /etc/dnsmasq.conf...."
 if [ -a /etc/dnsmasq.conf.original ]
 then
-    set +x
     echo "/etc/dnsmasq.conf.original exists so we assume"
     echo "dnsmasq.conf has already been copied over."
-    set -x
 else
-    set +x
-    echo "Save a copy of the original /etc/dnsmasq.conf file."
-    set -x
-    sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.original
-    set +x
-    echo "Copy over our custom version of /etc/dnsmasq.conf file."
-    set -x
-    sudo cp dnsmasq.conf /etc/dnsmasq.conf
+    echo "Saving a copy of the original /etc/dnsmasq.conf file..."
+    if sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.original
+    then 
+        echo "...success."
+    else
+        echo "...command failed! Temrminating!"
+        exit 1
+    fi
+
+    echo "Copy over our custom version of /etc/dnsmasq.conf file..."
+    if sudo cp dnsmasq.conf /etc/dnsmasq.conf
+    then 
+        echo "...success."
+    else
+        echo "...command failed! Temrminating!"
+        exit 1
+    fi
 fi
 # The entry 
 # 10.10.10.10  library.lan rachel.lan
@@ -194,28 +267,32 @@ fi
 #           and rachel.lan directed to static content server.
 
 ## /etc/sysctl.conf
+echo
+echo "Deal with /etc/sysctl.conf...."
 if [ -a /etc/sysctl.conf.original ]
 then
-  set +x
-  echo "/etc/sysctl.conf.original exists so we assume"
-  echo "net.ipv4.ip_forward=1 has been uncommented."
-  set -x
+    echo "/etc/sysctl.conf.original exists so we assume"
+    echo "net.ipv4.ip_forward=1 has been uncommented."
 else
-    set +x
-    echo "Save a copy of the original /etc/sysctl.conf file."
-    set -x
-    sudo cp /etc/sysctl.conf /etc/sysctl.conf.original
-    # Modify /etc/sysctl.conf: uncomment net.ipv4.ip_forward=1
-    set +x
-    echo "Modify /etc/sysctl.conf using a sed command."
-    set -x
-    sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
-    # Above command does work, it seems even though it's owned by
-    # root:root
+    echo "Save a copy of the original /etc/sysctl.conf file..."
+    if sudo cp /etc/sysctl.conf /etc/sysctl.conf.original
+    then 
+        echo "...success."
+    else
+        echo "...command failed! Temrminating!"
+        exit 1
+    fi
+    echo "Modify /etc/sysctl.conf: uncomment net.ipv4.ip_forward=1 ...."
+    if sudo sed -i -r "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" /etc/sysctl.conf
+    then 
+        echo "...sed command ran success fully but still worth checking."
+    else
+        echo "...sed command failed! Temrminating!"
+        exit 1
+    fi
 fi
 
-set +x
-echo "System going down for a reboot."
-set -x
+echo "SYSTEM GOING DOWN FOR A REBOOT"
+echo "End networking.sh script: `date`"
 sudo shutdown -r now
 
