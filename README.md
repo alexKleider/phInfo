@@ -583,13 +583,17 @@ failure, resulted in recovery:
         ./pip-error.sh
 
 
-<a name="9piperror">9</a>
+<a name="9cooling">9</a>
 
-It has been reported (Adam Holt, personal communication) that in warm
-climates when run inside a protective case the `Raspberry Pi` is
-inclined to over heat.  It has there fore been recommended to have it
-mounted open.  It seems the gentlest of breezes is sufficient to keep
-it cool.
+Beware (Adam Holt, personal communication) "of your RPi overheating
+and self-throttling etc -- be sure to test use the command to monitor
+their temperature if folks will be using them in hot (or even warm)
+conditions indoors.  A heatsink is not enough.  Many of my Haitian
+friends just run their RPi 3s with the top off, which indeed solves
+the problem as an indoor breeze is sufficient.  It may seem
+unprofession but it works.  Considering most all RPi cases make
+practicall ventilation impossible, and active cooling with a
+fans-that-break is something nobody's wanted to bother with so far".
 
 
 <a name="10branch">10</a>

@@ -1,0 +1,46 @@
+# File: readme.excl
+
+Some notes that we might amalgamate into the README file.
+
+
+Some random person on the internet says about 22 students is the
+real-world maximum.
+
+https://raspberrypi.stackexchange.com/questions/50162/maximum-wi-fi-clients-on-pi-3-hotspot#54765
+
+See also
+https://nodemcu.readthedocs.io/en/master/en/modules/wifi/#wifiap-module
+
+sudo apt install hashalot
+sha256sum 2017-09-07-raspbian-stretch-lite.zip >> sha-256
+
+
+unzip 2017-09-07-raspbian-stretch-lite.zip 
+
+sudo dd if='2017-07-05-raspbian-jessi-lite.img' of=/dev/sdb bs=4M
+sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M
+
+On 2017-11-13 04:07, Adam Holt wrote:
+    Alex,
+    We use 128GB microSD's in RPi3 and RPi Zero W's almost every day.
+
+We almost all use the $44.99:
+https://www.amazon.com/Samsung-MicroSD-Adapter-MB-ME128GA-AM/dp/B06XWZWYVP/
+
+But many of us also use the $44.39:
+https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/
+
+PS Amazon can NOT be trusted, as the very same links have led to
+different products arriving at our doors.  Still, we've had very
+good luck with both above.
+
+PPS beware of your RPi's overheating and self-throttling etc --
+be sure to test use the command to monitor their temperature if
+folks will be using them in hot (or even warm) conditions indoors.
+A heatsink is not enough.  Many of my Haitian friends just run
+their RPi 3s with the top off, which indeed solves the problem as
+an indoor breeze is sufficient.  It may seem unprofession but it
+works.  Considering most all RPi cases make practicall ventilation
+impossible, and active cooling with a fans-than-break is something
+nobody's wanted to bother with so far...
+
