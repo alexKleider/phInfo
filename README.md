@@ -360,7 +360,7 @@ The following command (the first of two times that we'll be using
 the `curl` command) has been tested and is known to  work on the
 `Raspberry Pi`. (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
 
 The command you just ran ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
@@ -376,7 +376,7 @@ directory (`/home/pi`,) installs `git` and then clones the
 phInfo repository<sup>[4](#4reponame)</sup>. It takes about
 3 minutes to run:
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/development/repo.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
 this `README` as well as required scripts and files. After completion
@@ -570,8 +570,8 @@ period (`.`).
 
 When attempting to log on you might be presented with a "Host key
 verification" failure.
-If so, look for a line that ends with ...ssh/known_hosts:7. Make a
-note of the number (in this case it's 7) and then delete the 7th
+If so, look for a line that ends with ...ssh/known_hosts:7.  Make
+a note of the number (in this case it's 7) and then delete the 7th
 line (or what ever number it is) in your ~/.ssh/known_hosts file.
 
 <a name="8piperror">8</a>
