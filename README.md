@@ -5,7 +5,7 @@ title: Raspberry Pi Content Server
 # The Raspberry Pi as a Content Server
 
 You can read these instructions by pointing your browser to
-https://github.com/alexKleider/phInfo/tree/development
+https://github.com/alexKleider/phInfo/tree/master
 
 ## Introduction
 
