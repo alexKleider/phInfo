@@ -5,7 +5,7 @@ set -o pipefail
 
 set -x
 
-scripts_dir=$(dirname $0)
+scripts_dir=$(dirname "$0")
 
 #pathagar_version="0.8.0"
 pathagar_version="master"
@@ -29,7 +29,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
 # pathagar install
 if [[ ! -d "$pathagar_home" ]]; then
   (
-    cd $(dirname "$pathagar_home")
+    cd "$(dirname "$pathagar_home")"
     # Curl url for version strings
     #curl -s -f -L "https://github.com/PathagarBooks/pathagar/archive/v$pathagar_version.tar.gz" | tar xvz
 
@@ -48,6 +48,7 @@ ln -sf "$pathagar_home" "$pathagar_home/pathagar"
 (
   cd "$pathagar_home"
   virtualenv -p python2.7 penv
+  # shellcheck disable=SC1091
   source penv/bin/activate
   pip install -r requirements.pip
 
@@ -56,7 +57,7 @@ ln -sf "$pathagar_home" "$pathagar_home/pathagar"
   echo "Run manage.py collectstatic --noinput"
   python manage.py collectstatic --noinput
   # Create the admin user in pathagar
-  echo -n -e "pathagar\npathagar\n" | python manage.py createsuperuser --username pathagar --email pathagar@example.com
+  echo -n -e "pathagar\\npathagar\\n" | python manage.py createsuperuser --username pathagar --email pathagar@example.com
 )
 
 # Configure apache

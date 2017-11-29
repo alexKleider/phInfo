@@ -8,7 +8,8 @@ set -o pipefail
   repo=${1:-alexKleider/phInfo}
   branch=${2:-master}
 
-  dir="phInfo-$(echo -n $branch | tr -C a-z - )"
+  # shellcheck disable=SC2018
+  dir="phInfo-$(echo -n "$branch" | tr -C a-z - )"
 
   if [[ ! -d "./$dir" ]]; then
     # Download the scripts

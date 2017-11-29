@@ -6,7 +6,7 @@
 # and copies over my vimrc file
 
 
-echo "Begin script favourites.sh: `date`"
+echo "Begin script favourites.sh: $(date)"
 date
 echo "Run install command..."
 if sudo apt-get -y install vim vim-scripts dnsutils screen
@@ -27,6 +27,6 @@ then
 else
     echo "...failed!"
 fi
-echo "End script favourites.sh: `date`"
+echo "End script favourites.sh: $(date)"
 
 # [1] Alex Kleider alex@kleider.ca

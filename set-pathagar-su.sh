@@ -14,6 +14,7 @@ else
 fi
 
 echo "2. source penv/bin/activate:"
+# shellcheck disable=SC1091
 if source penv/bin/activate
 then
     echo "... success."

@@ -48,7 +48,7 @@ set -o nounset  # ends if an undefined variable is encountered.
 # dnsmasq: pkg providing dhcp and dns services.
 # iw: tool for configuring Linux wireless devices.
 
-echo "Begin networking.sh script: `date`"
+echo "Begin networking.sh script: $(date)"
 echo "Installing hostapd, dnsmasq, iw...."
 if sudo apt-get -y install hostapd dnsmasq iw
 then
@@ -164,7 +164,7 @@ else
         exit 1
     fi
     echo "Assigning DAEMON_CONF value in /etc/default/hostapd ..."
-    if sudo sed -i -r "s/\#DAEMON_CONF=\"\"/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/default/hostapd
+    if sudo sed -i -r 's/#DAEMON_CONF=""/DAEMON_CONF=\/etc\/hostapd\/hostapd.conf/g' /etc/default/hostapd
     then
         echo "... sed command ran without error- still worth checking."
     else
@@ -191,7 +191,7 @@ else
     fi
 
     echo "Assigning DAEMON_CONF value in /etc/init.d/hostapd."
-    if sudo sed -i -r "s/DAEMON_CONF=/DEEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g" /etc/init.d/hostapd
+    if sudo sed -i -r 's/DEAMON_CONF=/DEAMON_CONF=\/etc\/hostapd\/hostapd.conf/g' /etc/init.d/hostapd
     then
         echo "... sed command ran without error- still worth checking."
     else
@@ -293,6 +293,6 @@ else
 fi
 
 echo "SYSTEM GOING DOWN FOR A REBOOT"
-echo "End networking.sh script: `date`"
+echo "End networking.sh script: $(date)"
 sudo shutdown -r now
 
