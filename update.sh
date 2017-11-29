@@ -9,7 +9,7 @@ set -o errexit  # ends if an error is returned.
 set -o pipefail # pipe failure causes an error.
 set -o nounset  # ends if an undefined variable is encountered.
 
-echo "Begin update.sh script: `date`"
+echo "Begin update.sh script: $(date)"
 echo "updating, upgrading and installing more software....."
 # The echo 'q' | part of command below is to overcome the problem
 # described in file 'dealwith'.
@@ -43,7 +43,7 @@ cp vimrc /root/.vimrc
 cp vimrc /home/pi/.vimrc
 echo "Copied my custom .vimrc file to /root/ and to /home/pi/."
 
-echo "Ending update.sh script: `date`"
+echo "Ending update.sh script: $(date)"
 echo "  |=========================================|"
 echo "  | Update completed- will now do a reboot. |"
 echo "  |=========================================|"

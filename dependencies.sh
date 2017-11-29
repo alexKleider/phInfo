@@ -16,7 +16,7 @@
 # May need to add the -q option. (see man apt-get)
 
 
-echo "Begin dependencies.sh script: `date`"
+echo "Begin dependencies.sh script: $(date)"
 echo "First attempt installation of dependencies with names"
 echo "that haven't changed between 'jessie' and 'stretch'..."
 if sudo DEBIAN_FRONTEND=noninteractive apt-get -y install \
@@ -48,7 +48,7 @@ else
   echo "... Unsuccessfull- problems loading [default-]libmysqlclient!"
 fi
 
-echo "End dependencies.sh script: `date`"
+echo "End dependencies.sh script: $(date)"
 
 # No need for a reboot at the end of this script.
 

@@ -2,7 +2,7 @@
 
 # File: repo.sh
 
-echo "Begin repo.sh script: `date`"
+echo "Begin repo.sh script: $(date)"
 export BRANCH=master
 
 echo "Installing git..."
@@ -15,7 +15,11 @@ else
 fi
 
 echo "Changing into the users home directory."
-cd ${HOME}
+if ! cd "${HOME}"
+then
+  echo "Could not cd into HOME." >&2
+  exit 1
+fi
 
 echo "Cloning phInfo repository..."
 if  git clone https://github.com/alexKleider/phInfo.git 
@@ -43,4 +47,4 @@ else
     echo "Cloning of the phInfo repo failed! Terminating!"
     exit 1
 fi
-echo "Successfully ending repo.sh script: `date`"
+echo "Successfully ending repo.sh script: $(date)"
