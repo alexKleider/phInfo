@@ -47,27 +47,27 @@ The 6th (Configuring ...,)  7th (Updating ...)( and the 9th
 (Network ...) are also specific to the `Raspberry Pi` but if
 you are using some other target machine, these same instructions
 could probably be fairly easily adapted.  Updating and Upgrading
-might work as is since pretty standard `Debian` commands are used;
-Network Setup will almost certainly differ.
+(the 7th item) might work as is since pretty standard `Debian`
+commands are used; Network Setup will almost certainly differ.  
 Look over the code and modify to suit your use case.
 
 Sensible defaults are chosen for everything so if using
 a Raspberry Pi, there'll be no necessity to modify anything.
 
-    * Raspberry Pi Acquisition
-    * SD Card Preparation (RASPBIAN-LITE)
-    * Staging Machine Preparation
-    * IP Address Discovery
-    * Log on to the Target Machine
-    * Configuring (`raspi-config`) the Pi
-    * Updating and Upgrading the Raspberry Pi
-    * Installation of Utilities
-    * Network Setup  (Specific to Pi's hardware)
-    * Bring in Dependencies
-    * Server Setup
-    * Pathagar Book Server
-    * Static Content
-    * Add Another Static Content Site
+1.  Raspberry Pi Acquisition
+1.  SD Card Preparation (RASPBIAN-LITE)
+1.  Staging Machine Preparation
+4.  IP Address Discovery
+1.  Log on to the Target Machine
+6.  Configuring (`raspi-config`) the Pi
+7.  Updating and Upgrading the Raspberry Pi
+1.  Installation of Utilities
+9.  Network Setup  (Specific to Pi's hardware)
+1.  Bring in Dependencies
+1.  Server Setup
+1.  Pathagar Book Server
+1.  Static Content
+1.  Add Another Static Content Site
 
 ### Raspberry Pi Acquisition
 

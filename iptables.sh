@@ -2,7 +2,7 @@
 
 # File: iptables.sh
 
-echo "Setting up the firewall rules."
+echo "Setting up the firewall rules..."
 # An error concerning firewall (iptables) comes up:
 # The problem is solved with a reboot.
 # It may have to do with one or more of the following:
@@ -24,22 +24,56 @@ echo "Setting up the firewall rules."
 if [ -a /home/pi/iptables ]
 then
     echo "/home/pi/iptables exists so we assume the iptables "
-    echo "have already been manipulated."
+    echo "...have already been manipulated."
 else
     echo "About to: iptables -t nat ..."
-    sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    if sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    then
+        echo "...success"
+    else
+        echo "...iptables -t nat ... FAILED! Teminating."
+        exit 1
+    fi
     echo "About to: iptables -A FORWARD -i eth0 -o wlan0 ..."
-    sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+    if sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+    then
+        echo "...success"
+    else
+        echo "...iptables -A FORWARD -i eth0 ... FAILED! Terminating!"
+        exit 1
+    fi
     echo "About to: iptables -A FORWARD -i wlan -o eth0 ..."
-    sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
+    if sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
+    then
+        echo "...success"
+    else
+        echo "...iptables -A FORWARD -i wlan0 ... FAILED! Teminating!"
+        exit 1
+    fi
 
-    echo "The firewall rules just set and about to be saved are:"
-    sudo iptables -S
-    sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
-    # Creation of /home/pi/iptables leaves an indication
-    # that iptables have already been set up:
-    sudo sh -c "iptables-save > /home/pi/iptables"
+    echo "The firewall rules just set and about to be saved..."
+    if sudo iptables -S
+    then
+        echo "...appear above."
+    else 
+        echo "... iptables -S (showing the tables) FAILED! Terminating!"
+        exit 1
+    fi
+    if sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
+    then
+        echo "... and have been saved"
+    else
+        echo "... saving of iptables FAILED! Teminating!"
+        exit 1
+    fi
+    echo "Saving /home/pi/iptables (to indicate iptables has been run..."
+    if sudo sh -c "iptables-save > /home/pi/iptables"
+    then
+    echo "...success"
+    echo "SYSTEM GOING DOWN FOR A REBOOT"
+    sudo shutdown -r now
+    else
+        echo "...FAILED!"
+    fi
 fi
 
-echo "SYSTEM GOING DOWN FOR A REBOOT"
-sudo shutdown -r now

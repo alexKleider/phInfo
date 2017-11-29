@@ -1,0 +1,19 @@
+# File jekyll.txt
+
+# sudo apt-get install ruby2.0  # No longer required under 16.4
+sudo apt-get install ruby-dev
+sudo gem install jekyll
+
+
+Add 'front matter' to README file:
+---
+layout: default
+title: Raspberry Pi Content Server
+---
+
+Check that you have a _config.yml file.
+Then 
+jekyll serve
+
+point browser to localhost:4000/README
+

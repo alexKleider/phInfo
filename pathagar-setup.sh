@@ -12,8 +12,17 @@
 # set +o nounset  # To overcome PS1 unset bug in virtualenv.
 # The only environment variable we care about is MYSQL_PASSWORD
 # and we test for that in the code.
-echo "Begin pathagar-setup.sh script: `date`"
+echo "Beginning pathagar-setup.sh script: `date`"
 cd
+
+echo "Checking that the MYSQL_PASSWORD env var is set."
+if [ -z $MYSQL_PASSWORD ]
+then
+    echo "The MYSQL_PASSWORD environment variable hasn't been set!"
+    echo "Script 'pathagar-setup.sh' is being aborted."
+    exit 1
+fi
+
 if [ -d /home/pi/pathagar ]
 then
     echo "It seems the pathagar repo has already been cloned."
