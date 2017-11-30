@@ -21,19 +21,20 @@ echo "Setting up the firewall rules..."
 # https://pimylifeup.com/raspberry-pi-wireless-access-point/#comment-3679
 # Conclusion: a reboot does seem to be necessary.
 
-if [ -a /home/pi/iptables ]
+if [ -a ${PARENT_DIR}/iptables.txt ]
 then
-    echo "/home/pi/iptables exists so we assume the iptables "
-    echo "...have already been manipulated."
+    echo "${PARENT_DIR}/iptables.txt exists so we assume this"
+    echo "script (iptables.sh) has already been run. TERMINATING!"
 else
-    echo "About to: iptables -t nat ..."
+    echo "About to: iptables -t nat -A POSTROUTING -o eth0..."
     if sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     then
         echo "...success"
     else
-        echo "...iptables -t nat ... FAILED! Teminating."
+        echo "...iptables -t nat -A POSTROUTING -o eth0... FAILED! Teminating."
         exit 1
     fi
+    
     echo "About to: iptables -A FORWARD -i eth0 -o wlan0 ..."
     if sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
     then
@@ -42,6 +43,7 @@ else
         echo "...iptables -A FORWARD -i eth0 ... FAILED! Terminating!"
         exit 1
     fi
+    
     echo "About to: iptables -A FORWARD -i wlan -o eth0 ..."
     if sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
     then
@@ -59,6 +61,8 @@ else
         echo "... iptables -S (showing the tables) FAILED! Terminating!"
         exit 1
     fi
+
+    echo "Saving iptables to /etc/iptables.ipv4.nat..."
     if sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
     then
         echo "... and have been saved"
@@ -66,12 +70,13 @@ else
         echo "... saving of iptables FAILED! Teminating!"
         exit 1
     fi
-    echo "Saving /home/pi/iptables (to indicate iptables has been run..."
-    if sudo sh -c "iptables-save > /home/pi/iptables"
+    
+    echo "Also saving ip tables to ${PARENT_DIR}/iptables.txt..."
+    if sudo sh -c "iptables-save > ${PARENT_DIR}/iptables.txt"
     then
-    echo "...success"
-    echo "SYSTEM GOING DOWN FOR A REBOOT"
-    sudo shutdown -r now
+        echo "...success"
+        echo "SYSTEM GOING DOWN FOR A REBOOT"
+        sudo shutdown -r now
     else
         echo "...FAILED!"
     fi

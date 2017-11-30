@@ -1,0 +1,48 @@
+# File: config
+
+# This configuration file consists of environmental variables
+# that can be used to over ride defaults.  If you are happy
+# with the recommended defaults provided, this file can be
+# ignored.  
+# If you do want to over ride defaults, edit the following AND
+# be sure you have sourced this environment before running any
+# of the commands on the target machine.
+#
+# The values provided below (before you edit them) are the 
+# defaults that will be used if not over ridden by sourcing
+# this file.
+
+export PARENT_DIR=$HOME    # Used in repo.sh, iptables
+export piInfoDIR="piInfo"  # Used in repo.sh,
+
+export AP_IP="10.10.10.10"  # Used in create-server.sh
+
+export MAIN_USER=$USER   # Used in create-server.sh
+
+export LIBRARY_URL='library.lan'  # URL for pathagar book server
+export RACHEL_URL='rachel.lan'    # URL for static content (#1)
+
+export DIR4STATIC="/var/www/static"  # directory for static content
+export MOUNT_POINT="/mnt/Static"  # a spot to mount static content
+                                  # for transfer to $DIR4STATIC 
+
+
+# The following are hard coded and (as yet) not configurable:
+# /etc/apache2/sites-available/static.conf
+# /var/www/static/index.html
+# 00-default  # Apache's default site
+# static & static.conf  # Apache config file for our static site.
+# index.html  # The proto static content.
+#
+#
+
+# Ignore the following template used in development:
+echo "Assign my_VAR_NAME variable..."
+if [ -z $my_VAR_NAME ]
+then
+    export my_VAR_NAME="var_name" 
+    echo "...defaults to var_name..."
+else
+    echo "...set to $my_VAR_NAME (by config file)"
+fi
+

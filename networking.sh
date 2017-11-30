@@ -292,7 +292,7 @@ else
     fi
 fi
 
-echo "SYSTEM GOING DOWN FOR A REBOOT"
 echo "End networking.sh script: $(date)"
+echo "SYSTEM GOING DOWN FOR A REBOOT"
 sudo shutdown -r now
 

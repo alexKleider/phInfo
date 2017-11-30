@@ -404,13 +404,14 @@ iptables.sh scripts. There must be a reboot between the two
 <sup>[6](#6screenfreeze)</sup>.
 If you think you might want to make any customizations, have
 a look through the initial comments in `networking.sh`; you
-may want to edit some of the files mentioned.
+may want to edit some of the files mentioned.  
+The `networking.sh` script takes about 20 minutes to complete.
 
-        cd phInfo
+        cd phInfo  # or `cd ${PARENT_DIR}/${piInfoDIR}` if using config
         ./networking.sh
         # You'll have to wait for some utilities to be installed and
         # then for the reboot to take place before logging on again.
-        cd phInfo
+        cd phInfo  # see comment above if using config
         ./iptables.sh
 
 The last command also ends with a reboot. Remember that after each
