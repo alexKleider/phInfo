@@ -469,7 +469,6 @@ user,) email and the password- e.g. `ph-su-pw`.
 
         cd ~/phInfo
         ./pathagar-setup.sh
-        ./set-pathagar-su.sh
 
 ##### Adding Content
 
