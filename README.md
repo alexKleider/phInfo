@@ -23,6 +23,11 @@ The goal is to end up with a device that provides:
 * the Pathagar Book Server, and 
 * one or more static sites.
 
+The `server` provides its `services` through `WiFi`: client
+machines connect to the `server`s access
+point<sup>[10](#11clients)</sup>
+and then the client user can connect using the client's browser.
+
 ## Terminology
 
 In the text that follows it's important that the reader is clear
@@ -587,14 +592,15 @@ failure, resulted in recovery:
 <a name="9cooling">9</a>
 
 Beware (Adam Holt, personal communication) "of your RPi overheating
-and self-throttling etc -- be sure to test use the command to monitor
-their temperature if folks will be using them in hot (or even warm)
-conditions indoors.  A heatsink is not enough.  Many of my Haitian
-friends just run their RPi 3s with the top off, which indeed solves
-the problem as an indoor breeze is sufficient.  It may seem
-unprofession but it works.  Considering most all RPi cases make
-practicall ventilation impossible, and active cooling with a
-fans-that-break is something nobody's wanted to bother with so far".
+and self-throttling etc -- be sure to test using the command to
+monitor their temperature if folks will be using them in hot (or
+even warm) conditions indoors.  A heatsink is not enough.  Many of
+my Haitian friends just run their RPi 3s with the top off, which
+indeed solves the problem as an indoor breeze is sufficient.  It
+may seem unprofessional but it works.  Considering most all RPi
+cases make practical ventilation impossible, and active cooling
+with a fan-that-breaks is something nobody's wanted to bother with
+so far".
 
 
 <a name="10branch">10</a>
@@ -602,3 +608,10 @@ fans-that-break is something nobody's wanted to bother with so far".
 The `export BRANCH=master` and `git checkout $BRANCH` commands
 are not necessary unless you are testing a branch other than master:
 https://github.com/alexKleider/phInfo/tree/master
+
+
+<a name="11clients">11</a>
+
+It has been suggested that up to about 22 WiFi clients can be
+serviced by the `raspberry pi`.  
+https://raspberrypi.stackexchange.com/questions/50162/maximum-wi-fi-clients-on-pi-3-hotspot#54765
