@@ -141,7 +141,7 @@ else
     echo "Creating $DIR4STATIC directory..."
     if sudo mkdir $DIR4STATIC
     then
-        echo "... $DIR$STATIC created."
+        echo "... $DIR4STATIC created."
 
         echo "Changing its ownership to user '$MAIN_USER'..."
         if sudo chown ${MAIN_USER}:${MAIN_USER} $DIR4STATIC
@@ -180,12 +180,12 @@ fi
 echo "Copy an index.html file; get a sample site running..."
 # thus providing an opportunity to test that all is well before
 # copying over the static content:
-if [ -f /var/www/static/index.html ]
+if [ -f ${DIR4STATIC}/index.html ]
 then
-    echo "Warning: /var/www/static/index.html exists!"
+    echo "Warning: ${DIR4STATIC}/index.html exists!"
 else
-    echo "  1. Copy to /var/www/static/index.html..."
-    if cp html-index-file  /var/www/static/index.html
+    echo "  1. Copy to ${DIR4STATIC}/index.html..."
+    if cp html-index-file  ${DIR4STATIC}/index.html
     then
         echo "    ...copy successful"
     else

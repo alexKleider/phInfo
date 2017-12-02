@@ -23,10 +23,10 @@ The goal is to end up with a device that provides:
 * the Pathagar Book Server, and 
 * one or more static sites.
 
-The `server` provides its `services` through `WiFi`: client
-machines connect to the `server`s access
-point<sup>[10](#11clients)</sup>
-and then the client user can connect using the client's browser.
+Client machines can connect to the server using
+`WiFi`<sup>[10](#11clients)</sup>
+and then access content using a browser.
+
 
 ## Terminology
 
@@ -59,6 +59,11 @@ Look over the code and modify to suit your use case.
 
 Sensible defaults are chosen for everything so if using
 a Raspberry Pi, there'll be no necessity to modify anything.
+Advanced users however may wish to change some of the defaults.
+They are all listed in a config file in the repository. This
+config file will be mentioned from time to time in the notes
+that follow but these remarks can be ignored by those willing
+to accept the defaults.
 
 1.  Raspberry Pi Acquisition
 1.  SD Card Preparation (RASPBIAN-LITE)
@@ -67,13 +72,27 @@ a Raspberry Pi, there'll be no necessity to modify anything.
 1.  Log on to the Target Machine
 6.  Configuring (`raspi-config`) the Pi
 7.  Updating and Upgrading the Raspberry Pi
-1.  Installation of Utilities
+1.  Installation of Utilities (Bring in the Repository)
 9.  Network Setup  (Specific to Pi's hardware)
 1.  Bring in Dependencies
 1.  Server Setup
 1.  Pathagar Book Server
 1.  Static Content
 1.  Add Another Static Content Site
+
+
+#### For the Advanced User
+
+If using the defaults is not to your liking, a config file is
+provided.  It can be edited and substitutions made as you wish.
+Once modified, it must be `source`d on the target machine and
+this must be done each time the `environment` has been reset by
+a log on.  This complicates things considerably so beware.
+
+Any one NOT interested in modifying defaults, can safely ignore
+all sectioned designated as being for the "advanced user" or
+"AdvUsr" for short.
+
 
 ### Raspberry Pi Acquisition
 
@@ -221,17 +240,36 @@ Now power up the `Pi`.
 
 ### Staging Machine Preparation
 
+This is an optional section and pertains only if you fall into
+one or more of the following three categories:
+
+1. An advanced user who wants to override defaults.
+
+2. Some one testing a branch other than `master`.
+
+3. Some one who needs a way of discovering the target machine's
+IP address. (This does NOT apply if your target machine is other
+than a `Raspberry Pi`.)
+
+Of the next set of commands, the first and last are not required
+unless you are in category `2` in which case substitute the name
+of the branch you wish to test for the word `master`.
+
 From the command line of your **staging** machine, issue the
-following commands<sup>[10](#10branch)</sup>:
+following commands:
         
         export BRANCH=master
 
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
-        git checkout $BRANCH
         cd phInfo 
+
         git checkout $BRANCH
+
+It is now that the advanced user can edit the `config` file
+found in the current directory.  It is heavily commented so
+should be self explanatory.
 
 
 ### IP Address Discovery
@@ -241,12 +279,16 @@ to the internet and is powered up.  (If you are using an external
 WiFi dongle it should be installed before power up.)
 
 The challenge now is to discover the IP address of the target
-machine.  The utility `find_pi.py` (now within the current file
-structure on the staging machine) is provided for this purpose but
-will only be of use if your target machine is a `Raspberry Pi`.
-Before using it, you will want to open it in your favourite editor
-and possibly change the one or two constants to suit your network.
-The file is well commented to help guide you.
+machine.  The Unix arp-scan utility before and again after powering
+up the target machine will likely work.  Look for an IP address
+that appears only after the target power up, not before.
+
+If you put yourself in category `3` (see previous section) then
+the utility `find_pi.py` can be found within your current
+directory on the staging machine.  Before using it, you will want
+to open it in your favourite editor and possibly change the one or
+two constants to suit your network.  The file is well commented to
+help guide you.
 
         python find_pi.py
 
@@ -254,11 +296,6 @@ The output will look something like this:
 
         Probable Pi IP(s):
             192.168.0.11
-
-If your target machine is not a `Raspberry Pi`, then using the Unix
-arp-scan utility before and again after powering up the target machine
-will likely work.  Look for an IP address that appears only after the
-target power up, not before.
 
 
 ### Log on to the Target Machine
@@ -273,7 +310,9 @@ appropriate<sup>[7](#7nasty)</sup>:
         ssh pi@<target-ip-adr>
 
 Before being asked for a password, you may be warned about host
-authenticity.  Simply do what is requested.
+authenticity.  Simply do what is requested.  In the extreme case
+you might have to delete one of the lines in your
+`~/.ssh/known_hosts` file. It is quite safe to do so.
 After responding to the prompt with the  correct password
 ('raspberry',) with any luck you will now be logged onto the
 target machine (running it 'headless'.)
@@ -362,7 +401,7 @@ have a look at the `pi-upgrade.sh` script (part of the `phInfo`
 repository.)  You could probably simply run the same commands
 individually with only minor modification.
 
-The following (first `curl`) command upgrades `raspbian` components.
+This (first `curl`) command upgrades `raspbian` components.
 (It's best to use copy and past):
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/pi-upgrade.sh | bash -s
@@ -371,28 +410,47 @@ The above command ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
 process to complete before logging back on.
 
+##### Only for the Advanced User
 
-### Installation of Utilities
+The advanced user (wanting to change defaults) while still at the
+command line of the staging maching  and in the repository
+directory, should first be sure the `config` file is to her
+satisfaction. Depending on which variables are to be changed
+she may also need to log onto the target machine to create
+another user and/or set up directories (including setting
+permissions.)  Then she should run the following from the
+staging machine:
 
-Using your staging machine, log on to your target machine.
-The following (second `curl`) command ensures that you are
-in the current user's home directory (`/home/pi`,)
-installs `git` and then clones the phInfo
-repository<sup>[4](#4reponame)</sup>. It takes about
-3 minutes to run:
+        source config
+        scp config ${MAIN_USER}@<ip-address>:${PARENT_DIR}
+
+Then after logging on to the target machine:
+
+        source config
+
+Keep in mind that the effects of the above command are wiped
+clean each time the connection is broken and then re-established:
+The environmental variables it sets must be in effect each time
+any of the subsequent commands are run. It does no harm to run
+the command more than once.
+
+
+### Installation of Utilities (Bring in the Repository)
+
+The following (second `curl`) command ensures that current
+directory is set correctly, installs `git`, and then clones
+the phInfo repository.  It takes about 3 minutes to run:
 
         curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
-this `README` as well as required scripts and files. After completion
-change into this directory:
-
-        cd phInfo
+this `README` as well as required scripts and files.
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
 also run the following script (it takes about 3 minutes):
 
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./favourites.sh
 
 
@@ -412,11 +470,13 @@ a look through the initial comments in `networking.sh`; you
 may want to edit some of the files mentioned.  
 The `networking.sh` script takes about 20 minutes to complete.
 
-        cd phInfo  # or `cd ${PARENT_DIR}/${piInfoDIR}` if using config
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./networking.sh
         # You'll have to wait for some utilities to be installed and
         # then for the reboot to take place before logging on again.
-        cd phInfo  # see comment above if using config
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./iptables.sh
 
 The last command also ends with a reboot. Remember that after each
@@ -429,7 +489,8 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 Expect the next script to take a long time
 (~30 min., so be patient!)
 
-        cd phInfo
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./dependencies.sh
 
 ### Server Setup
@@ -439,16 +500,15 @@ on; be sure you are still in the ~/phInfo directory.
 Have a look through the initial comments in `create-server.sh`.
 It's unlikely there'll be anything you need to change.
 
-        cd ~/phInfo
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./create-server.sh
 
 Wait for a few minutes for your target machine to reboot and then
-direct your staging machine's WiFi to the target WiFi access point.
-The SSID will be 'piServer' unless you've previously changed it by
-editing `hostapd.conf`.  If all has gone well, pointing your browser
-to `rachel.lan` will take you to the example static HTML home page.
-Once the test has passed point your staging machine's WiFi back to
-your home network.
+you can check functionality by using any client machine to connect
+to the server's WiFi access point.  The SSID will be 'piServer'
+unless you've previously changed it by editing `hostapd.conf`.
+If all has gone well, pointing your client browser to `rachel.lan`
+will take you to the example static HTML home page.
 
 
 ### Pathagar Book Server
@@ -456,9 +516,10 @@ your home network.
 Choose a database password consisting of alphanumerics, dashes and
 underscores but no other special characters. Make a record of it
 somewhere so as to be sure not to forget it. I suggest 'db-password'.
-Then log on to your target machine as user `pi` and run the following
+Then log on to your target machine and run the following
 command:
 
+        # AdvUser must `source config` again
         export MYSQL_PASSWORD='db-password'
 
 You will also later need a pathagar superuser password so now would
@@ -468,12 +529,13 @@ be a good time to pick one and record it somewhere.  I suggest
 The next sequence of commands brings in Pathagar, and sets up its
 environment.  The `pip install -r requirements.pip` command in
 `pathagar-setup.sh` script takes a very long time so be patient.
-If it fails see footnote<sup>[8](#8piperror)</sup>.
 The set-su-pw.sh script prompts you for a *Django SuperUser*.
 It'll want you to enter a user name (or default to the current
-user,) email and the password- e.g. `ph-su-pw`.
+user,) email and the password- e.g. `ph-su-pw` (to be entered
+twice.)
 
-        cd ~/phInfo
+        # AdvUser must `source config` again
+        cd ~/phInfo  # AdvUsr substitute `cd $REPO`
         ./pathagar-setup.sh
 
 ##### Adding Content
@@ -503,7 +565,9 @@ If your content is available on an ext4 formatted USB device with
 LABEL=Static, (and you haven't modified the `create-server.sh` code,)
 the following will serve as a template for the copy command:
 
-        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
+        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static
+        # for AdvUsr: substitute the following instead:
+        rsync -av ${MOUNT_POINT}/<dir-containing-content>/ $DIR4STATIC
 
 Note that the final slash(`/`) at the end of the first parameter to
 `rsync` is important (so that only the content, not the directory
@@ -514,11 +578,14 @@ If your content is at the top level of the medium you've mounted
 (rather than inside its own directory) then change the command to
 the following:
 
-        rsync -av /mnt/Static/* /var/www/static/
+        rsync -av /mnt/Static/* /var/www/static
+        # for AdvUsr: substitute the following instead:
+        rsync -av ${MOUNT_POINT}/* ${DIR4STATIC}
 
 If your server is the `Raspberry Pi` set up as described here,
-then entering "rachel.lan" in the URL window of a browser running
-on a WiFi client machine will result in your content being displayed.
+then entering "rachel.lan" (AdvUser: LIBRARY_URL) in the URL
+window of a browser running on a WiFi client machine will result
+in your content being displayed.
 
 
 ### Add Another Static Content Site
@@ -554,11 +621,6 @@ Still need to document this.
     on a different user or use of a different installation directory,
     the scripts will have to be modified accordingly
 
-<a name="4reponame">4</a>.
-
-    The repository name may change in which case all references to
-    `phInfo` will need to be changed.
-
 <a name="5oldraspian">5</a>
 
 Older versions of raspian can be found 
@@ -579,15 +641,6 @@ If so, look for a line that ends with ...ssh/known_hosts:7.  Make
 a note of the number (in this case it's 7) and then delete the 7th
 line (or what ever number it is) in your ~/.ssh/known_hosts file.
 
-<a name="8piperror">8</a>
-
-During testing I encountered an error within the `pip install`
-command called from `pathagar-setup.sh`.  Details can be found
-in the `pip-error.txt` file.  The following script run after the
-failure, resulted in recovery:
-
-        ./pip-error.sh
-
 
 <a name="9cooling">9</a>
 
@@ -601,14 +654,6 @@ may seem unprofessional but it works.  Considering most all RPi
 cases make practical ventilation impossible, and active cooling
 with a fan-that-breaks is something nobody's wanted to bother with
 so far".
-
-
-<a name="10branch">10</a>
-
-The `export BRANCH=master` and `git checkout $BRANCH` commands
-are not necessary unless you are testing a branch other than master:
-https://github.com/alexKleider/phInfo/tree/master
-
 
 <a name="11clients">11</a>
 

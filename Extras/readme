@@ -1,6 +1,18 @@
 # File: readme.excl
 
-Some notes that we might amalgamate into the README file
+Removed from the README but may need to go back:
+<sup>[10](#10branch)</sup>
+
+<a name="10branch">10</a>
+
+The `export BRANCH=master` and `git checkout $BRANCH` commands
+are not necessary unless you are testing a branch other than master:
+https://github.com/alexKleider/phInfo/tree/master
+
+
+=========================================================
+
+Some notes that we might amalgamate into the README file:
 (Or that have already been incorporated.)
 
 See also
