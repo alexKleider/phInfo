@@ -284,41 +284,53 @@ else
     exit 1
 fi
 
-echo "Last thing: set up the superuser:"
-echo "1. cd into ~/pathagar..."
-if cd ~/pathagar
+## If locale has not been set, creation of superuser will fail!
+if [ -z `grep --invert-match -e ^# /etc/default/locale` ]
 then
-    echo "... success."
+    echo "It seems locale has NOT been set so the only thing we"
+    echo "have left to do: to create the django superuser,"
+    echo "will fail!!!! (So we won't attempt to do it.)"
+    echo "Set your locale and then run the following mannually."
+    echo "    python manage.py create superuser"
 else
-    echo "... failed! Terminating!"
-    exit 1
+
+    echo "Last thing: set up the superuser:"
+    echo "1. cd into ~/pathagar..."
+    if cd ~/pathagar
+    then
+        echo "... success."
+    else
+        echo "... failed! Terminating!"
+        exit 1
+    fi
+
+    echo "2. source penv/bin/activate..."
+    if source penv/bin/activate
+    then
+        echo "... success."
+    else
+        echo "... failed! Terminating!"
+        exit 1
+    fi
+
+    echo "3. createsuperuser..."
+    if python manage.py createsuperuser
+    then
+        echo "... success."
+    else
+        echo "... failed! Terminating!"
+        exit 1
+    fi
+
+    echo "4. deactivate the environment..."
+    if deactivate
+    then
+        echo "... success."
+    else
+        echo "... failed! Terminating!"
+        exit 1
+    fi
+
 fi
 
-echo "2. source penv/bin/activate..."
-# shellcheck disable=SC1091
-if source penv/bin/activate
-then
-    echo "... success."
-else
-    echo "... failed! Terminating!"
-    exit 1
-fi
-
-echo "3. createsuperuser..."
-if python manage.py createsuperuser
-then
-    echo "... success."
-else
-    echo "... failed! Terminating!"
-    exit 1
-fi
-
-echo "4. deactivate the environment..."
-if deactivate
-then
-    echo "... success."
-else
-    echo "... failed! Terminating!"
-    exit 1
-fi
 echo "End pathagar-setup.sh script: $(date)"

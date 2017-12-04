@@ -6,7 +6,9 @@ title: Raspberry Pi Content Server
 # The Raspberry Pi as a Content Server
 
 You can read these instructions by pointing your browser to
-https://github.com/alexKleider/phInfo/tree/master
+https://github.com/alexKleider/phInfo (or
+https://github.com/alexKleider/phInfo/tree/$branch-name
+if you are testing a branch other than master.)
 
 ## Introduction
 
@@ -37,11 +39,14 @@ The `Raspberry Pi` (or any other `Debian` based machine that you
 may be trying to configure to use as a content server) will be
 referred to as your `target` machine.  Your laptop or other
 (preferably Linux) computer (it could even be another `Raspberry
-Pi`) will be referred to as your `staging` machine.  It will be
-assumed that your `staging` machine will have `Linux` as its
-operating system. There's a good chance that an Apple (running
-OSX) will work the same (not tested) but if your OS is by
-`MicroSoft`, you'll have to look for instruction elsewhere.
+Pi`) will be referred to as your `staging` machine. A `client`
+machine is any Wifi enabled machine providing its user with a
+browser. The the whole purpose of this project is to provide
+content for clients.  It will be assumed that your `staging`
+machine will have `Linux` as its operating system. There's a
+good chance that an Apple (running OSX) will also work (not
+tested) but if your OS is by `MicroSoft`, you'll have to look
+for instruction elsewhere.
 
 
 ## The Process
@@ -54,16 +59,8 @@ The 6th (Configuring ...,)  7th (Updating ...)( and the 9th
 you are using some other target machine, these same instructions
 could probably be fairly easily adapted.  Updating and Upgrading
 (the 7th item) might work as is since pretty standard `Debian`
-commands are used; Network Setup will almost certainly differ.  
+commands are used; Network Setup (item 9) will almost certainly differ.  
 Look over the code and modify to suit your use case.
-
-Sensible defaults are chosen for everything so if using
-a Raspberry Pi, there'll be no necessity to modify anything.
-Advanced users however may wish to change some of the defaults.
-They are all listed in a config file in the repository. This
-config file will be mentioned from time to time in the notes
-that follow but these remarks can be ignored by those willing
-to accept the defaults.
 
 1.  Raspberry Pi Acquisition
 1.  SD Card Preparation (RASPBIAN-LITE)
@@ -80,18 +77,23 @@ to accept the defaults.
 1.  Static Content
 1.  Add Another Static Content Site
 
+Sensible defaults are chosen for everything so if using a `Raspberry
+Pi`, there'll be no necessity to modify anything.
+
 
 #### For the Advanced User
 
-If using the defaults is not to your liking, a config file is
-provided.  It can be edited and substitutions made as you wish.
-Once modified, it must be `source`d on the target machine and
-this must be done each time the `environment` has been reset by
-a log on.  This complicates things considerably so beware.
+Some (`advanced`) users may need (or just wish) to change some or
+all of the defaults. This can be done by changing assignments in
+the `config` file found in the `phInfo` repository.  Once modified,
+it must be `source`d on the target machine each time you log on and
+before any of the configuring commands are run.  This complicates
+things considerably so beware.
 
-Any one NOT interested in modifying defaults, can safely ignore
-all sectioned designated as being for the "advanced user" or
-"AdvUsr" for short.
+The rest of this `README` contains segments to help in this regard;
+each of these segments will be designated `AdvUsr` so it will be
+easy to see what is only relevant to the `admanced user` and can
+be ignored by those happy to accept the built in defaults.
 
 
 ### Raspberry Pi Acquisition
@@ -154,20 +156,20 @@ download went else where:
 ... and expect to see output which includes a line that looks 
 like the following:
 
-`-rw-rw-r-- 1 user user  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip`
+`-rw-rw-r-- 1 user user  362914661 Dec  2 15:52 2017-11-29-raspbian-stretch-lite.zip`
 
 The name of the zip file will reflect version updates so may not
 be the same.  Substitute the name you get for the one shown above.
 
         
-        sha1sum 2017-09-07-raspbian-stretch-lite.zip
+        sha1sum 2017-11-29-raspbian-stretch-lite.zip
 
 The output should match the ``SHA-256`` check-sum you copied from the
 download page.
 
 Next, unzip the file:
 
-        unzip 2017-09-07-raspbian-stretch-lite.zip
+        unzip 2017-11-29-raspbian-stretch-lite.zip
 
 This results in the appearance of another file named the same but
 without the trailing ".zip".
