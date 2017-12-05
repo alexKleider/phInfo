@@ -19,6 +19,11 @@ then
     export PARENT_DIR="$HOME"
 fi
 
+if [ -z $piInfoDIR ]
+then
+    export piInfoDIR="piInfo"
+fi
+
 echo "Changing into the PARENT_DIRectory."
 cd "${PARENT_DIR}"
 

@@ -4,9 +4,6 @@
 
 # No defaults needed.
 
-set -o errexit  # ends if an error is returned.
-set -x          # Echo commands to stdout.
-
 echo "Begin running  pi-upgrade.sh on `date`..."
 
 echo "...first: update..."
