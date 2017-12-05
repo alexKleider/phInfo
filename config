@@ -36,6 +36,7 @@ export piInfoDIR="piInfo"  # Used in repo.sh
 
 # Don't change the next line.
 export REPO=${PARENT_DIR}/${piInfoDIR}
+# The pathagar code is hard wired to be within $PARENT_DIR
 
 # AP_IP specifies the IP address of the server's access point.
 # ... the one to which client machines will be connecting.

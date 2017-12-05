@@ -15,7 +15,7 @@ $DeviceName: sdb, sde, or what ever your machine chooses to name it.
 # Stretch image to SD card: (took 10:20 using my 2nd reader)
 export DLDir="/Downloads"
 export DeviceName="sde"
-export IMAGE="2017-09-07-raspbian-stretch-lite.img"
+export IMAGE="2017-11-29-raspbian-stretch-lite.img"
 umount /dev/${DeviceName}1
 umount /dev/${DeviceName}2
 date
@@ -141,11 +141,3 @@ date
 sudo dd if="${DLDir}/${IMAGE}" of=/dev/$DeviceName bs=4M && date && sudo sync
 
 
-total 13782332
--rw-r--r-- 1 alex alex 1854590976 Sep  7 18:26 2017-09-07-raspbian-stretch-lite.img
--rw-rw-r-- 1 alex alex  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip
--rw-r--r-- 1 root root 3965190144 Nov 19 22:54 2017-09-07-ssh-enabled.img
--rw-r--r-- 1 root root 3965190144 Nov 19 20:05 2017-09-07-stretch-after-server-setup.img
--rw-r--r-- 1 root root 3965190144 Nov 22 05:19 2017-09-07-stretch-after-upgrade.img
--rw-rw-r-- 1 alex alex        271 Nov 23 12:40 my-dd
--rw-rw-r-- 1 alex alex        169 Nov 12 18:26 sha-256

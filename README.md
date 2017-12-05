@@ -162,7 +162,7 @@ The name of the zip file will reflect version updates so may not
 be the same.  Substitute the name you get for the one shown above.
 
         
-        sha1sum 2017-11-29-raspbian-stretch-lite.zip
+        sha256sum 2017-11-29-raspbian-stretch-lite.zip
 
 The output should match the ``SHA-256`` check-sum you copied from the
 download page.
@@ -215,7 +215,7 @@ Getting this wrong can be hazardous!!  Making the appropriate
 substitutions as necessary, run the next command (which took 10
 minutes to complete on my staging machine):
 
-        sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
+        sudo dd if='2017-11-29-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
 
 Be absolutely sure the command has completed before going on.
 
@@ -331,7 +331,7 @@ target machine using the ssh client on your staging machine.
 
 Use the command line of your staging machine to log onto the target
 `Raspberry Pi` as described in the previous section.  You can safely
-ignore the warning about changing the password.  We'll do that in a
+ignore any warning about changing the password.  We'll do that in a
 moment. Run `raspi-config`:
         
         sudo raspi-config
@@ -343,51 +343,70 @@ highlighted, use the left and right arrow keys to pick `<Select>`
 (or `<Finish>`).  Here is an outline of what is recommended or
 appropriate for our use case:
 
-    1. Change user password: I've been changing the pw to `pi::root` 
-    2. Hostname: I suggest `rpi` or `pi-1` (something short)
-    3. Boot options:
-        We are not installing a GUI so select B1 (boot into the
-        command line interface) following which you will be given
-        another list of options and again select B1 (log in
-        required.)
-    4. Localization Options:
-        11 Change Locale: The default is `en_gb.UTF-8`: suitable
-            for Great Britain.  For the American locale, scroll down
-            (with the down arrow) until encountering the asterisk (*)
-            next to `en_gb.UTF-8`, toggle with the space bar, and
-            then continue scrolling down until coming to
-            `en_us.UTF-8`.  Toggle with the space bar again so the
-            asterisk appears. Here the behavior of the interface is
-            a bit different: the `Enter` key moves you forward to
-            the next panel where you again use the down arrow
-            to land on `en_us.UTF-8`.  Use the right arrow and then
-            `Enter` over the `<Ok>`.
-        Choose option 4 two more times:
-        12 Change Time Zone: US, New Pacific
-        13 Change Keyboard Layout: 
-            Since our goal is to run the `Pi` 'headless',
-            I don't think changing any of this is necessary but if you
-            do expect to be using a keyboard the following is
-            suggested:
-            generic 105-key (the default) seems to work
-            I chose `Other` rather than the default
-            (`English (UK)') and then select 'English (US)'
-            There's no reason to change any of the remaining
-            defaults.
-    5. Interfacing Options:
-        Only the second option is relevant to us:
-        P2 SSH: Enable ssh server
-        Be sure <Yes> is selected, this is very important.
-    6. Overclock: Left in the default state.
-    7. Advanced options:
-        A1 Expand file system: This is also very important.
-        None of the other advance options concern us.
-    8. Update this tool to latest version
-        Optional: not necessary.
-    9. About raspi-config
-        Nothing important here.
+    1. Change User Password Change password for the current user
+        You will now be asked to enter a new password for the
+        pi user; suggest changing to `pi::root` 
+    2. Network Options      Configure network settings
+        N1 Hostname                Set the visible name for this Pi on a network
+            Suggest `rpi` or `pi-1` (something short)
+            Once done editing the Hostname, use down arrow.
+        N2 Wi-fi                   Enter SSID and passphrase
+            Please enter SSID, use down arrow when done.
+            (We'll be changing this later anyway.) I use 'pi security'.
+        N3 Network interface names Enable/Disable predictable network interface names
+            'YES' seems a reasonable option. (We'll be changing these.)
+    3. Boot Options         Configure options for start-up
+        B1 Desktop / CLI            Choose whether to boot into a desktop environment or the command line
+            B1 Console           Text console, requiring user to login
+                This is the one recommended.
+            B2 Console Autologin Text console, automatically logged in as 'pi' user
+            B3 Desktop           Desktop GUI, requiring user to login
+            B4 Desktop Autologin Desktop GUI, automatically logged in as 'pi' user
+        B2 Wait for Network at Boot Choose whether to wait for network connection during boot
+            Would you like boot to wait until a network connection is established?
+                Unimportant, I choose 'NO'.
+        B3 Splash Screen            Choose graphical splash screen or text boot
+                Only text boot is possible since we have no GUI
+    4. Localisation Options Set up language and regional settings to match your location                             │
+        I1 Change Locale          Set up language and regional settings to match your location
+            The default is '[*] en_GB.UTF-8 UTF-8'; you may want to
+            scroll down and toggle (using the space bar) the asterix
+            on '[*] en_US.UTF-8 UTF-8'.  Then use the Return/Enter key
+            to go to the next page to make your final selection.
+        I2 Change Timezone        Set up timezone to match your location
+            First pick the 'Geographic area:'
+            Then select the specific zone. For us on the US West coast
+            it's 'Pacific-New'
+        I3 Change Keyboard Layout Set the keyboard layout to match your keyboard
+            No need to bother with this since we'll be operating 'headless'.
+        I4 Change Wi-fi Country   Set the legal channels used in your country
+            Self explanatory
+    5. Interfacing Options  Configure connections to peripherals
+        Only the second (P2 SSH) option is relevant to us.
+        P1 Camera      Enable/Disable connection to the Raspberry Pi Camera
+        P2 SSH         Enable/Disable remote command line access to your Pi using SSH
+            Be sure to enable SSH
+        P3 VNC         Enable/Disable graphical remote access to your Pi using RealVNC
+        P4 SPI         Enable/Disable automatic loading of SPI kernel module
+        P5 I2C         Enable/Disable automatic loading of I2C kernel module
+        P6 Serial      Enable/Disable shell and kernel messages on the serial connection
+        P7 1-Wire      Enable/Disable one-wire interface
+        P8 Remote GPIO Enable/Disable remote access to GPIO pins
+    6. Overclock            Configure overclocking for your Pi                                                       │
+    7. Advanced Options     Configure advanced settings                                                              │
+        Only the first is of interest to us.
+        A1 Expand Filesystem Ensures that all of the SD card storage is available to the OS
+            It's very important to expand the file system!
+        A2 Overscan          You may need to configure overscan if black bars are present on display
+        A3 Memory Split      Change the amount of memory made available to the GPU
+        A4 Audio             Force audio out through HDMI or 3.5mm jack
+        A5 Resolution        Set a specific screen resolution
+        A6 GL Driver         Enable/Disable experimental desktop GL driver
+    The last two options are unimportant.
+    8. Update               Update this tool to the latest version                                                   │
+    9. About raspi-config   Information about this configuration tool                                                │
 
-After `raspi-config` completes, reboot the `Pi` as suggested.
+When done, accept the offer to reboot.
 
 
 ### Updating and Upgrading the Raspberry Pi
