@@ -5,15 +5,28 @@
 # This script brings in some utilities (which I[1] find useful)
 # and copies over my vimrc file
 
-### the following is not needed..
-#if [ -z $MAIN_USER ]
-#then
-#    echo 'MAIN_USER defaults to "pi".'
-#    export MAIN_USER=pi
-#else
-#    echo "MAIN_USER has been set to $MAIN_USER"
-#fi
-### ...end of unnecessary part.
+if [ -z $MAIN_USER ]
+then
+    echo 'MAIN_USER defaults to "pi".'
+    export MAIN_USER=pi
+else
+    echo "MAIN_USER has been set to $MAIN_USER"
+fi
+
+if [ -z $PARENT_DIR ]
+then
+    export PARENT_DIR=$HOME
+fi
+
+if [ -z $phInfoDIR ]
+then
+    export phInfoDIR="phInfo"
+fi
+
+if [ -z $REPO ]
+then
+    export REPO="${PARENT_DIR}/${piInfoDIR}"
+fi
 
 echo "Begin script favourites.sh: $(date)"
 echo "Run install command..."
@@ -29,7 +42,7 @@ fi
 # The following is only for those who
 # use vim and like my[1] vim defaults.
 echo "Copying vimrc onto pi home directory..."
-if cp ~/phInfo/vimrc ${HOME}/.vimrc
+if cp ${REPO}/vimrc ${HOME}/.vimrc
 then
     echo "...success:"
     echo "Copied custom .vimrc file to /home/${MAIN_USER}/."

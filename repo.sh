@@ -19,20 +19,20 @@ then
     export PARENT_DIR="$HOME"
 fi
 
-if [ -z $piInfoDIR ]
+if [ -z $phInfoDIR ]
 then
-    export piInfoDIR="piInfo"
+    export phInfoDIR="phInfo"
 fi
 
 echo "Changing into the PARENT_DIRectory."
 cd "${PARENT_DIR}"
 
 echo "Cloning phInfo repository..."
-if  git clone https://github.com/alexKleider/phInfo.git ${piInfoDIR}
+if  git clone https://github.com/alexKleider/phInfo.git ${phInfoDIR}
 then
     echo "... phInfo repository successfully cloned."
     echo "Change directory into the repo..."
-    if cd ${PARENT_DIR}/${piInfoDIR}
+    if cd ${PARENT_DIR}/${phInfoDIR}
     then
         echo "...successful cd into `pwd`"
     else
