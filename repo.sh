@@ -24,8 +24,13 @@ then
     export phInfoDIR="phInfo"
 fi
 
-echo "Changing into the PARENT_DIRectory."
-cd "${PARENT_DIR}"
+echo "Changing into the PARENT_DIRectory..."
+if cd "${PARENT_DIR}"
+then
+    echo "...success"
+else
+    echo "...directory change FAILED! TERMINATING!!"
+fi
 
 echo "Cloning phInfo repository..."
 if  git clone https://github.com/alexKleider/phInfo.git ${phInfoDIR}
