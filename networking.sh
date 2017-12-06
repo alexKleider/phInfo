@@ -9,6 +9,15 @@
 #    an access point. This is the situation in the case
 #    of the Raspberry Pi but would most likely be different
 #    for other hardware.
+
+# NOTE: Since the 2017-11-29 release of raspbian-stretch, the eth0
+# interface has been renamed and that name is no longer predictable.
+# The code in this script tries to adjust for this but if you
+# experience loss of connectivity, you might be able to recover by
+# connecting to the WiFi interface which at the time that this script
+# ends will still be in client mode.  Checking the code in this file
+# will provide an indication of what needs to be done.
+
           
 #  Depends on the presence of the following files:
 #    dnsmasq.conf
@@ -37,12 +46,6 @@
 #  the "STATIC" section below.
 
 # This script is written so as to be idempotent.
-
-set -o errexit  # ends if an error is returned.
-# set -o pipefail # pipe failure causes an error, we have no pipes.
-set -o nounset  # ends if an undefined variable is encountered.
-            # we use none in this script
-
 
 # hostapd: pkg allowing use of Wi-Fi as an access point (AP.)
 # dnsmasq: pkg providing dhcp and dns services.
@@ -100,6 +103,52 @@ fi
 ## /etc/network/interfaces
 echo
 echo "Deal with /etc/network/interfaces...."
+
+echo "...First check for name of ethernet interface..."
+
+echo "Get the interface names- assume ethernet is 1st..."
+if s=`ls /sys/class/net`
+then
+    echo "...successfully harvested:"
+    echo "$s..."
+    a=( $s )
+    NEW_ETH0="${a[0]}"
+    echo "...extracted \"${NEW_ETH0}\"..."
+
+else
+    echo "...listing of /sys/class/net FAILED! TERMINATING!"
+    exit 1
+fi
+if [ "eth0" != $NEW_ETH0 ]
+then
+    echo "...the old eth0 is now $NEW_ETH0..."
+    echo "...must adjust the interfaces files..."
+    if sed -i -r "s/eth0/${NEW_ETH0}/g" interfaces.dhcp
+    then
+        echo "...successfully modified the dhcp version..."
+    else
+        echo "...sed !FAILED! re the dhcp version! TERMINATING!"
+        exit 1
+    fi
+    if sed -i -r "s/eth0/${NEW_ETH0}/g" interfaces.static
+    then
+        echo "...successfully modified the static version..."
+    else
+        echo "...sed !FAILED! re the static version! TERMINATING!"
+        exit 1
+    fi
+    echo "...and must also adjust the iptables.sh script..."
+    if sed -i -r "s/eth0/${NEW_ETH0}/g" "iptables.sh"
+    then
+        echo "...successfully modified the iptables.sh script..."
+    else
+        echo "...sed !FAILED! re the iptables.sh script! TERMINATING!"
+        exit 1
+    fi
+else
+    echo "...it's still called eth0; OK to procede..."
+fi
+
 if [ -a /etc/network/interfaces.original ]
 then
     echo "/etc/network/interfaces.original already exists"
@@ -132,6 +181,7 @@ else
         echo "...failed! Terminating."
         exit 1
     fi
+
     # Only one of the next two line pairs should be uncommented:
     # 1. DHCP:
     echo "Activating the dhcp version of network/interfaces."

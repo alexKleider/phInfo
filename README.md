@@ -483,6 +483,12 @@ hardware.  These instructions assume that there is an Ethernet
 is true for the Raspberry Pi. The scripts used will most
 certainly have to be modified if this is not your use case.
 
+Also note that the naming of `eth0` appears to have changed
+with the move from `etch` to `stretch`; the code in the
+`networking.sh` script attempts to allow for this and so far has
+proven to be successful. Check the script if interested in how
+this is done.
+
 Configuration is done by commands in the networking.sh and the
 iptables.sh scripts. There must be a reboot between the two
 <sup>[6](#6screenfreeze)</sup>.

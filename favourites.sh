@@ -25,7 +25,7 @@ fi
 
 if [ -z $REPO ]
 then
-    export REPO="${PARENT_DIR}/${piInfoDIR}"
+    export REPO="${PARENT_DIR}/${phInfoDIR}"
 fi
 
 echo "Begin script favourites.sh: $(date)"
