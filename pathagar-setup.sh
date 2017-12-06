@@ -13,26 +13,26 @@
 # The only environment variable we care about is MYSQL_PASSWORD
 # and we test for that in the code.
 
-if [ -z $PARENT_DIR ]
+if [ -z "$PARENT_DIR" ]
 then
     PARENT_DIR="$HOME"
 fi
 
-if [ -z $piInfoDIR ]
+if [ -z "$phInfoDIR" ]
 then
-    piInfoDIR="piInfo"
+    phInfoDIR="phInfo"
 fi
 
-if [ -z $REPO ]
+if [ -z "$REPO" ]
 then
-    REPO=${PARENT_DIR}/${piInfoDIR}
+    REPO="${PARENT_DIR}/${phInfoDIR}"
 fi
 
 echo "Beginning pathagar-setup.sh script: $(date)"
 echo "Attempting to cd ..."
 if ! cd "$PARENT_DIR"
 then
-  echo "Could not cd into \$HOME directory." >&2
+  echo "Could not cd into \$HOME directory."
   exit 1
 fi
 
@@ -60,7 +60,7 @@ then
     echo "Change into the phInfo repo's directory."
     if ! cd "$REPO"
     then
-      echo "Could not cd into $REPO." >&2
+      echo "Could not cd into $REPO. TERMINATING!"
       exit 1
     fi
 else
@@ -85,7 +85,7 @@ else
         then
             echo "...successfully copied proto... => mysql-setup.sh"
         else
-            echo "...copy failed! Terminating!!"
+            echo "...copy FAILED! Terminating!!"
             exit 1
         fi
         echo "All is in order:"
@@ -105,7 +105,7 @@ else
             exit 1
         fi
     else
-        echo "Target files: mysql-setup.sh, local_settings.py..."
+        echo "Target files: proto-mysql-setup.sh, local_settings.py..."
         echo "One or both target files are not present-"
         echo "Script \"pathagar-setup.sh\" is being aborted."
         exit 1
@@ -148,7 +148,7 @@ else
 fi
 
 echo "3. delete ~/phInfo/mysql-setup.sh..."
-if rm ${PARENT_DIR}/phInfo/mysql-setup.sh
+if rm "${PARENT_DIR}/phInfo/mysql-setup.sh"
 then
     echo "... success."
 else
@@ -156,7 +156,7 @@ else
 fi
 
 echo "Change into the ~/pathagar directory..."
-if cd ${PARENT_DIR}/pathagar
+if cd "${PARENT_DIR}/pathagar"
 then
     echo "... successfull."
 else
@@ -303,7 +303,7 @@ fi
 ## If locale has not been set, creation of superuser will fail!
 # The next line returns True if there is no uncommented line in the
 # /etc/default/locale file indicating there is no locale.
-if [ -z `grep --invert-match -e ^# /etc/default/locale` ]
+if  ! grep --invert-match -e ^# /etc/default/locale
 then
     echo "It seems locale has NOT been set!"
     echo "We'll try to correct that..."
@@ -321,7 +321,7 @@ fi
 echo "Last thing: set up the superuser:"
 echo "1. cd into ~/pathagar..."
 
-if cd ${PARENT_DIR}/pathagar
+if cd "${PARENT_DIR}/pathagar"
 then
     echo "... success."
 else

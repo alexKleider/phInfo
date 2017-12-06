@@ -487,7 +487,7 @@ Also note that the naming of `eth0` appears to have changed
 with the move from `etch` to `stretch`; the code in the
 `networking.sh` script attempts to allow for this and so far has
 proven to be successful. Check the script if interested in how
-this is done.
+this is done. https://wiki.debian.org/NetworkConfiguration
 
 Configuration is done by commands in the networking.sh and the
 iptables.sh scripts. There must be a reboot between the two
@@ -513,8 +513,8 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-Expect the next script to take a long time
-(~30 min., so be patient!)
+The next script may take a long time (~7 min with good internet
+service, but up to ~30 min if service is slow!)
 
         # AdvUser must `source config` again
         cd phInfo  # AdvUsr substitute `cd $REPO`

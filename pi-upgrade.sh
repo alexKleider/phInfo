@@ -4,7 +4,7 @@
 
 # No defaults needed.
 
-echo "Begin running  pi-upgrade.sh on `date`..."
+echo "Begin running  pi-upgrade.sh on $(date)..."
 
 echo "...first: update..."
 if sudo apt --fix-missing update
@@ -33,7 +33,7 @@ else
     exit 1
 fi
 
-echo "...finished running pi-upgrade.sh on `date`"
+echo "...finished running pi-upgrade.sh on $(date)"
 echo " Rebooting in order to bring in the latest kernel."
 sudo shutdown -r now
 # a reboot is required for the latest kernel to be implemented.

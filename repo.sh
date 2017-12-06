@@ -8,7 +8,7 @@ export BRANCH="add-config"
 echo "Installing git..."
 if  sudo apt-get -y install git 
 then
-    echo "... git successfully installed at `date`."
+    echo "... git successfully installed at $(date)."
 else
     echo "Error installing git! Terminating!"
     exit 1
@@ -19,7 +19,7 @@ then
     export PARENT_DIR="$HOME"
 fi
 
-if [ -z $phInfoDIR ]
+if [ -z "$phInfoDIR" ]
 then
     export phInfoDIR="phInfo"
 fi
@@ -32,9 +32,9 @@ if  git clone https://github.com/alexKleider/phInfo.git ${phInfoDIR}
 then
     echo "... phInfo repository successfully cloned."
     echo "Change directory into the repo..."
-    if cd ${PARENT_DIR}/${phInfoDIR}
+    if cd "${PARENT_DIR}/${phInfoDIR}"
     then
-        echo "...successful cd into `pwd`"
+        echo "...successful cd into $(pwd)"
     else
         echo "... Failed cd into repository's directory! Teminating!"
         exit 1

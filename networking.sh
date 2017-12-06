@@ -102,15 +102,16 @@ fi
 
 ## /etc/network/interfaces
 echo
-echo "Deal with /etc/network/interfaces...."
+echo "Deal with interfaces...."
 
 echo "...First check for name of ethernet interface..."
 
 echo "Get the interface names- assume ethernet is 1st..."
-if s=`ls /sys/class/net`
+if s="$(ls /sys/class/net)"
 then
     echo "...successfully harvested:"
     echo "$s..."
+    # shellcheck disable=SC2206
     a=( $s )
     NEW_ETH0="${a[0]}"
     echo "...extracted \"${NEW_ETH0}\"..."
@@ -119,7 +120,7 @@ else
     echo "...listing of /sys/class/net FAILED! TERMINATING!"
     exit 1
 fi
-if [ "eth0" != $NEW_ETH0 ]
+if [ "eth0" != "$NEW_ETH0" ]
 then
     echo "...the old eth0 is now $NEW_ETH0..."
     echo "...must adjust the interfaces files..."

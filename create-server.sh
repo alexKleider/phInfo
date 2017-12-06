@@ -16,7 +16,7 @@
 echo "Begin create_server.sh script: $(date)"
 
 echo "Assign AP_IP - Access Point IP address..."
-if [ -z $AP_IP ]
+if [ -z "$AP_IP" ]
 then
     export AP_IP="10.10.10.10"  
     echo "...defaults to $AP_IP" 
@@ -45,7 +45,7 @@ fi
 echo "Assigning URLs..."
 
 echo "...for pathagar..."
-if [ -z $LIBRARY_URL ]
+if [ -z "$LIBRARY_URL" ]
 then
     export LIBRARY_URL='library.lan'
     echo "...using default: $LIBRARY_URL"
@@ -53,7 +53,7 @@ else
     echo "...from config: $LIBRARY_URL"
 fi
 
-if [ -z $RACHEL_URL ]
+if [ -z "$RACHEL_URL" ]
 then
     export RACHEL_URL="rachel.lan"
     echo "...using default: $RACHEL_URL"
@@ -83,14 +83,14 @@ fi
 
 
 echo "Prepare a mount point for the Static Content..."
-if [ -z $MOUNT_POINT ]
+if [ -z "$MOUNT_POINT" ]
 then
     export MOUNT_POINT="/mnt/Static"
     echo "...defaults to /mnt/Static..."
 else
     echo "...set to $MOUNT_POINT (by config file)"
 fi
-if [ -d $MOUNT_POINT ]
+if [ -d "$MOUNT_POINT" ]
 then
     echo "...Warning: directory $MOUNT_POINT already exists!"
 else
@@ -100,16 +100,16 @@ else
         echo "... success."
 
         echo "Assign ownership..."
-        if [ -z $MAIN_USER ]
+        if [ -z "$MAIN_USER" ]
         then
-            export MAIN_USER="var_name" 
+            export MAIN_USER="${USER}" 
             echo "...defaults to $USER..."
         else
             echo "...set to $MAIN_USER (by config file)"
         fi
 
         echo "Change its ownership to user $MAIN_USER..."
-        if sudo chown $MAIN_USER:$MAIN_USER $MOUNT_POINT
+        if sudo chown "$MAIN_USER:$MAIN_USER $MOUNT_POINT"
         then
             echo "...ownership successfully changed to '$MAIN_USER'"
         else
@@ -124,7 +124,7 @@ fi
 
 echo "Prepeare a directory for static content..."
 echo "Assign DIR4STATIC variable..."
-if [ -z $DIR4STATIC ]
+if [ -z "$DIR4STATIC" ]
 then
     export DIR4STATIC="/var/www/static" 
     echo "...defaults to '/var/www/static'..."
@@ -139,12 +139,12 @@ else
     # The following directory is created to host content
     # for the static content server.
     echo "Creating $DIR4STATIC directory..."
-    if sudo mkdir $DIR4STATIC
+    if sudo mkdir "$DIR4STATIC"
     then
         echo "... $DIR4STATIC created."
 
         echo "Changing its ownership to user '$MAIN_USER'..."
-        if sudo chown ${MAIN_USER}:${MAIN_USER} $DIR4STATIC
+        if sudo chown "${MAIN_USER}:${MAIN_USER}" "$DIR4STATIC"
         then
             echo "... ownership successfully changed."
         else
@@ -249,6 +249,7 @@ else
     then
         echo "    .../etc/fstab.original saved."
         echo "  2. Add a 'LABEL=Static ... line to /etc/fstab..."
+        # shellcheck disable=SC2016 
         if sudo sh -c 'echo "LABEL=Static $MOUNT_POINT ext4 nofail 0 0" >> /etc/fstab'
         then
             echo "    ... successfully added the line."

@@ -21,7 +21,7 @@ echo "Setting up the firewall rules..."
 # https://pimylifeup.com/raspberry-pi-wireless-access-point/#comment-3679
 # Conclusion: a reboot does seem to be necessary.
 
-if [ -a ${PARENT_DIR}/iptables.txt ]
+if [ -a "${PARENT_DIR}/iptables.txt" ]
 then
     echo "${PARENT_DIR}/iptables.txt exists so we assume this"
     echo "script (iptables.sh) has already been run. TERMINATING!"
