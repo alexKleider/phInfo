@@ -1,0 +1,12 @@
+File: branch-testing.text
+
+When testing a development branch the following changes need to
+be made (and then reversed after merging with master:)
+
+1 Change the two curl commands in the README.md file-
+    Substitute the branch name for `master`.
+2 Change the `repo.sh` script-
+    Do the same in line 6.
+
+When merging, remember to change back to `master` in these
+three locations.

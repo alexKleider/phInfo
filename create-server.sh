@@ -4,7 +4,7 @@
 # Before sourcing this file:
 #  1. If you have elected to change the Access Point's IP address
 #  then you should change the '10.10.10.10' IP address in the
-#  "export ap_ip="10.10.10.10" line early in the script.
+#  "export AP_IP="10.10.10.10" line early in the script.
 #  to the address you choose.  Corresponding changes should have
 #  been or will still need to be made in dnsmasq.conf and
 #  interfaces (and possibly elsewhere as well.)
@@ -14,77 +14,137 @@
 #  "Static" to suit your own purposes.
 
 echo "Begin create_server.sh script: $(date)"
-export ap_ip="10.10.10.10"
-echo "We assume the server's WiFi IP address is $ap_ip"
+
+echo "Assign AP_IP - Access Point IP address..."
+if [ -z "$AP_IP" ]
+then
+    export AP_IP="10.10.10.10"  
+    echo "...defaults to $AP_IP" 
+else
+    echo "...set to $AP_IP (by config file)"
+fi
 
 if [ -a /etc/hosts.original ]
 then
     echo "/etc/hosts.original exists so we assume"
     echo "additions have already been made to the file."
-else
-    echo "Saving a copy of the original /etc/hosts file..."
-    if sudo cp /etc/hosts /etc/hosts.original
-    then
-        echo "...successfull copy to ...original."
-    else
-        echo "... cp /etc/hosts => /etc/hosts failed! Terminating!"
-        exit 1
-    fi
+    echo "We therefore conclude that:"
+    echo "THIS SCRIPT HAS ALREADY BEEN RUN!! TERMINATING!"
+    exit 1
+fi
 
-    echo "Append a line to /etc/hosts..."
-    if sudo sh -c "echo $ap_ip library library.lan rachel rachel.lan >> /etc/hosts"
+echo "Saving a copy of the original /etc/hosts file..."
+if sudo cp /etc/hosts /etc/hosts.original
+then
+    echo "...successfull copy to /etc/hosts.original."
+else
+    echo "... cp /etc/hosts => /etc/hosts.original FAILED! TERMINATING!"
+    exit 1
+fi
+
+echo "Assigning URLs..."
+
+echo "...for pathagar..."
+if [ -z "$LIBRARY_URL" ]
+then
+    export LIBRARY_URL='library.lan'
+    echo "...using default: $LIBRARY_URL"
+else
+    echo "...from config: $LIBRARY_URL"
+fi
+
+if [ -z "$RACHEL_URL" ]
+then
+    export RACHEL_URL="rachel.lan"
+    echo "...using default: $RACHEL_URL"
+else
+    echo "...from config: $RACHEL_URL"
+fi
+
+echo "Append a (IP > URLs) line to /etc/hosts..."
+if sudo sh -c "echo $AP_IP $LIBRARY_URL $RACHEL_URL >> /etc/hosts"
 # the following are two alternative ways of doing the same thing.
 # the first has been tested, the second has not.
-#   sudo -E sh -c 'echo "$ap_ip  library library.lan rachel rachel.lan" >> /etc/hosts'
-#   echo "$ap_ip  library library.lan rachel rachel.lan"|sudo tee -a /etc/hosts >/dev/null
+#   sudo -E sh -c 'echo "$AP_IP $LIBRARY_URL $RACHEL_URL" >> /etc/hosts'
+#   echo "$AP_IP $LIBRARY_URL $RACHEL_URL"|sudo tee -a /etc/hosts >/dev/null
 # See footnote by Aaron at end of file.
-    then
-        echo "... success appending a line to /etc/hosts."
-    else
-        echo "... appending line to /etc/hosts failed! Terminating."
-        exit 1
-    fi
+then
+    echo "... success appending line to /etc/hosts."
+else
+    echo "... appending line to /etc/hosts FAILED! TERMINATING!"
+    exit 1
+fi
 # The entry 
-# 10.10.10.10  library.lan rachel.lan
+# $AP_IP  $LIBRARY_URL $RACHEL_URL
 # in /etc/hosts will direct WiFi dhcp clients to server.
 # The ultimate goal is to have
-#               library.lan directed to pathagar book server
-#           and rachel.lan directed to static content server.
-fi
+#              $LIBRARY_URL  directed to pathagar book server
+#           and $RACHEL_URL  directed to static content server.
+
 
 echo "Prepare a mount point for the Static Content..."
-if [ -d /mnt/Static ]
+if [ -z "$MOUNT_POINT" ]
 then
-    echo "...Warning: directory /mnt/Static already exists!"
+    export MOUNT_POINT="/mnt/Static"
+    echo "...defaults to /mnt/Static..."
 else
-    echo "Creating a /mnt/Static directory..."
-    if sudo mkdir /mnt/Static
+    echo "...set to $MOUNT_POINT (by config file)"
+fi
+if [ -d "$MOUNT_POINT" ]
+then
+    echo "...Warning: directory $MOUNT_POINT already exists!"
+else
+    echo "Creating a $MOUNT_POINT directory..."
+    if sudo mkdir $MOUNT_POINT
     then
         echo "... success."
-        echo "Change its ownership to user 'pi'..."
-        if sudo chown pi:pi /mnt/Static
+
+        echo "Assign ownership..."
+        if [ -z "$MAIN_USER" ]
         then
-            echo "...ownership successfully changed to 'pi'"
+            export MAIN_USER="${USER}" 
+            echo "...defaults to $USER..."
         else
-            echo "...change of ownership failed!"
+            echo "...set to $MAIN_USER (by config file)"
+        fi
+
+        echo "Change its ownership to user $MAIN_USER..."
+        if sudo chown "$MAIN_USER:$MAIN_USER $MOUNT_POINT"
+        then
+            echo "...ownership successfully changed to '$MAIN_USER'"
+        else
+            echo "...change of ownership FAILED! TERMINATING!"
+            exit 1
         fi
     else
-        echo "... creation of /mnt/Static directory failed!"
+        echo "... creation of /mnt/Static directory FAILED! TERMINATING!"
+        exit 1
     fi
 fi
 
-if [ -d /var/www/static ]
+echo "Prepeare a directory for static content..."
+echo "Assign DIR4STATIC variable..."
+if [ -z "$DIR4STATIC" ]
 then
-    echo "Warning: directory /var/www/static already exists!"
+    export DIR4STATIC="/var/www/static" 
+    echo "...defaults to '/var/www/static'..."
+else
+    echo "...set to '$DIR4STATIC' (by config file)"
+fi
+
+if [ -d $DIR4STATIC ]
+then
+    echo "Warning: directory '$DIR4STATIC' already exists!"
 else
     # The following directory is created to host content
     # for the static content server.
-    echo "Creating /var/www/static directory..."
-    if sudo mkdir /var/www/static
+    echo "Creating $DIR4STATIC directory..."
+    if sudo mkdir "$DIR4STATIC"
     then
-        echo "... /var/www/static created."
-        echo "Changing its ownership to user 'pi'..."
-        if sudo chown pi:pi /var/www/static
+        echo "... $DIR4STATIC created."
+
+        echo "Changing its ownership to user '$MAIN_USER'..."
+        if sudo chown "${MAIN_USER}:${MAIN_USER}" "$DIR4STATIC"
         then
             echo "... ownership successfully changed."
         else
@@ -112,7 +172,7 @@ else
     then
         echo "    ... successful copy."
     else
-        echo "    ... copy failed! Teminating!"
+        echo "    ... copy FAILED! Teminating!"
         exit 1
     fi
 fi
@@ -120,16 +180,16 @@ fi
 echo "Copy an index.html file; get a sample site running..."
 # thus providing an opportunity to test that all is well before
 # copying over the static content:
-if [ -f /var/www/static/index.html ]
+if [ -f ${DIR4STATIC}/index.html ]
 then
-    echo "Warning: /var/www/static/index.html exists!"
+    echo "Warning: ${DIR4STATIC}/index.html exists!"
 else
-    echo "  1. Copy to /var/www/static/index.html..."
-    if cp html-index-file  /var/www/static/index.html
+    echo "  1. Copy to ${DIR4STATIC}/index.html..."
+    if cp html-index-file  ${DIR4STATIC}/index.html
     then
         echo "    ...copy successful"
     else
-        echo "    ...copy command failed! Terminating!"
+        echo "    ...copy command FAILED! TERMINATING!"
         exit 1
     fi
 fi
@@ -163,7 +223,7 @@ if sudo service apache2 reload
 then
     echo "...successful reload."
 else
-    echo "...reload failed!"
+    echo "...reload FAILED!"
 fi
 
 # Not sure why but may get the following error:
@@ -189,17 +249,18 @@ else
     then
         echo "    .../etc/fstab.original saved."
         echo "  2. Add a 'LABEL=Static ... line to /etc/fstab..."
-        if sudo sh -c 'echo "LABEL=Static /mnt/Static ext4 nofail 0 0" >> /etc/fstab'
+        # shellcheck disable=SC2016 
+        if sudo sh -c 'echo "LABEL=Static $MOUNT_POINT ext4 nofail 0 0" >> /etc/fstab'
         then
             echo "    ... successfully added the line."
         else
-            echo "    ... Appending the line failed!"
+            echo "    ... Appending the line FAILED!"
         fi
     else
         echo "    ...failure to save /etc/fstab.original!"
     fi
 
-#   echo "LABEL=Static /mnt/Static ext4 nofail 0 0"|
+#   echo "LABEL=Static $MOUNT_POINT ext4 nofail 0 0"|
 #       sudo tee -a /etc/fstab >/dev/null
 
 fi
@@ -213,10 +274,10 @@ sudo shutdown -r now
 # As Michael explains, it really comes down to the quoting you're
 # using and which shell the command is being evaluated in.
 
-# sudo sh -c "echo $ap_ip  library library.lan rachel rachel.lan >> /etc/hosts"
+# sudo sh -c "echo $AP_IP  library library.lan rachel rachel.lan >> /etc/hosts"
 
 # I would recommend this one as the "correct" solution. IMHO it's
-# the simplest one and avoids `sudo -E`. The `$ap_ip` is evaluated
+# the simplest one and avoids `sudo -E`. The `$AP_IP` is evaluated
 # in the current shell. You don't need to export the variable
 # because the sub-shells don't need to read the variable and never
 # see it. They already have the value within the command. `sh` sees

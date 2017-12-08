@@ -1,0 +1,80 @@
+# File: config
+
+# This configuration file consists of environmental variables
+# that can be used to over ride defaults.  If you are happy
+# with the recommended defaults provided, this file can be
+# ignored.  
+#
+#If you do want to over ride defaults...
+#
+# On your staging machine, you need only worry about the
+# first two assignments- these can be modified on your staging
+# machine and then copied to be run on your target machine 
+# as individual commands before running the second curl command.
+#
+# After that, this file will be with in the repo on your target
+# machine where it needs to be edited to your satisfaction.
+# Be sure the first two variables are set to the same values
+# in the config file on your target machine as you entered on its
+# command line before running the second curl command.
+
+
+# if you wish to change either of the following two defaults,
+# edit the values on your staging machine and then copy and
+# paste the commands to be run on your target machine just
+# before running the second curl command:
+
+# PARENT_DIR designates the directory into which the repo will be
+# cloned.  The default is the current user's home directory.
+# If changed, be sure you've created the directory and set 
+# permissions appropriately.
+export PARENT_DIR=$HOME    # Used in repo.sh
+
+# piInfoDIR designates the file system of the repo itself.
+# It will be placed within the PARENT_DIR directory.
+export piInfoDIR="piInfo"  # Used in repo.sh
+
+# Don't change the next line.
+export REPO=${PARENT_DIR}/${piInfoDIR}
+# The pathagar code is hard wired to be within $PARENT_DIR
+
+# AP_IP specifies the IP address of the server's access point.
+# ... the one to which client machines will be connecting.
+# I can't think of any reason you would want to change this.
+export AP_IP="10.10.10.10"  # Used in create-server.sh
+
+# MAIN_USER specifies the user on the target machine.
+# If you change this, you'll have to use the same user name
+# each time you use your staging machine to log on to the
+# target: i.e. `ssh <name-you-choose>@<ethernet-ip-address>`
+export MAIN_USER=$USER   # Used in create-server.sh
+
+export LIBRARY_URL='library.lan'  # URL for pathagar book server
+export RACHEL_URL='rachel.lan'    # URL for static content (#1)
+
+export DIR4STATIC="/var/www/static"  # directory for static content
+export MOUNT_POINT="/mnt/Static"  # a spot to mount static content
+                                  # for transfer to $DIR4STATIC 
+
+
+# The following are hard coded and not configurable.
+# (If you think they should be configurable, please contact
+# alexKleider@gmail.com)
+#
+# 00-default  # Apache's default site
+# index.html  # The proto static content.
+# /etc/apache2/sites-available/static.conf
+# static & static.conf  # Apache config file for our static site.
+
+
+
+# Ignore the following template (used in development):
+echo "Assign my_VAR_NAME variable..."
+if [ -z $my_VAR_NAME ]
+then
+    export my_VAR_NAME="var_name" 
+    echo "...defaults to var_name..."
+else
+    echo "...set to $my_VAR_NAME (by config file)"
+fi
+

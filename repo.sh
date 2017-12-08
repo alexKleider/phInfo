@@ -3,34 +3,45 @@
 # File: repo.sh
 
 echo "Begin repo.sh script: $(date)"
-export BRANCH=master
+export BRANCH="add-config"
 
 echo "Installing git..."
 if  sudo apt-get -y install git 
 then
-    echo "... git successfully installed."
+    echo "... git successfully installed at $(date)."
 else
     echo "Error installing git! Terminating!"
     exit 1
 fi
 
-echo "Changing into the users home directory."
-if ! cd "${HOME}"
+if [ -z "$PARENT_DIR" ]
 then
-  echo "Could not cd into HOME." >&2
-  exit 1
+    export PARENT_DIR="$HOME"
+fi
+
+if [ -z "$phInfoDIR" ]
+then
+    export phInfoDIR="phInfo"
+fi
+
+echo "Changing into the PARENT_DIRectory..."
+if cd "${PARENT_DIR}"
+then
+    echo "...success"
+else
+    echo "...directory change FAILED! TERMINATING!!"
 fi
 
 echo "Cloning phInfo repository..."
-if  git clone https://github.com/alexKleider/phInfo.git 
+if  git clone https://github.com/alexKleider/phInfo.git ${phInfoDIR}
 then
     echo "... phInfo repository successfully cloned."
     echo "Change directory into the repo..."
-    if cd ~/phInfo
+    if cd "${PARENT_DIR}/${phInfoDIR}"
     then
-        echo "...successful 'cd ~/phInfo'"
+        echo "...successful cd into $(pwd)"
     else
-        echo "... Failed 'cd ~/phInfo'! Teminating!"
+        echo "... Failed cd into repository's directory! Teminating!"
         exit 1
     fi
     echo "Changing into $BRANCH branch..."
@@ -41,10 +52,11 @@ then
         echo "... branch change failed.! Teminating!"
         exit 1
     fi
-    echo "You'll have to 'cd phInfo', script can't do it."
-    # We are in a subsidiary shell.
 else
     echo "Cloning of the phInfo repo failed! Terminating!"
     exit 1
 fi
 echo "Successfully ending repo.sh script: $(date)"
+echo "Script ended- you'll need to again change"
+echo "into the repository directory to continue."
+# We are in a subsidiary shell.

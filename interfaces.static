@@ -1,9 +1,20 @@
 auto lo
 iface lo inet loopback
 
-#auto eth0
+auto eth0
 allow-hotplug eth0
-iface eth0 inet dhcp
+# iface eth0 inet dhcp
+iface eth0 inet static
+  address 10.0.0.213
+  netmask 255.255.255.0
+  broadcast 10.0.0.255
+  gateway 10.0.0.2
+# dns-domain web-pass.com      # Uncomment these two lines if not running
+# dns-nameservers 20.14.152.2  # unbound or some other resolver.
+# ..end.
+# Sonic.net: 
+#Primary DNS     208.201.224.11
+#Secondary DNS   208.201.224.33
 
 auto wlan0
 #allow-hotplug wlan0

@@ -6,7 +6,9 @@ title: Raspberry Pi Content Server
 # The Raspberry Pi as a Content Server
 
 You can read these instructions by pointing your browser to
-https://github.com/alexKleider/phInfo/tree/master
+https://github.com/alexKleider/phInfo (or
+https://github.com/alexKleider/phInfo/tree/$branch-name
+if you are testing a branch other than master.)
 
 ## Introduction
 
@@ -23,6 +25,11 @@ The goal is to end up with a device that provides:
 * the Pathagar Book Server, and 
 * one or more static sites.
 
+Client machines can connect to the server using
+`WiFi`<sup>[10](#11clients)</sup>
+and then access content using a browser.
+
+
 ## Terminology
 
 In the text that follows it's important that the reader is clear
@@ -32,11 +39,14 @@ The `Raspberry Pi` (or any other `Debian` based machine that you
 may be trying to configure to use as a content server) will be
 referred to as your `target` machine.  Your laptop or other
 (preferably Linux) computer (it could even be another `Raspberry
-Pi`) will be referred to as your `staging` machine.  It will be
-assumed that your `staging` machine will have `Linux` as its
-operating system. There's a good chance that an Apple (running
-OSX) will work the same (not tested) but if your OS is by
-`MicroSoft`, you'll have to look for instruction elsewhere.
+Pi`) will be referred to as your `staging` machine. A `client`
+machine is any Wifi enabled machine providing its user with a
+browser. The the whole purpose of this project is to provide
+content for clients.  It will be assumed that your `staging`
+machine will have `Linux` as its operating system. There's a
+good chance that an Apple (running OSX) will also work (not
+tested) but if your OS is by `MicroSoft`, you'll have to look
+for instruction elsewhere.
 
 
 ## The Process
@@ -49,11 +59,8 @@ The 6th (Configuring ...,)  7th (Updating ...)( and the 9th
 you are using some other target machine, these same instructions
 could probably be fairly easily adapted.  Updating and Upgrading
 (the 7th item) might work as is since pretty standard `Debian`
-commands are used; Network Setup will almost certainly differ.  
+commands are used; Network Setup (item 9) will almost certainly differ.  
 Look over the code and modify to suit your use case.
-
-Sensible defaults are chosen for everything so if using
-a Raspberry Pi, there'll be no necessity to modify anything.
 
 1.  Raspberry Pi Acquisition
 1.  SD Card Preparation (RASPBIAN-LITE)
@@ -62,13 +69,32 @@ a Raspberry Pi, there'll be no necessity to modify anything.
 1.  Log on to the Target Machine
 6.  Configuring (`raspi-config`) the Pi
 7.  Updating and Upgrading the Raspberry Pi
-1.  Installation of Utilities
+1.  Installation of Utilities (Bring in the Repository)
 9.  Network Setup  (Specific to Pi's hardware)
 1.  Bring in Dependencies
 1.  Server Setup
 1.  Pathagar Book Server
 1.  Static Content
 1.  Add Another Static Content Site
+
+Sensible defaults are chosen for everything so if using a `Raspberry
+Pi`, there'll be no necessity to modify anything.
+
+
+#### For the Advanced User
+
+Some (`advanced`) users may need (or just wish) to change some or
+all of the defaults. This can be done by changing assignments in
+the `config` file found in the `phInfo` repository.  Once modified,
+it must be `source`d on the target machine each time you log on and
+before any of the configuring commands are run.  This complicates
+things considerably so beware.
+
+The rest of this `README` contains segments to help in this regard;
+each of these segments will be designated `AdvUsr` so it will be
+easy to see what is only relevant to the `admanced user` and can
+be ignored by those happy to accept the built in defaults.
+
 
 ### Raspberry Pi Acquisition
 
@@ -130,20 +156,20 @@ download went else where:
 ... and expect to see output which includes a line that looks 
 like the following:
 
-`-rw-rw-r-- 1 user user  362914661 Nov 12 09:49 2017-09-07-raspbian-stretch-lite.zip`
+`-rw-rw-r-- 1 user user  362914661 Dec  2 15:52 2017-11-29-raspbian-stretch-lite.zip`
 
 The name of the zip file will reflect version updates so may not
 be the same.  Substitute the name you get for the one shown above.
 
         
-        sha1sum 2017-09-07-raspbian-stretch-lite.zip
+        sha256sum 2017-11-29-raspbian-stretch-lite.zip
 
 The output should match the ``SHA-256`` check-sum you copied from the
 download page.
 
 Next, unzip the file:
 
-        unzip 2017-09-07-raspbian-stretch-lite.zip
+        unzip 2017-11-29-raspbian-stretch-lite.zip
 
 This results in the appearance of another file named the same but
 without the trailing ".zip".
@@ -189,7 +215,7 @@ Getting this wrong can be hazardous!!  Making the appropriate
 substitutions as necessary, run the next command (which took 10
 minutes to complete on my staging machine):
 
-        sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
+        sudo dd if='2017-11-29-raspbian-stretch-lite.img' of=/dev/sdb bs=4M && sudo sync
 
 Be absolutely sure the command has completed before going on.
 
@@ -216,17 +242,36 @@ Now power up the `Pi`.
 
 ### Staging Machine Preparation
 
+This is an optional section and pertains only if you fall into
+one or more of the following three categories:
+
+1. An advanced user who wants to override defaults.
+
+2. Some one testing a branch other than `master`.
+
+3. Some one who needs a way of discovering the target machine's
+IP address. (This does NOT apply if your target machine is other
+than a `Raspberry Pi`.)
+
+Of the next set of commands, the first and last are not required
+unless you are in category `2` in which case substitute the name
+of the branch you wish to test for the word `master`.
+
 From the command line of your **staging** machine, issue the
-following commands<sup>[10](#10branch)</sup>:
+following commands:
         
         export BRANCH=master
 
         cd
         sudo apt-get install git arp-scan
         git clone https://github.com/alexKleider/phInfo.git
-        git checkout $BRANCH
         cd phInfo 
+
         git checkout $BRANCH
+
+It is now that the advanced user can edit the `config` file
+found in the current directory.  It is heavily commented so
+should be self explanatory.
 
 
 ### IP Address Discovery
@@ -236,12 +281,16 @@ to the internet and is powered up.  (If you are using an external
 WiFi dongle it should be installed before power up.)
 
 The challenge now is to discover the IP address of the target
-machine.  The utility `find_pi.py` (now within the current file
-structure on the staging machine) is provided for this purpose but
-will only be of use if your target machine is a `Raspberry Pi`.
-Before using it, you will want to open it in your favourite editor
-and possibly change the one or two constants to suit your network.
-The file is well commented to help guide you.
+machine.  The Unix arp-scan utility before and again after powering
+up the target machine will likely work.  Look for an IP address
+that appears only after the target power up, not before.
+
+If you put yourself in category `3` (see previous section) then
+the utility `find_pi.py` can be found within your current
+directory on the staging machine.  Before using it, you will want
+to open it in your favourite editor and possibly change the one or
+two constants to suit your network.  The file is well commented to
+help guide you.
 
         python find_pi.py
 
@@ -249,11 +298,6 @@ The output will look something like this:
 
         Probable Pi IP(s):
             192.168.0.11
-
-If your target machine is not a `Raspberry Pi`, then using the Unix
-arp-scan utility before and again after powering up the target machine
-will likely work.  Look for an IP address that appears only after the
-target power up, not before.
 
 
 ### Log on to the Target Machine
@@ -268,7 +312,9 @@ appropriate<sup>[7](#7nasty)</sup>:
         ssh pi@<target-ip-adr>
 
 Before being asked for a password, you may be warned about host
-authenticity.  Simply do what is requested.
+authenticity.  Simply do what is requested.  In the extreme case
+you might have to delete one of the lines in your
+`~/.ssh/known_hosts` file. It is quite safe to do so.
 After responding to the prompt with the  correct password
 ('raspberry',) with any luck you will now be logged onto the
 target machine (running it 'headless'.)
@@ -285,7 +331,7 @@ target machine using the ssh client on your staging machine.
 
 Use the command line of your staging machine to log onto the target
 `Raspberry Pi` as described in the previous section.  You can safely
-ignore the warning about changing the password.  We'll do that in a
+ignore any warning about changing the password.  We'll do that in a
 moment. Run `raspi-config`:
         
         sudo raspi-config
@@ -297,51 +343,70 @@ highlighted, use the left and right arrow keys to pick `<Select>`
 (or `<Finish>`).  Here is an outline of what is recommended or
 appropriate for our use case:
 
-    1. Change user password: I've been changing the pw to `pi::root` 
-    2. Hostname: I suggest `rpi` or `pi-1` (something short)
-    3. Boot options:
-        We are not installing a GUI so select B1 (boot into the
-        command line interface) following which you will be given
-        another list of options and again select B1 (log in
-        required.)
-    4. Localization Options:
-        11 Change Locale: The default is `en_gb.UTF-8`: suitable
-            for Great Britain.  For the American locale, scroll down
-            (with the down arrow) until encountering the asterisk (*)
-            next to `en_gb.UTF-8`, toggle with the space bar, and
-            then continue scrolling down until coming to
-            `en_us.UTF-8`.  Toggle with the space bar again so the
-            asterisk appears. Here the behavior of the interface is
-            a bit different: the `Enter` key moves you forward to
-            the next panel where you again use the down arrow
-            to land on `en_us.UTF-8`.  Use the right arrow and then
-            `Enter` over the `<Ok>`.
-        Choose option 4 two more times:
-        12 Change Time Zone: US, New Pacific
-        13 Change Keyboard Layout: 
-            Since our goal is to run the `Pi` 'headless',
-            I don't think changing any of this is necessary but if you
-            do expect to be using a keyboard the following is
-            suggested:
-            generic 105-key (the default) seems to work
-            I chose `Other` rather than the default
-            (`English (UK)') and then select 'English (US)'
-            There's no reason to change any of the remaining
-            defaults.
-    5. Interfacing Options:
-        Only the second option is relevant to us:
-        P2 SSH: Enable ssh server
-        Be sure <Yes> is selected, this is very important.
-    6. Overclock: Left in the default state.
-    7. Advanced options:
-        A1 Expand file system: This is also very important.
-        None of the other advance options concern us.
-    8. Update this tool to latest version
-        Optional: not necessary.
-    9. About raspi-config
-        Nothing important here.
+    1. Change User Password Change password for the current user
+        You will now be asked to enter a new password for the
+        pi user; suggest changing to `pi::root` 
+    2. Network Options      Configure network settings
+        N1 Hostname                Set the visible name for this Pi on a network
+            Suggest `rpi` or `pi-1` (something short)
+            Once done editing the Hostname, use down arrow.
+        N2 Wi-fi                   Enter SSID and passphrase
+            Please enter SSID, use down arrow when done.
+            (We'll be changing this later anyway.) I use 'pi security'.
+        N3 Network interface names Enable/Disable predictable network interface names
+            'YES' seems a reasonable option. (We'll be changing these.)
+    3. Boot Options         Configure options for start-up
+        B1 Desktop / CLI            Choose whether to boot into a desktop environment or the command line
+            B1 Console           Text console, requiring user to login
+                This is the one recommended.
+            B2 Console Autologin Text console, automatically logged in as 'pi' user
+            B3 Desktop           Desktop GUI, requiring user to login
+            B4 Desktop Autologin Desktop GUI, automatically logged in as 'pi' user
+        B2 Wait for Network at Boot Choose whether to wait for network connection during boot
+            Would you like boot to wait until a network connection is established?
+                Unimportant, I choose 'NO'.
+        B3 Splash Screen            Choose graphical splash screen or text boot
+                Only text boot is possible since we have no GUI
+    4. Localisation Options Set up language and regional settings to match your location                             │
+        I1 Change Locale          Set up language and regional settings to match your location
+            The default is '[*] en_GB.UTF-8 UTF-8'; you may want to
+            scroll down and toggle (using the space bar) the asterix
+            on '[*] en_US.UTF-8 UTF-8'.  Then use the Return/Enter key
+            to go to the next page to make your final selection.
+        I2 Change Timezone        Set up timezone to match your location
+            First pick the 'Geographic area:'
+            Then select the specific zone. For us on the US West coast
+            it's 'Pacific-New'
+        I3 Change Keyboard Layout Set the keyboard layout to match your keyboard
+            No need to bother with this since we'll be operating 'headless'.
+        I4 Change Wi-fi Country   Set the legal channels used in your country
+            Self explanatory
+    5. Interfacing Options  Configure connections to peripherals
+        Only the second (P2 SSH) option is relevant to us.
+        P1 Camera      Enable/Disable connection to the Raspberry Pi Camera
+        P2 SSH         Enable/Disable remote command line access to your Pi using SSH
+            Be sure to enable SSH
+        P3 VNC         Enable/Disable graphical remote access to your Pi using RealVNC
+        P4 SPI         Enable/Disable automatic loading of SPI kernel module
+        P5 I2C         Enable/Disable automatic loading of I2C kernel module
+        P6 Serial      Enable/Disable shell and kernel messages on the serial connection
+        P7 1-Wire      Enable/Disable one-wire interface
+        P8 Remote GPIO Enable/Disable remote access to GPIO pins
+    6. Overclock            Configure overclocking for your Pi                                                       │
+    7. Advanced Options     Configure advanced settings                                                              │
+        Only the first is of interest to us.
+        A1 Expand Filesystem Ensures that all of the SD card storage is available to the OS
+            It's very important to expand the file system!
+        A2 Overscan          You may need to configure overscan if black bars are present on display
+        A3 Memory Split      Change the amount of memory made available to the GPU
+        A4 Audio             Force audio out through HDMI or 3.5mm jack
+        A5 Resolution        Set a specific screen resolution
+        A6 GL Driver         Enable/Disable experimental desktop GL driver
+    The last two options are unimportant.
+    8. Update               Update this tool to the latest version                                                   │
+    9. About raspi-config   Information about this configuration tool                                                │
 
-After `raspi-config` completes, reboot the `Pi` as suggested.
+When done, accept the offer to reboot.
 
 
 ### Updating and Upgrading the Raspberry Pi
@@ -357,37 +422,56 @@ have a look at the `pi-upgrade.sh` script (part of the `phInfo`
 repository.)  You could probably simply run the same commands
 individually with only minor modification.
 
-The following (first `curl`) command upgrades `raspbian` components.
+This (first `curl`) command upgrades `raspbian` components.
 (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/pi-upgrade.sh | bash -s
 
 The above command ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
 process to complete before logging back on.
 
+##### Only for the Advanced User
 
-### Installation of Utilities
+The advanced user (wanting to change defaults) while still at the
+command line of the staging maching  and in the repository
+directory, should first be sure the `config` file is to her
+satisfaction. Depending on which variables are to be changed
+she may also need to log onto the target machine to create
+another user and/or set up directories (including setting
+permissions.)  Then she should run the following from the
+staging machine:
 
-Using your staging machine, log on to your target machine.
-The following (second `curl`) command ensures that you are
-in the current user's home directory (`/home/pi`,)
-installs `git` and then clones the phInfo
-repository<sup>[4](#4reponame)</sup>. It takes about
-3 minutes to run:
+        source config
+        scp config ${MAIN_USER}@<ip-address>:${PARENT_DIR}
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
+Then after logging on to the target machine:
+
+        source config
+
+Keep in mind that the effects of the above command are wiped
+clean each time the connection is broken and then re-established:
+The environmental variables it sets must be in effect each time
+any of the subsequent commands are run. It does no harm to run
+the command more than once.
+
+
+### Installation of Utilities (Bring in the Repository)
+
+The following (second `curl`) command ensures that current
+directory is set correctly, installs `git`, and then clones
+the phInfo repository.  It takes about 3 minutes to run:
+
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
-this `README` as well as required scripts and files. After completion
-change into this directory:
-
-        cd phInfo
+this `README` as well as required scripts and files.
 
 There are a number of utilities and customizations that are not
 essential but I find them useful to have so my practice is to
 also run the following script (it takes about 3 minutes):
 
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./favourites.sh
 
 
@@ -399,18 +483,27 @@ hardware.  These instructions assume that there is an Ethernet
 is true for the Raspberry Pi. The scripts used will most
 certainly have to be modified if this is not your use case.
 
+Also note that the naming of `eth0` appears to have changed
+with the move from `etch` to `stretch`; the code in the
+`networking.sh` script attempts to allow for this and so far has
+proven to be successful. Check the script if interested in how
+this is done. https://wiki.debian.org/NetworkConfiguration
+
 Configuration is done by commands in the networking.sh and the
 iptables.sh scripts. There must be a reboot between the two
 <sup>[6](#6screenfreeze)</sup>.
 If you think you might want to make any customizations, have
 a look through the initial comments in `networking.sh`; you
-may want to edit some of the files mentioned.
+may want to edit some of the files mentioned.  
+The `networking.sh` script takes about 20 minutes to complete.
 
-        cd phInfo
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./networking.sh
         # You'll have to wait for some utilities to be installed and
         # then for the reboot to take place before logging on again.
-        cd phInfo
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./iptables.sh
 
 The last command also ends with a reboot. Remember that after each
@@ -420,10 +513,11 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-Expect the next script to take a long time
-(~30 min., so be patient!)
+The next script may take a long time (~7 min with good internet
+service, but up to ~30 min if service is slow!)
 
-        cd phInfo
+        # AdvUser must `source config` again
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./dependencies.sh
 
 ### Server Setup
@@ -433,16 +527,15 @@ on; be sure you are still in the ~/phInfo directory.
 Have a look through the initial comments in `create-server.sh`.
 It's unlikely there'll be anything you need to change.
 
-        cd ~/phInfo
+        cd phInfo  # AdvUsr substitute `cd $REPO`
         ./create-server.sh
 
 Wait for a few minutes for your target machine to reboot and then
-direct your staging machine's WiFi to the target WiFi access point.
-The SSID will be 'piServer' unless you've previously changed it by
-editing `hostapd.conf`.  If all has gone well, pointing your browser
-to `rachel.lan` will take you to the example static HTML home page.
-Once the test has passed point your staging machine's WiFi back to
-your home network.
+you can check functionality by using any client machine to connect
+to the server's WiFi access point.  The SSID will be 'piServer'
+unless you've previously changed it by editing `hostapd.conf`.
+If all has gone well, pointing your client browser to `rachel.lan`
+will take you to the example static HTML home page.
 
 
 ### Pathagar Book Server
@@ -450,9 +543,10 @@ your home network.
 Choose a database password consisting of alphanumerics, dashes and
 underscores but no other special characters. Make a record of it
 somewhere so as to be sure not to forget it. I suggest 'db-password'.
-Then log on to your target machine as user `pi` and run the following
+Then log on to your target machine and run the following
 command:
 
+        # AdvUser must `source config` again
         export MYSQL_PASSWORD='db-password'
 
 You will also later need a pathagar superuser password so now would
@@ -462,12 +556,13 @@ be a good time to pick one and record it somewhere.  I suggest
 The next sequence of commands brings in Pathagar, and sets up its
 environment.  The `pip install -r requirements.pip` command in
 `pathagar-setup.sh` script takes a very long time so be patient.
-If it fails see footnote<sup>[8](#8piperror)</sup>.
 The set-su-pw.sh script prompts you for a *Django SuperUser*.
 It'll want you to enter a user name (or default to the current
-user,) email and the password- e.g. `ph-su-pw`.
+user,) email and the password- e.g. `ph-su-pw` (to be entered
+twice.)
 
-        cd ~/phInfo
+        # AdvUser must `source config` again
+        cd ~/phInfo  # AdvUsr substitute `cd $REPO`
         ./pathagar-setup.sh
 
 ##### Adding Content
@@ -497,7 +592,9 @@ If your content is available on an ext4 formatted USB device with
 LABEL=Static, (and you haven't modified the `create-server.sh` code,)
 the following will serve as a template for the copy command:
 
-        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static/
+        rsync -av /mnt/Static/<dir-containing-content>/ /var/www/static
+        # for AdvUsr: substitute the following instead:
+        rsync -av ${MOUNT_POINT}/<dir-containing-content>/ $DIR4STATIC
 
 Note that the final slash(`/`) at the end of the first parameter to
 `rsync` is important (so that only the content, not the directory
@@ -508,11 +605,14 @@ If your content is at the top level of the medium you've mounted
 (rather than inside its own directory) then change the command to
 the following:
 
-        rsync -av /mnt/Static/* /var/www/static/
+        rsync -av /mnt/Static/* /var/www/static
+        # for AdvUsr: substitute the following instead:
+        rsync -av ${MOUNT_POINT}/* ${DIR4STATIC}
 
 If your server is the `Raspberry Pi` set up as described here,
-then entering "rachel.lan" in the URL window of a browser running
-on a WiFi client machine will result in your content being displayed.
+then entering "rachel.lan" (AdvUser: LIBRARY_URL) in the URL
+window of a browser running on a WiFi client machine will result
+in your content being displayed.
 
 
 ### Add Another Static Content Site
@@ -548,11 +648,6 @@ Still need to document this.
     on a different user or use of a different installation directory,
     the scripts will have to be modified accordingly
 
-<a name="4reponame">4</a>.
-
-    The repository name may change in which case all references to
-    `phInfo` will need to be changed.
-
 <a name="5oldraspian">5</a>
 
 Older versions of raspian can be found 
@@ -573,31 +668,22 @@ If so, look for a line that ends with ...ssh/known_hosts:7.  Make
 a note of the number (in this case it's 7) and then delete the 7th
 line (or what ever number it is) in your ~/.ssh/known_hosts file.
 
-<a name="8piperror">8</a>
-
-During testing I encountered an error within the `pip install`
-command called from `pathagar-setup.sh`.  Details can be found
-in the `pip-error.txt` file.  The following script run after the
-failure, resulted in recovery:
-
-        ./pip-error.sh
-
 
 <a name="9cooling">9</a>
 
 Beware (Adam Holt, personal communication) "of your RPi overheating
-and self-throttling etc -- be sure to test use the command to monitor
-their temperature if folks will be using them in hot (or even warm)
-conditions indoors.  A heatsink is not enough.  Many of my Haitian
-friends just run their RPi 3s with the top off, which indeed solves
-the problem as an indoor breeze is sufficient.  It may seem
-unprofession but it works.  Considering most all RPi cases make
-practicall ventilation impossible, and active cooling with a
-fans-that-break is something nobody's wanted to bother with so far".
+and self-throttling etc -- be sure to test using the command to
+monitor their temperature if folks will be using them in hot (or
+even warm) conditions indoors.  A heatsink is not enough.  Many of
+my Haitian friends just run their RPi 3s with the top off, which
+indeed solves the problem as an indoor breeze is sufficient.  It
+may seem unprofessional but it works.  Considering most all RPi
+cases make practical ventilation impossible, and active cooling
+with a fan-that-breaks is something nobody's wanted to bother with
+so far".
 
+<a name="11clients">11</a>
 
-<a name="10branch">10</a>
-
-The `export BRANCH=master` and `git checkout $BRANCH` commands
-are not necessary unless you are testing a branch other than master:
-https://github.com/alexKleider/phInfo/tree/master
+It has been suggested that up to about 22 WiFi clients can be
+serviced by the `raspberry pi`.  
+https://raspberrypi.stackexchange.com/questions/50162/maximum-wi-fi-clients-on-pi-3-hotspot#54765

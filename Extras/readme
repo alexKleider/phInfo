@@ -1,12 +1,19 @@
 # File: readme.excl
 
-Some notes that we might amalgamate into the README file.
+Removed from the README but may need to go back:
+<sup>[10](#10branch)</sup>
+
+<a name="10branch">10</a>
+
+The `export BRANCH=master` and `git checkout $BRANCH` commands
+are not necessary unless you are testing a branch other than master:
+https://github.com/alexKleider/phInfo/tree/master
 
 
-Some random person on the internet says about 22 students is the
-real-world maximum.
+=========================================================
 
-https://raspberrypi.stackexchange.com/questions/50162/maximum-wi-fi-clients-on-pi-3-hotspot#54765
+Some notes that we might amalgamate into the README file:
+(Or that have already been incorporated.)
 
 See also
 https://nodemcu.readthedocs.io/en/master/en/modules/wifi/#wifiap-module
@@ -14,11 +21,13 @@ https://nodemcu.readthedocs.io/en/master/en/modules/wifi/#wifiap-module
 sudo apt install hashalot
 sha256sum 2017-09-07-raspbian-stretch-lite.zip >> sha-256
 
-
 unzip 2017-09-07-raspbian-stretch-lite.zip 
 
 sudo dd if='2017-07-05-raspbian-jessi-lite.img' of=/dev/sdb bs=4M
 sudo dd if='2017-09-07-raspbian-stretch-lite.img' of=/dev/sdb bs=4M
+
+
+Adam's contribution re disks and over heating: already incorporated.
 
 On 2017-11-13 04:07, Adam Holt wrote:
     Alex,
@@ -34,13 +43,14 @@ PS Amazon can NOT be trusted, as the very same links have led to
 different products arriving at our doors.  Still, we've had very
 good luck with both above.
 
-PPS beware of your RPi's overheating and self-throttling etc --
-be sure to test use the command to monitor their temperature if
-folks will be using them in hot (or even warm) conditions indoors.
-A heatsink is not enough.  Many of my Haitian friends just run
-their RPi 3s with the top off, which indeed solves the problem as
-an indoor breeze is sufficient.  It may seem unprofession but it
-works.  Considering most all RPi cases make practicall ventilation
-impossible, and active cooling with a fans-than-break is something
-nobody's wanted to bother with so far...
 
+Beware (Adam Holt, personal communication) "of your RPi overheating
+and self-throttling etc -- be sure to test using the command to
+monitor their temperature if folks will be using them in hot (or
+even warm) conditions indoors.  A heatsink is not enough.  Many of
+my Haitian friends just run their RPi 3s with the top off, which
+indeed solves the problem as an indoor breeze is sufficient.  It
+may seem unprofessional but it works.  Considering most all RPi
+cases make practical ventilation impossible, and active cooling
+with a fan-that-breaks is something nobody's wanted to bother with
+so far".
