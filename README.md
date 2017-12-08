@@ -425,7 +425,7 @@ individually with only minor modification.
 This (first `curl`) command upgrades `raspbian` components.
 (It's best to use copy and past):
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/pi-upgrade.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/pi-upgrade.sh | bash -s
 
 The above command ends with a reboot (necessary in order to
 implement the new kernel) so wait for a few minutes for the boot
@@ -462,7 +462,7 @@ The following (second `curl`) command ensures that current
 directory is set correctly, installs `git`, and then clones
 the phInfo repository.  It takes about 3 minutes to run:
 
-        curl https://raw.githubusercontent.com/alexKleider/phInfo/add-config/repo.sh | bash -s
+        curl https://raw.githubusercontent.com/alexKleider/phInfo/master/repo.sh | bash -s
 
 The clone operation brings in the `phInfo` file hierarchy containing
 this `README` as well as required scripts and files.

@@ -35,6 +35,9 @@ export PARENT_DIR=$HOME    # Used in repo.sh
 export piInfoDIR="piInfo"  # Used in repo.sh
 
 # Don't change the next line.
+# Suggested that 
+# If this isn't meant to be configurable, since it is derived from the
+# other variables, maybe we should move it into a separate file?
 export REPO=${PARENT_DIR}/${piInfoDIR}
 # The pathagar code is hard wired to be within $PARENT_DIR
 
@@ -67,8 +70,12 @@ export MOUNT_POINT="/mnt/Static"  # a spot to mount static content
 # static & static.conf  # Apache config file for our static site.
 
 
+# Suggested that (in branch-testing.txt) 
+# maybe we could add the branch name to the config?
+
 
 # Ignore the following template (used in development):
+# Maybe you can turn this into a function if you use it often enough?
 echo "Assign my_VAR_NAME variable..."
 if [ -z $my_VAR_NAME ]
 then

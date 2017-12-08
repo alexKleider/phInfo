@@ -3,7 +3,7 @@
 # File: repo.sh
 
 echo "Begin repo.sh script: $(date)"
-export BRANCH="add-config"
+export BRANCH="master"
 
 echo "Installing git..."
 if  sudo apt-get -y install git 

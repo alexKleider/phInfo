@@ -308,7 +308,7 @@ then
     echo "It seems locale has NOT been set!"
     echo "We'll try to correct that..."
     LANG="en_US.UTF-8"
-    if sudo sh -c 'echo "LANG=\"en_CA.UTF-8\"" >> /etc/default/locale'
+    if sudo sh -c 'echo "LANG=\"en_US.UTF-8\"" >> /etc/default/locale'
     then
         echo "    ... successfully added a (en_US.UTF-8) locale"
     else
