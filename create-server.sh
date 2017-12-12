@@ -26,20 +26,16 @@ fi
 
 if [ -a /etc/hosts.original ]
 then
-    echo "/etc/hosts.original exists so we assume"
-    echo "additions have already been made to the file."
-    echo "We therefore conclude that:"
-    echo "THIS SCRIPT HAS ALREADY BEEN RUN!! TERMINATING!"
-    exit 1
-fi
-
-echo "Saving a copy of the original /etc/hosts file..."
-if sudo cp /etc/hosts /etc/hosts.original
-then
-    echo "...successfull copy to /etc/hosts.original."
+    echo "/etc/hosts.original exists so we assume additions"
+    echo "have already been made to /etc/hosts."
 else
-    echo "... cp /etc/hosts => /etc/hosts.original FAILED! TERMINATING!"
-    exit 1
+    echo "Saving a copy of the original /etc/hosts file..."
+    if sudo cp /etc/hosts /etc/hosts.original
+    then
+        echo "...successfull copy to /etc/hosts.original."
+    else
+        echo "... cp /etc/hosts => /etc/hosts.original failed!"
+    fi
 fi
 
 echo "Assigning URLs..."
@@ -72,7 +68,6 @@ then
     echo "... success appending line to /etc/hosts."
 else
     echo "... appending line to /etc/hosts FAILED! TERMINATING!"
-    exit 1
 fi
 # The entry 
 # $AP_IP  $LIBRARY_URL $RACHEL_URL
@@ -109,16 +104,14 @@ else
         fi
 
         echo "Change its ownership to user $MAIN_USER..."
-        if sudo chown "$MAIN_USER:$MAIN_USER $MOUNT_POINT"
+        if sudo chown "${MAIN_USER}:${MAIN_USER}" "${MOUNT_POINT}"
         then
             echo "...ownership successfully changed to '$MAIN_USER'"
         else
             echo "...change of ownership FAILED! TERMINATING!"
-            exit 1
         fi
     else
         echo "... creation of /mnt/Static directory FAILED! TERMINATING!"
-        exit 1
     fi
 fi
 
@@ -152,7 +145,6 @@ else
         fi
     else
         echo "...failure of directory creation! Teminating!"
-        exit 1
     fi
 fi
 
@@ -172,8 +164,7 @@ else
     then
         echo "    ... successful copy."
     else
-        echo "    ... copy FAILED! Teminating!"
-        exit 1
+        echo "    ... copy failed!"
     fi
 fi
 
@@ -189,8 +180,7 @@ else
     then
         echo "    ...copy successful"
     else
-        echo "    ...copy command FAILED! TERMINATING!"
-        exit 1
+        echo "    ...copy command failed!"
     fi
 fi
 

@@ -18,7 +18,7 @@ echo "Just finished updating and upgrading."
 apt-get -y install git iw hostapd dnsmasq apache2 hashalot
 date
 echo "Just finished installing git, iw, hostapd, dnsmasq,"
-echo "apache2 and hashalot (the latter brings in 'sh256sum'."
+echo "apache2 and hashalot (the latter brings in 'sh256sum'.)"
 
 # If planning to install Pathagar-  (estimate 3 minites)
 apt-get -y install python-pip python-virtualenv libapache2-mod-wsgi

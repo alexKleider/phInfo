@@ -26,7 +26,7 @@ The goal is to end up with a device that provides:
 * one or more static sites.
 
 Client machines can connect to the server using
-`WiFi`<sup>[10](#11clients)</sup>
+`WiFi`<sup>[11](#11clients)</sup>
 and then access content using a browser.
 
 
@@ -85,10 +85,10 @@ Pi`, there'll be no necessity to modify anything.
 
 Some (`advanced`) users may need (or just wish) to change some or
 all of the defaults. This can be done by changing assignments in
-the `config` file found in the `phInfo` repository.  Once modified,
-it must be `source`d on the target machine each time you log on and
-before any of the configuring commands are run.  This complicates
-things considerably so beware.
+the `config` file found in the/this `phInfo` repository.  Once
+modified, it must be `source`d on the target machine each time you
+log on and before any of the configuring commands are run.  This
+complicates things considerably so beware.
 
 The rest of this `README` contains segments to help in this regard;
 each of these segments will be designated `AdvUsr` so it will be
@@ -680,10 +680,13 @@ indeed solves the problem as an indoor breeze is sufficient.  It
 may seem unprofessional but it works.  Considering most all RPi
 cases make practical ventilation impossible, and active cooling
 with a fan-that-breaks is something nobody's wanted to bother with
-so far".
+so far". There are
+[cases](https://www.amazon.com/gp/product/B01CQRROLW/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1)
+available now that are more open and may be a satisfactory compromise.
 
 <a name="11clients">11</a>
 
 It has been suggested that up to about 22 WiFi clients can be
 serviced by the `raspberry pi`.  
 https://raspberrypi.stackexchange.com/questions/50162/maximum-wi-fi-clients-on-pi-3-hotspot#54765
+

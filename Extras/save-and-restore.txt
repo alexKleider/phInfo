@@ -13,8 +13,8 @@ $DeviceName: sdb, sde, or what ever your machine chooses to name it.
 
 
 # Stretch image to SD card: (took 10:20 using my 2nd reader)
-export DLDir="/Downloads"
-export DeviceName="sde"
+export DLDir="/home/alex/olpcSF/phInfo"
+export DeviceName="sdc"
 export IMAGE="2017-11-29-raspbian-stretch-lite.img"
 umount /dev/${DeviceName}1
 umount /dev/${DeviceName}2
