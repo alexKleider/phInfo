@@ -53,24 +53,23 @@ for instruction elsewhere.
 
 The process is divided up into the following steps.
 Some are specific for the `Raspberry Pi`. These include 
-the first two and the 4th.
-The 6th (Configuring ...,)  7th (Updating ...)( and the 9th
+the first two.
+The 5th (Configuring ...,)  6th (Updating ...)( and the 8th
 (Network ...) are also specific to the `Raspberry Pi` but if
 you are using some other target machine, these same instructions
 could probably be fairly easily adapted.  Updating and Upgrading
-(the 7th item) might work as is since pretty standard `Debian`
-commands are used; Network Setup (item 9) will almost certainly differ.  
+(the 6th item) might work as is since pretty standard `Debian`
+commands are used; Network Setup (item 8) will almost certainly differ.  
 Look over the code and modify to suit your use case.
 
 1.  Raspberry Pi Acquisition
 1.  SD Card Preparation (RASPBIAN-LITE)
 1.  Staging Machine Preparation
-4.  IP Address Discovery
-1.  Log on to the Target Machine
-6.  Configuring (`raspi-config`) the Pi
-7.  Updating and Upgrading the Raspberry Pi
-1.  Installation of Utilities (Bring in the Repository)
-9.  Network Setup  (Specific to Pi's hardware)
+4.  Log on to the Target Machine
+5.  Configuring (`raspi-config`) the Pi
+6.  Updating and Upgrading the Raspberry Pi
+7.  Installation of Utilities (Bring in the Repository)
+8.  Network Setup  (Specific to Pi's hardware)
 1.  Bring in Dependencies
 1.  Server Setup
 1.  Pathagar Book Server
@@ -92,7 +91,7 @@ complicates things considerably so beware.
 
 The rest of this `README` contains segments to help in this regard;
 each of these segments will be designated `AdvUsr` so it will be
-easy to see what is only relevant to the `admanced user` and can
+easy to see what is only relevant to the `advanced user` and can
 be ignored by those happy to accept the built in defaults.
 
 
@@ -111,18 +110,11 @@ Since the goal is to set up a content server, and since the
 capacity of your SD Card will dictate the amount of content
 it's possible to provide, choose an SD Card of commensurate
 capacity<sup>[1](#1sdcard)</sup>. In general, 'more is better.'
-The following products have been used successfully:
-[64GB](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
-and
-[128GB](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1).
-We've heard that the following
-[128GB card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
-will also function properly.
 
 As mentioned, this guide assumes that you are using Linux on your
-staging machine.  Microsoft Windows users might find this
-[link](https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0)
-useful.
+staging machine.  Microsoft Windows users might find help
+[here](https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0)
+.
 
 Use the browser on your staging machine to find **RASPBIAN**
 [here](https://www.raspberrypi.org/downloads/raspbian/)
@@ -237,7 +229,9 @@ Be sure the micro SD card is securely inserted into the `Raspberry
 Pi`  and that you have an Ethernet cable connecting the `Pi` to your
 local network (and through it to the Internet.) If using an external
 (USB connected) WiFi dongle, make sure it is also installed.
-Now power up the `Pi`.
+Do not use the `Pi`'s WiFi interface to connect to your local
+network (instead of the Ethernet interface.) It will soon be
+reconfigured as an access point. Now power up the `Pi`.
         
 
 ### Staging Machine Preparation
@@ -250,8 +244,7 @@ one or more of the following three categories:
 2. Some one testing a branch other than `master`.
 
 3. Some one who needs a way of discovering the target machine's
-IP address. (This does NOT apply if your target machine is other
-than a `Raspberry Pi`.)
+IP address.
 
 Of the next set of commands, the first and last are not required
 unless you are in category `2` in which case substitute the name
@@ -273,21 +266,19 @@ It is now that the advanced user can edit the `config` file
 found in the current directory.  It is heavily commented so
 should be self explanatory.
 
+One way to discover the IP address of the target machine is to
+run the Unix `arp-scan` utility before and again after powering
+up the target machine. (See `man arp-scan` to guide you how to
+adjust the parameters to suit your network.)
 
-### IP Address Discovery
+        sudo arp-scan -I wls1 192.168.0.0/24
 
-Make sure the **target** machine is connected (via Ethernet cable)
-to the internet and is powered up.  (If you are using an external
-WiFi dongle it should be installed before power up.)
+Look for an IP address that appears only after the target power up,
+not before.
 
-The challenge now is to discover the IP address of the target
-machine.  The Unix arp-scan utility before and again after powering
-up the target machine will likely work.  Look for an IP address
-that appears only after the target power up, not before.
-
-If you put yourself in category `3` (see previous section) then
-the utility `find_pi.py` can be found within your current
-directory on the staging machine.  Before using it, you will want
+The `find_pi.py` script provides an alternative (but only applies if
+your target is a `Raspberry Pi` and you have run the `git clone`
+and `cd` commands provided above.) Before using it, you will want
 to open it in your favourite editor and possibly change the one or
 two constants to suit your network.  The file is well commented to
 help guide you.
@@ -309,7 +300,7 @@ using the command line of your staging machine, proceed with the
 following command, substituting the user name and the IP address as
 appropriate<sup>[7](#7nasty)</sup>:
 
-        ssh pi@<target-ip-adr>
+        ssh pi@192.168.0.11
 
 Before being asked for a password, you may be warned about host
 authenticity.  Simply do what is requested.  In the extreme case
@@ -351,10 +342,9 @@ appropriate for our use case:
             Suggest `rpi` or `pi-1` (something short)
             Once done editing the Hostname, use down arrow.
         N2 Wi-fi                   Enter SSID and passphrase
-            Please enter SSID, use down arrow when done.
-            (We'll be changing this later anyway.) I use 'pi security'.
+            (Can be ignored. We'll be changing this later anyway.)
         N3 Network interface names Enable/Disable predictable network interface names
-            'YES' seems a reasonable option. (We'll be changing these.)
+            (No need for action here.)
     3. Boot Options         Configure options for start-up
         B1 Desktop / CLI            Choose whether to boot into a desktop environment or the command line
             B1 Console           Text console, requiring user to login
@@ -366,7 +356,7 @@ appropriate for our use case:
             Would you like boot to wait until a network connection is established?
                 Unimportant, I choose 'NO'.
         B3 Splash Screen            Choose graphical splash screen or text boot
-                Only text boot is possible since we have no GUI
+                (Can be ignored. Only text boot is possible since we have no GUI)
     4. Localisation Options Set up language and regional settings to match your location                             │
         I1 Change Locale          Set up language and regional settings to match your location
             The default is '[*] en_GB.UTF-8 UTF-8'; you may want to
@@ -380,7 +370,7 @@ appropriate for our use case:
         I3 Change Keyboard Layout Set the keyboard layout to match your keyboard
             No need to bother with this since we'll be operating 'headless'.
         I4 Change Wi-fi Country   Set the legal channels used in your country
-            Self explanatory
+            Self explanatory. For most of us this can be ignored.
     5. Interfacing Options  Configure connections to peripherals
         Only the second (P2 SSH) option is relevant to us.
         P1 Camera      Enable/Disable connection to the Raspberry Pi Camera
@@ -479,15 +469,16 @@ also run the following script (it takes about 3 minutes):
 
 Network configuration is dependent on the target machine's
 hardware.  These instructions assume that there is an Ethernet
-(eth0) port and either a built in WiFi or a USB WiFi dongle as
+(`eth0`) port and either a built in WiFi or a USB WiFi dongle as
 is true for the Raspberry Pi. The scripts used will most
 certainly have to be modified if this is not your use case.
 
-Also note that the naming of `eth0` appears to have changed
-with the move from `etch` to `stretch`; the code in the
+Also note that the naming of `eth0` appears to have
+[changed](https://wiki.debian.org/NetworkConfiguration)
+with the move from `jessie` to `stretch`; the code in the
 `networking.sh` script attempts to allow for this and so far has
 proven to be successful. Check the script if interested in how
-this is done. https://wiki.debian.org/NetworkConfiguration
+this is done.
 
 Configuration is done by commands in the networking.sh and the
 iptables.sh scripts. There must be a reboot between the two
@@ -550,16 +541,15 @@ command:
         export MYSQL_PASSWORD='db-password'
 
 You will also later need a pathagar superuser password so now would
-be a good time to pick one and record it somewhere.  I suggest
-'ph-su-pw'.
+be a good time to pick one and record it somewhere as well.  I
+suggest 'ph-su-pw'.
 
-The next sequence of commands brings in Pathagar, and sets up its
-environment.  The `pip install -r requirements.pip` command in
-`pathagar-setup.sh` script takes a very long time so be patient.
-The set-su-pw.sh script prompts you for a *Django SuperUser*.
-It'll want you to enter a user name (or default to the current
-user,) email and the password- e.g. `ph-su-pw` (to be entered
-twice.)
+The `pathagar-setup.sh` script brings in Pathagar, and sets up its
+environment.  It runs `pip install -r requirements.pip` which takes
+a very long time so be patient. At the end, it queries for a
+*Django SuperUser*.  It'll want you to enter a user name (or default
+to the current user,) email and the password- e.g. `ph-su-pw` (to be
+entered twice.)
 
         # AdvUser must `source config` again
         cd ~/phInfo  # AdvUsr substitute `cd $REPO`
@@ -625,28 +615,34 @@ Still need to document this.
 
 <a name="1sdcard">1</a>.
     
-    If using a version 2 (or earlier) Pi, you are limited to
-    at most a 64GB card.
-    Version 3 (or later?) `Raspberry Pi`s require a micro SD
-    card.  Some 128GB cards can be used but many sold on the market do
-    not work! 
+If using a version 2 (or earlier) Pi, you are limited to
+at most a 64GB card.
+Version 3 (or later?) `Raspberry Pi`s require a micro SD
+card.  Some 128GB cards can be used but many sold on the market do
+not work!  The following products have been used successfully:
+[64GB](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-064G-GN6MA/dp/B010Q588D4/ref=sr_1_1?ie=UTF8&qid=1488675440&sr=8-1&keywords=64+gig+micro+sd+card)
+and
+[128GB](https://www.amazon.com/gp/product/B06XWZWYVP/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1).
+We've heard that the following
+[128GB card](https://www.amazon.com/SanDisk-microSDXC-Standard-Packaging-SDSQUNC-128G-GN6MA/dp/B010Q57S62/)
+will also function properly.
 
 
 <a name="2arpscan">2</a>.
 
-    There are various methods of discovering the IP address of the
-    `Raspberry Pi`.  Use of the `arp-scan` utility is one.  The
-    included `find_pi.py` script uses `arp-scan` and might be useful
-    to you but it will have to be customized to suit your own network
-    and the devices you own.  Edit `find_pi.py` and read its docstring
-    for further details.
+There are various methods of discovering the IP address of the
+`Raspberry Pi`.  Use of the `arp-scan` utility is one.  The
+included `find_pi.py` script uses `arp-scan` and might be useful
+to you but it will have to be customized to suit your own network
+and the devices you own.  Edit `find_pi.py` and read its docstring
+for further details.
 
 <a name="3username">3</a>.
 
-    The scripts assume user name `pi` and that you are cloning the
-    `phInfo` repository and `pathagar` into `/home/pi`.  If you decide
-    on a different user or use of a different installation directory,
-    the scripts will have to be modified accordingly
+The scripts assume user name `pi` and that you are cloning the
+`phInfo` repository and `pathagar` into `/home/pi`.  If you decide
+on a different user or use of a different installation directory,
+the scripts will have to be modified accordingly
 
 <a name="5oldraspian">5</a>
 
