@@ -15,5 +15,4 @@ Check that you have a _config.yml file.
 Then 
 jekyll serve
 
-point browser to localhost:4000/README
-
+point browser to http://127.0.0.1:4000/README

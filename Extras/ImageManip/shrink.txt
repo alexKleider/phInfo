@@ -1,0 +1,198 @@
+# File : shrink.txt
+
+# see also: shrink.sh
+
+# This file provides some explanatory notes.
+
+Reference used was
+https://softwarebakery.com/shrinking-images-on-linux
+Use of gparted failed for me-
+sudo gparted /dev/loop0
+# Select partition and click Resize/Move
+# New size was smaller than minimum of 680712 # 4098 byte blocks!
+# 680712 * 4098(4k) blocks => 2,789,557,776 bytes, 
+# or 5,448,355 blocks of 512 bytes each.
+
+# fsck.ext4 -f /dev/loop0p2
+e2fsck 1.42.13 (17-May-2015)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+rootfs: 57096/237120 files (0.2% non-contiguous), 486201/956288 blocks
+
+sudo resize2fs -M /dev/loop0p2  # -M: to minimum size
+resize2fs 1.42.13 (17-May-2015)
+Resizing the filesystem on /dev/loop0p2 to 680712 (4k) blocks.
+The filesystem on /dev/loop0p2 is now 680712 (4k) blocks long.
+
+sudo dumpe2fs -h /dev/loop0p2  # only to glean two numbers:
+Block count:              682573
+Block size:               4096
+
+Calculate number of 512 byte sized blocks:
+4096 * 682573 / 512 =>  ______  (512 byte sectors)
+
+sudo fdisk -l /dev/loop0  # -l to just list and exit
+Device       Boot Start     End Sectors  Size Id Type
+/dev/loop0p1       8192   93236   85045 41.5M  c W95 FAT32 (LBA)
+/dev/loop0p2      94208 7744511 7650304  3.7G 83 Linux
+                  ^^^^^
+# Listing provides numbers necessary to do the calculations:
+(94208-1) + 680712 * 4096 / 512 =>  ___________
+
+# Now we don't need the loopback-device anymore, so unload it:
+sudo losetup -d /dev/loop0
+
+^^^^^^^^^^^   shrink.sh does all of the above  ^^^^^^^^^^^^^
+
+vvvvvvvvvvv   left to do   vvvvvvvvvvvvvv
+sudo fdisk $SC  # to shrink partition- make last 'End' sector 5539903
+sudo fdisk $SC  # to shrink partition- make last 'End' sector 5554791
+# and 
+sudo truncate --size=$[(________+1)*512] $SC
+sudo truncate --size=$[(5554791+1)*512] $SC
+# to shrink the image.
+sudo cp shrink-candidate.img shrunk.img
+
+======================================================
+after failure- dmsg | tail =>
+[392019.760904] sd 17:0:0:0: [sdb] Attached SCSI removable disk
+[392019.761529] sd 17:0:0:1: [sdc] 7744512 512-byte logical blocks:
+(3.97 GB/3.69 GiB)
+[392019.762523] sd 17:0:0:1: [sdc] Write Protect is off
+[392019.762529] sd 17:0:0:1: [sdc] Mode Sense: 2f 00 00 00
+[392019.763525] sd 17:0:0:1: [sdc] Write cache: disabled, read cache:
+enabled, doesn't support DPO or FUA
+[392019.781926]  sdc: sdc1 sdc2
+[392019.785525] sd 17:0:0:1: [sdc] Attached SCSI removable disk
+[392027.553309] EXT4-fs (sdc2): bad geometry: block count 682573
+exceeds size of device (680712 blocks)
+=======================================================
+Mon Jan  1 14:31:38 PST 2018
+source shrink.sh
+Enable loopback (if not already enabled...)
+Detach all associated loop devices.
+Request a new/free loopback device...
+/dev/loop0
+ => /dev/loop0
+ remove /Downloads/shrink-candidate.img...
+ ...and copy /Downloads/ph-image2shrink.img to
+ /Downloads/shrink-candidate.img...
+  ...done with copy
+  Create a device for the image...
+  Ask kernel to load the partitions that are on the image...
+  => /dev/loop0p1 & /dev/loop0p2 (provides access to partitions)
+  resize2fs demands fsck first...
+  e2fsck 1.42.13 (17-May-2015)
+  Pass 1: Checking inodes, blocks, and sizes
+  Pass 2: Checking directory structure
+  Pass 3: Checking directory connectivity
+  Pass 4: Checking reference counts
+  Pass 5: Checking group summary information
+  rootfs: 57310/237120 files (0.2% non-contiguous), 488066/956288
+  blocks
+  resize partition to minimum size...
+  resize2fs 1.42.13 (17-May-2015)
+  Resizing the filesystem on /dev/loop0p2 to 682573 (4k) blocks.
+  The filesystem on /dev/loop0p2 is now 682573 (4k) blocks long.
+
+  Use dumpe2fs to get block count and size...
+  dumpe2fs 1.42.13 (17-May-2015)
+  Block count:              682573
+  Block size:               4096
+  fdisk -l to just list...
+  Disk /dev/loop0: 3.7 GiB, 3965190144 bytes, 7744512 sectors
+  Units: sectors of 1 * 512 = 512 bytes
+  Sector size (logical/physical): 512 bytes / 512 bytes
+  I/O size (minimum/optimal): 512 bytes / 512 bytes
+  Disklabel type: dos
+  Disk identifier: 0x4bfd7db0
+
+  Device       Boot Start     End Sectors  Size Id Type
+  /dev/loop0p1       8192   93236   85045 41.5M  c W95 FAT32 (LBA)
+  /dev/loop0p2      94208 7744511 7650304  3.7G 83 Linux
+  loopback-device no longer needed...
+==>
+Device                           Boot Start     End Sectors  Size Id Type
+/Downloads/shrink-candidate.img1       8192   93236   85045 41.5M  c W95 FAT32 (LBA)
+/Downloads/shrink-candidate.img2      94208 5554791 5460584  2.6G 83 Linux
+=================================================
+Mon Jan  1 18:25:46 PST 2018
+source shrink.sh
+Enable loopback (if not already enabled...)
+[sudo] password for alex: 
+Detach all associated loop devices.
+Request a new/free loopback device...
+/dev/loop0
+ => /dev/loop0
+remove /Downloads/shrink-candidate.img...
+...and copy /Downloads/ph-image2shrink.img to /Downloads/shrink-candidate.img...
+ ...done with copy
+Create a device for the image...
+Ask kernel to load the partitions that are on the image...
+=> /dev/loop0p1 & /dev/loop0p2 (provides access to partitions)
+resize2fs demands fsck first...
+e2fsck 1.42.13 (17-May-2015)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+rootfs: 57310/237120 files (0.2% non-contiguous), 488066/956288 blocks
+resize partition to minimum size...
+resize2fs 1.42.13 (17-May-2015)
+Resizing the filesystem on /dev/loop0p2 to 682573 (4k) blocks.
+The filesystem on /dev/loop0p2 is now 682573 (4k) blocks long.
+
+Use dumpe2fs to get block count and size of 2nd partition...
+dumpe2fs 1.42.13 (17-May-2015)
+Block count:              682573
+Block size:               4096
+fdisk -l to just list partitions...
+Disk /dev/loop0: 3.7 GiB, 3965190144 bytes, 7744512 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x4bfd7db0
+
+Device       Boot Start     End Sectors  Size Id Type
+/dev/loop0p1       8192   93236   85045 41.5M  c W95 FAT32 (LBA)
+/dev/loop0p2      94208 7744511 7650304  3.7G 83 Linux
+loopback-device no longer needed...
+
+------------------------------------------
+dmesg >
+[ 1714.284369] EXT4-fs (sdc2): bad geometry: block count 682573 exceeds size of device (680712 blocks)
+
+------------------------------------------
+When trying to shrink the Rachel image:
+Use dumpe2fs to get block count and size of 2nd partition...
+dumpe2fs 1.42.13 (17-May-2015)
+Block count:              14715734
+Block size:               4096
+
+Device                           Boot  Start       End   Sectors  Size Id Type
+/Downloads/shrink-candidate.img1        8192    131071    122880   60M c W95 FAT32 (LBA)
+/Downloads/shrink-candidate.img2      131072 121061375 120930304 57.7G 83 Linux
+==>
+>>> (131072 + 1) + (14715734 * 4096 / 512)
+117856945.0
+
+Device                           Boot  Start       End   Sectors  Size Id Type
+/Downloads/shrink-candidate.img1        8192    131071    122880   60M  c W95 FAT32 (LBA)
+/Downloads/shrink-candidate.img2      131072 117856945 117725874 56.1G 83 Linux
+
+sudo truncate --size=$[(117856945+1)*512+14888] $SC
+
+==================================================
+Let's set up variables for needed values:
+block_count =  # of 2nd partition: we get this from dumpe2fs
+block_size = 4096
+start_sector =  # of 2nd partition: we get this from fdisk -l
+end_sector = (start_sector + 1) + (block_count * block_size / 512)
+# Above values used in fdisk, next used in truncate...
+size = (end_sector + 1) * 512 + 14888  # 14888 has been found to work
+                                    # the disparity reported by dmesg

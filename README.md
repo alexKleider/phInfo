@@ -79,6 +79,25 @@ Look over the code and modify to suit your use case.
 Sensible defaults are chosen for everything so if using a `Raspberry
 Pi`, there'll be no necessity to modify anything.
 
+#### A Word About the Command Line
+
+We do all our work here using the command line. Typically you'll be
+entering commands 'at the command prompt' which on most systems is, or
+ends with, the dollar sign (`$`). If you see a hash sign ('#'), that
+signifies a comment and anything following it (to the end of the line)
+is considerred a 'comment' and is ignored by the operating system;
+generally these are for the purpose of proving explanatory text.
+
+Many commands must be run with 'superuser' status. Typically these are
+prefaced with `sudo` which causes what follows to be run with root
+privileges.
+
+
+#### If You Want the Result but Don't Want To Go Through the Process
+
+A 'zip'ed 'img' file of the result of all that is described here can
+be provided upon request.<sup>[4](#4contact)</sup>
+
 
 #### For the Advanced User
 
@@ -486,7 +505,6 @@ iptables.sh scripts. There must be a reboot between the two
 If you think you might want to make any customizations, have
 a look through the initial comments in `networking.sh`; you
 may want to edit some of the files mentioned.  
-The `networking.sh` script takes about 20 minutes to complete.
 
         # AdvUser must `source config` again
         cd phInfo  # AdvUsr substitute `cd $REPO`
@@ -504,7 +522,7 @@ target machine<sup>[6](#6screenfreeze)</sup>.
 
 ### Bring in Dependencies
 
-The next script may take a long time (~7 min with good internet
+The next script may take a long time (~5 min with good internet
 service, but up to ~30 min if service is slow!)
 
         # AdvUser must `source config` again
@@ -610,8 +628,18 @@ in your content being displayed.
 Still need to document this.
 
 
+### Image Available
+
+Once all of the above is done, it's possible to create a small image
+(not much bigger than the original `Raspbian` image)
+
 <div></div>
 ### FOOTNOTES
+
+<a name="4contact">4</a>.
+
+Available for download at the [olpcsf](http://olpc.org) web site.
+
 
 <a name="1sdcard">1</a>.
     

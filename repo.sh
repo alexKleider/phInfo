@@ -57,6 +57,5 @@ else
     exit 1
 fi
 echo "Successfully ending repo.sh script: $(date)"
-echo "Script ended- you'll need to again change"
-echo "into the repository directory to continue."
+echo "cd into the repository directory to continue."
 # We are in a subsidiary shell.

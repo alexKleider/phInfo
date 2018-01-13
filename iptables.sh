@@ -31,7 +31,7 @@ else
     then
         echo "...success"
     else
-        echo "...iptables -t nat -A POSTROUTING -o eth0... FAILED! Teminating."
+        echo "...iptables -t nat -A POSTROUTING -o eth0... Failed! Teminating."
         exit 1
     fi
     
@@ -40,7 +40,7 @@ else
     then
         echo "...success"
     else
-        echo "...iptables -A FORWARD -i eth0 ... FAILED! Terminating!"
+        echo "...iptables -A FORWARD -i eth0 ... Failed! Terminating!"
         exit 1
     fi
     
@@ -49,7 +49,7 @@ else
     then
         echo "...success"
     else
-        echo "...iptables -A FORWARD -i wlan0 ... FAILED! Teminating!"
+        echo "...iptables -A FORWARD -i wlan0 ... Failed! Teminating!"
         exit 1
     fi
 
@@ -58,16 +58,16 @@ else
     then
         echo "...appear above."
     else 
-        echo "... iptables -S (showing the tables) FAILED! Terminating!"
+        echo "... iptables -S (showing the tables) Failed! Terminating!"
         exit 1
     fi
 
     echo "Saving iptables to /etc/iptables.ipv4.nat..."
     if sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
     then
-        echo "... and have been saved"
+        echo "... success"
     else
-        echo "... saving of iptables FAILED! Teminating!"
+        echo "... saving of iptables Failed! Teminating!"
         exit 1
     fi
     
@@ -78,7 +78,7 @@ else
         echo "SYSTEM GOING DOWN FOR A REBOOT"
         sudo shutdown -r now
     else
-        echo "...FAILED!"
+        echo "...Failed!"
     fi
 fi
 
