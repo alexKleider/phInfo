@@ -25,6 +25,7 @@
 #    hostapd.conf.wpa  (still a work in progress)
 #    interfaces.dhcp
 #    interfaces.static
+#    iptables.sh  (modified by this script but run later)
 
 # BEFORE RUNNING THIS SCRIPT:
 #

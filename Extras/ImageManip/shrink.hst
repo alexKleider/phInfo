@@ -1,8 +1,0 @@
-sudo fsck.ext4 -f /dev/loop0p2
-sudo dumpe2fs -h /dev/loop0p2
-sudo resize2fs -M /dev/loop0p2
-sudo dumpe2fs -h /dev/loop0p2
-sudo losetup -d /dev/loop0
-fdisk -l /Downloads/shrink-candidate.img
-truncate --size=$[(5539943+1)*512] shrink-candidate.img
-cp shrink-candidate.img shrunk.img
