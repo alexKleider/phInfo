@@ -39,7 +39,7 @@ The `Raspberry Pi` (or any other `Debian` based machine that you
 may be trying to configure to use as a content server) will be
 referred to as your `target` machine.  Your laptop or other
 (preferably Linux) computer (it could even be another `Raspberry
-Pi`) will be referred to as your `staging` machine. A `client`
+Pi`) will be referred to as your `staging` machine. A `staging`
 machine is any Wifi enabled machine providing its user with a
 browser. The the whole purpose of this project is to provide
 content for clients.  It will be assumed that your `staging`
