@@ -364,6 +364,8 @@ appropriate for our use case:
             (Can be ignored. We'll be changing this later anyway.)
         N3 Network interface names Enable/Disable predictable network interface names
             (No need for action here.)
+        N4 Nework proxy settings Configure network proxy settings
+            (No need for action here.)
     3. Boot Options         Configure options for start-up
         B1 Desktop / CLI            Choose whether to boot into a desktop environment or the command line
             B1 Console           Text console, requiring user to login
@@ -394,7 +396,7 @@ appropriate for our use case:
         Only the second (P2 SSH) option is relevant to us.
         P1 Camera      Enable/Disable connection to the Raspberry Pi Camera
         P2 SSH         Enable/Disable remote command line access to your Pi using SSH
-            Be sure to enable SSH
+            Be sure SSH is enabled.
         P3 VNC         Enable/Disable graphical remote access to your Pi using RealVNC
         P4 SPI         Enable/Disable automatic loading of SPI kernel module
         P5 I2C         Enable/Disable automatic loading of I2C kernel module
